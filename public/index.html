@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <meta name="apple-mobile-web-app-title">
+  <meta name="format-detection" content="telephone=no, email=no">
+  <meta name="full-screen" content="yes">
+  <meta name="imagemode" content="force">
+  <meta name="browsermode" content="application">
+  <meta name="nightmode" content="disable">
+  <meta name="x5-fullscreen" content="true">
+  <meta name="x5-page-mode" content="app">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <title>商城</title>
+  <link rel="stylesheet" href="index.css" />
+  <style type="text/css">
+    .loading-container{display: block; width: 100%; height: 100%; position: relative; background: red;}
+    .loader { position: absolute; width: 60px; height: 60px; left: 50%; top: 50%; margin: -30px 0 0 -30px; border-radius: 50%; display: inline-block; vertical-align: middle; }
+    .loader-star { position: absolute; top: calc(50% - 12px); }
+    .loader-2 .loader-star { position: static; width: 60px; height: 60px; -webkit-transform: scale(0.7); transform: scale(0.7); -webkit-animation: loader-2-star 1s ease alternate infinite; animation: loader-2-star 1s ease alternate infinite; }
+    .loader-2 .loader-circles { width: 8px; height: 8px; background: #FF8E44; border-radius: 50%; position: absolute; left: calc(50% - 4px); top: calc(50% - 4px); -webkit-transition: all 1s ease; transition: all 1s ease; -webkit-animation: loader-2-circles 1s ease-in-out alternate infinite; animation: loader-2-circles 1s ease-in-out alternate infinite; }
+    @keyframes loader-2-circles {
+      0% {
+      box-shadow: 0 0 0 #FF8E44;
+      opacity: 1;
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+      }
+      50% {
+      box-shadow: 24px -22px #FF8E44, 30px -15px 0 -3px #FF8E44, 31px 0px #FF8E44, 29px 9px 0 -3px #FF8E44, 24px 23px #FF8E44, 17px 30px 0 -3px #FF8E44, 0px 33px #FF8E44, -10px 28px 0 -3px #FF8E44, -24px 22px #FF8E44, -29px 14px 0 -3px #FF8E44, -31px -3px #FF8E44, -30px -11px 0 -3px #FF8E44, -20px -25px #FF8E44, -12px -30px 0 -3px #FF8E44, 5px -29px #FF8E44, 13px -25px 0 -3px #FF8E44;
+      -webkit-transform: rotate(180deg);
+      transform: rotate(180deg);
+      }
+      100% {
+      opacity: 0;
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+      box-shadow: 25px -22px #FF8E44, 15px -22px 0 -3px black, 31px 2px #FF8E44, 21px 2px 0 -3px black, 23px 25px #FF8E44, 13px 25px 0 -3px black, 0px 33px #FF8E44, -10px 33px 0 -3px black, -26px 24px #FF8E44, -19px 17px 0 -3px black, -32px 0px #FF8E44, -23px 0px 0 -3px black, -25px -23px #FF8E44, -16px -23px 0 -3px black, 0px -31px #FF8E44, -2px -23px 0 -3px black;
+      }
+      }
+      @-webkit-keyframes loader-2-star {
+      0% {
+      -webkit-transform: scale(0) rotate(0deg);
+      transform: scale(0) rotate(0deg);
+      }
+      100% {
+      -webkit-transform: scale(0.7) rotate(360deg);
+      transform: scale(0.7) rotate(360deg);
+      }
+      }
+      @keyframes loader-2-star {
+      0% {
+      -webkit-transform: scale(0) rotate(0deg);
+      transform: scale(0) rotate(0deg);
+      }
+      100% {
+      -webkit-transform: scale(0.7) rotate(360deg);
+      transform: scale(0.7) rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="root">
+        <div class="loader loader-2">
+          <svg class="loader-star" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+                <polygon points="29.8 0.3 22.8 21.8 0 21.8 18.5 35.2 11.5 56.7 29.8 43.4 48.2 56.7 41.2 35.1 59.6 21.8 36.8 21.8 " fill="#FF8E44" />
+              </svg>
+          <div class="loader-circles"></div>
+        </div>
+  </div>
+  <script src="index.js"></script>
+</body>
+</html>

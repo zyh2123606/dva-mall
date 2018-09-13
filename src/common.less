@@ -1,0 +1,101 @@
+@black: #333;
+@borderRadius: 4px;
+@borderColor: #D5D5D6;
+@orange: #FF8E44;
+@orangeRed: #FF5A60;
+
+.container{
+    width: 100%; 
+    min-height: 100%;
+    position: relative;
+}
+/**css函数**/
+.orangeBac(){ /*背景橙色*/
+    background: @orange;
+}
+.orangeRedBac(){ /*背景橘红色*/
+    background: @OrangeRed;
+}
+.blackColor(){ /*黑色字体*/
+    color: @black;
+}
+.borderRadius(){ /*圆角*/
+    border-radius: @borderRadius;
+}
+.transition(){ //过渡
+    transition: all .35s linear;
+    -webkit-transition: all .35s linear;
+}
+.animatedTime() { /*动画时长*/
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+.animatedInfinite(){ /*动画反复播放*/
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+}
+/**0.5像素细线**/
+.scal-y-line(){
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -moz-transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
+    -webkit-transform: scaleY(0.5); 
+    -moz-transform: scaleY(0.5); 
+    -ms-transform: scaleY(0.5); 
+    transform: scaleY(0.5);
+}
+.scal-x-line(){
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -moz-transform-origin: 0 0;
+    -ms-transform-origin: 0 0; 
+    -webkit-transform: scaleX(0.5); 
+    -moz-transform: scaleX(0.5); 
+    -ms-transform: scaleX(0.5); 
+    transform: scaleX(0.5);
+}
+/**底边**/
+.thin-by-line:after{ 
+    content: ""; 
+    position: absolute; 
+    left: 0; 
+    bottom: 0; 
+    right: 0; 
+    border-top: @borderColor solid 1px;
+    .scal-y-line();
+}
+/**上边**/
+.thin-ty-line:before{ 
+    content: "";
+    position: absolute; 
+    left: 0; 
+    top: 0; 
+    height: 1px;
+    width: 100%; 
+    border-top: @borderColor solid 1px;
+    z-index: 2;
+    .scal-y-line()
+}
+/**右边**/
+.thin-xr-line:after{ 
+    content: ""; 
+    position: absolute;
+    right: 0; 
+    top: 0;
+    bottom: 0;
+    border-right: @borderColor solid 1px;
+    .scal-x-line();
+}
+/**右边**/
+.thin-xl-line:before{ 
+    content: ""; 
+    position: absolute; 
+    left: 0; 
+    bottom: 0; 
+    top: 0; 
+    border-right: @borderColor solid 1px;
+    .scal-x-line();
+}
