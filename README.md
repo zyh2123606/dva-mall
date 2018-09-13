@@ -1,2 +1,2 @@
 # dva-mall
-dva+antd-mobile自定义主题，代码切割按需加载
+dva+antd-mobile webapp自定义antd-mobile主题，代码切割按需加载
