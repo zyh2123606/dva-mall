@@ -4,12 +4,20 @@
     box-shadow: 0 4px 20px #ddd;
 }
 .color_tag{
+    @mlVal: 10px;
+    width: calc(~"25% - @{mlVal}");
+    width: -webkit-calc(~"25% - @{mlVal}");
     height: 35px;
     line-height: 35px;
     text-align: center;
     border: #ddd solid 1px;
     border-radius: 18px;
     margin-top: 7px;
+}
+.color_tag_select{
+    .color_tag;
+    border-color: @orange;
+    color: @orange;
 }
 .footer_bar{
     position: fixed;
@@ -24,15 +32,22 @@
     color: @orange;
 }
 .car_sty, .buy_sty{
-    background: @orange;
+    background: @orange; 
     color: #fff;
     height: 45px;
     border-radius: 22.5px 0 0 22.5px;
     line-height: 45px;
     text-align: center;
     font-size: 16px;
+    .transition();
+}
+.car_sty:active{
+    background: @orangeTap;
 }
 .buy_sty{
     background: @orangeRed;
     border-radius: 0 22.5px 22.5px 0;
+}
+.buy_sty:active{
+    background: @orangeRedTap;
 }

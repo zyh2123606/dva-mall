@@ -30,10 +30,12 @@ class HttpBase implements HttpInterFace {
         }
         //添加拦截器，提前处理返回的数据
         this.$http.interceptors.response.use((response: any) => {
+            //请求结束后自动关闭loading
+            Toast.hide()
             let { data } = response
             if(!data.result){
                 data.data = []
-                Toast.warning(data.msg)
+                Toast.info(data.message)
             }
             return data
         }, (err: any) => {
@@ -66,7 +68,7 @@ class HttpBase implements HttpInterFace {
                     default:
                 }
             }
-            Toast.warning(err.response.status + err.message)
+            Toast.info(err.response.status + err.message)
             return Promise.reject(err)
         })
     }
@@ -121,6 +123,12 @@ class HttpBase implements HttpInterFace {
      */
     cancel(){
         this.source.cancel()
+    }
+    /**
+     * 一次并发多个请求
+     */
+    all(iterable:[]){
+        return Axios.all(iterable)
     }
 }
 
