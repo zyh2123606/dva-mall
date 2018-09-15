@@ -12,7 +12,24 @@ class Product extends Component{
     componentDidMount(){
 
     }
+    createButByStatus(status){
+        switch (status){
+            case 1 :
+                return (<Block className={Styles.prod_btn_primary}>去支付</Block>)
+                break
+            case 2 :
+                return (<Block className={Styles.prod_btn_normal}>查看物流</Block>)
+                break
+            case 3 :
+                return (<Block className={Styles.prod_btn_ghost}>再次购买</Block>)
+                break
+            default:
+                return null
+        }
+        return (<Block className={Styles.prod_btn_ghost}>再次购买</Block>)
+    }
     render(){
+        const status = this.props.status
         const {name,imgurl,pay_sum,count} = this.props.data
         return (
                 <Block wf className={Styles.prod_cont}>
@@ -26,7 +43,7 @@ class Product extends Component{
                             <Block>×{count}</Block>
                         </Block>
                         <Block mt={15} j='e'>
-                            <Block className={Styles.prod_btn_ghost}>再次购买</Block>
+                            {this.createButByStatus(status)}
                         </Block>
                     </Block>
                 </Block>

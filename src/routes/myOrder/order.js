@@ -14,6 +14,7 @@ class Order extends Component{
 
     }
     render(){
+        const order_status = this.props.status
         return (
             <Block vf className={Styles.prod_panel}p={15}>
                 <Block pb={15} wf>
@@ -22,6 +23,7 @@ class Order extends Component{
                 </Block>
                 {this.props.products?this.props.products.map((item,idx)=>(
                   <Product
+                      status ={order_status}
                     key = {idx}
                     data={item}
                   />
