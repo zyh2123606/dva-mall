@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
-import Product from './product'
+import Order from './order'
 import { PullToRefresh, Empty } from '../../components'
 import { Toast } from 'antd-mobile'
 import Service from '../../services/orderService'
@@ -46,7 +46,7 @@ class All extends Component{
                 onRefresh={this.pulUpFresh}
                 damping={100}>
                 {this.state.data?this.state.data.orders.map(({order_id},idx)=>(
-                  <Product order_id={order_id}/>
+                  <Order order_id={order_id}/>
 
                 )):null}
                 <Empty />

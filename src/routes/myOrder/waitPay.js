@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import Product from './product'
+import Order from './order'
 import { PullToRefresh, Empty } from '../../components'
 import { Toast } from 'antd-mobile'
 
@@ -40,7 +40,7 @@ class WaitPay extends Component{
                 refreshing={refreshing}
                 onRefresh={this.pulUpFresh}
                 damping={100}>
-                <Product />
+                <Order />
                 <Empty />
             </PullToRefresh>
         )
