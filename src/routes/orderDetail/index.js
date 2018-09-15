@@ -3,19 +3,24 @@ import Block from 'fs-flex'
 import Styles from './index.less'
 import { Stepper, Icon } from 'antd-mobile'
 import Service from '../../services/productService'
+import ShoppingCartService from '../../services/shoppingCartService';// 购物车service
 import { createForm } from 'rc-form'
-import { Badge } from 'antd-mobile'
+import { Badge,Toast } from 'antd-mobile'
+import {connect} from 'dva';
 
 class OrderDetail extends Component{
-    state = { pageData: null, cur_tag: 0,defaultSkuPrice:0}
+    state = { pageData: null, cur_tag: 0,defaultSkuPrice:0,typeId:0,shoppingCartCount:0}
     //dom挂在完成请求数据
     async componentDidMount(){
+        const {match:{params:{pid}}}  =this.props
         const res = await Service.getDetailById()
         const { data, code } = res
         if(code==='1111'){
             const colors =data.goodsTypeAttrList.filter(item=>item.attrName==='颜色')||[]
-            this.setState({ pageData: {...data,colors:colors?colors[0].attrValList:[]},defaultSkuPrice:data.defaultSkuPrice})
+            this.setState({ pageData: {...data,colors:colors?colors[0].attrValList:[]},defaultSkuPrice:this.toMoney(data.defaultSkuPrice),typeId:pid})
         }
+        // 查询购物车商品数量
+        this.shoppingCart()
     }
     //选择颜色
     selectColor(color_id, idx){
@@ -32,22 +37,50 @@ class OrderDetail extends Component{
     async queryPriceByGoodsColor(color_id) {
         const {data,code} = await Service.queryPriceByGoodsColor({typeId:1,attrList:[{attrId:1,attrValld:color_id}]})
         if(code==='1111'){
-            console.log('queryPriceByGoodsColor setState:',code)
-            this.setState({defaultSkuPrice:data.salePrice})
+            this.setState({defaultSkuPrice:this.toMoney(data.salePrice)})
         }
 
     }
+    // 金额转换
+    toMoney(num){
+        return (num/100).toFixed(2);
+    }
     //立即购买
     sureBuy(){
-        const { form } = this.props
-        const values = form.getFieldsValue()
-        
+        const { form,dispatch} = this.props
+        const {color_id,num} = form.getFieldsValue()
+        dispatch({
+            type:'orderDetail/submitOrder',
+            payload:{
+                typeId:this.state.typeId,
+                colorId:color_id,
+                goodsNum:num,
+                defaultSkuPrice:this.state.defaultSkuPrice
+
+            }
+        })
     }
-    addToShoppingCart=()=>{
-        console.log('add goods to shoopping cart!')
+    // 添加到购物车
+    async addToShoppingCart(){
+        const data={
+            
+        }
+        const {code} = await ShoppingCartService.save(data);
+        if (code==='1111'){
+            this.setState((preState) => ({
+                shoppingCartCount: preState.shoppingCartCount + 1
+              }))
+            Toast.success('添加购物车成功！',1)
+        }
+    }
+    async shoppingCart(){
+        const {data,code} = await ShoppingCartService.query({start:0})
+        if (code==='1111'){
+            this.setState({shoppingCartCount:data.length})
+        }
     }
     render(){
-        const { pageData, cur_tag,defaultSkuPrice} = this.state
+        const { pageData, cur_tag,defaultSkuPrice,shoppingCartCount} = this.state
         const { logoPath,title,colors,goodsPicList } = pageData || {}
         
         const { getFieldProps } = this.props.form
@@ -98,10 +131,10 @@ class OrderDetail extends Component{
                     <Block a='c' j='c' w={60} vf>
                         <Block>
                         </Block>
-                        <Block fs={12}>购物车</Block>
+                        <Block fs={12}><Badge text={shoppingCartCount}><span>购物车</span></Badge></Block>
                     </Block>
                     <Block wf f={1} ml={10} mr={10}>
-                        <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart}>加入购物车</Block>
+                        <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>
                         <Block onClick={this.sureBuy.bind(this)} className={Styles.buy_sty} f={1}>立即购买</Block>
                     </Block>
                 </Block>
@@ -110,4 +143,4 @@ class OrderDetail extends Component{
     }
 }
 
-export default createForm()(OrderDetail)
+export default connect(state=>state)(createForm()(OrderDetail))

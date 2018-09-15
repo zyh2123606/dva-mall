@@ -175,5 +175,62 @@ module.exports = {
                 result:true
 			});
 		}, 200);
+    },
+    'POST /api/orders/addCart':function(req,res){
+        
+		setTimeout(()=>{
+			res.json({
+				hasnext: false,
+				data: null,
+				msg: '成功',
+                code: '1111',
+                result:true
+			});
+		}, 200);
+    },
+    'GET /api/orders/myCartList':function(req,res){
+        let data = {
+            1001:[
+                {
+                    cartId:1,
+                    skuId:1,
+                    goodsName:'无线蓝牙耳机 待机99999小时',
+                    logoPath:'',
+                    skuAttr:[],
+                    amount:99,
+                    price:999900001,
+                    totalMoney:99999999999
+                },
+                {
+                    cartId:2,
+                    skuId:1,
+                    goodsName:'无线蓝牙耳机 待机99999小时',
+                    logoPath:'',
+                    skuAttr:[],
+                    amount:99,
+                    price:999900001,
+                    totalMoney:99999999999
+                },
+                {
+                    cartId:3,
+                    skuId:1,
+                    goodsName:'无线蓝牙耳机 待机99999小时',
+                    logoPath:'',
+                    skuAttr:[],
+                    amount:99,
+                    price:999900001,
+                    totalMoney:99999999999
+                }
+            ],
+        }
+		setTimeout(()=>{
+			res.json({
+				hasnext: false,
+				data: data[1001],
+				msg: '成功',
+                code: '1111',
+                result:true
+			});
+		}, 200);
     }
 }
