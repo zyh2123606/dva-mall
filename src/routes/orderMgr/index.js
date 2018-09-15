@@ -35,7 +35,7 @@ class OrderDetail extends Component{
         const { name, amount, colors=[] } = pageData || {}
         const { getFieldProps } = this.props.form
         return (
-            pageData?<Block vf p={15}>
+            pageData?<Block bc='#fff' vf p={15} className={Styles.order_det_wrapper}>
                 <Block h={250} vf className={Styles.pro_panel}>
                     <Block f={1} bc='#eee'></Block>
                     <Block p={20} vf>
