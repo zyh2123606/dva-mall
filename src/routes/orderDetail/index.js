@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-import { Stepper } from 'antd-mobile'
+import { Stepper, Icon } from 'antd-mobile'
 import Service from '../../services/productService'
 import { createForm } from 'rc-form'
 import { Badge } from 'antd-mobile'
@@ -93,11 +93,11 @@ class OrderDetail extends Component{
                 </Block>
                 <Block wf fs={16} className={Styles.footer_bar}>
                     <Block a='c' j='c' w={60} vf>
-                        <Block className={Styles.service_icon}></Block>
                         <Block fs={12}>购物车</Block>
                     </Block>
                     <Block a='c' j='c' w={60} vf>
-                        <Block className={Styles.car_icon}></Block>
+                        <Block>
+                        </Block>
                         <Block fs={12}>购物车</Block>
                     </Block>
                     <Block wf f={1} ml={10} mr={10}>
