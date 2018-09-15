@@ -11,7 +11,12 @@ class ProductService extends HttpBase{
         })
     }
     getDetailById = (data=undefined) => {
-        return this.post('/get-detail-by-id', data)
+        // return this.post('/get-detail-by-id', data)
+        return this.get('/goods/getGoodsInfo')
+    }
+
+    queryPriceByGoodsColor=(data)=>{
+        return this.post('/goods/getSkuInfo',data);
     }
 }
 
