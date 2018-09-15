@@ -5,8 +5,6 @@ import { Stepper } from 'antd-mobile'
 import Service from '../../services/productService'
 import { createForm } from 'rc-form'
 import { Badge } from 'antd-mobile'
-import { CustomerIcon } from '../../components/customerIcon'
-import Car from '../../assets/svg/car.svg'
 
 class OrderDetail extends Component{
     state = { pageData: null, cur_tag: 0 }
@@ -72,10 +70,13 @@ class OrderDetail extends Component{
                 <Block pt={20} pb={20} fs={18} style={{fontWeight: 'bold',}}>套餐详情</Block>
                 <Block h={300} bc='#eee' mb={60}></Block>
                 <Block wf fs={16} className={Styles.footer_bar}>
-                    <Block a='c' j='c' w={60}>客服</Block>
-                    <Block a='c' j='c' w={60}>
-                        {/* <CustomerIcon type={Car} /> */}
-                        购物车
+                    <Block a='c' j='c' w={60} vf>
+                        <Block className={Styles.service_icon}></Block>
+                        <Block fs={12}>购物车</Block>
+                    </Block>
+                    <Block a='c' j='c' w={60} vf>
+                        <Block className={Styles.car_icon}></Block>
+                        <Block fs={12}>购物车</Block>
                     </Block>
                     <Block wf f={1} ml={10} mr={10}>
                         <Block className={Styles.car_sty} f={1}>加入购物车</Block>
