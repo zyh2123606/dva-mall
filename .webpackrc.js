@@ -1,4 +1,5 @@
 const themeConfig = require('./themeConfig')
+  
 export default{
     entry: 'src/index.js',
     theme: themeConfig,

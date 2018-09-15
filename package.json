@@ -9,6 +9,7 @@
   "dependencies": {
     "antd-mobile": "^2.2.5",
     "axios": "^0.18.0",
+    "babel-plugin-import": "^1.8.0",
     "dva": "^2.4.0",
     "dva-loading": "^2.0.5",
     "fs-flex": "^0.2.0",
@@ -16,8 +17,8 @@
     "qs": "^6.5.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-loadable": "^5.5.0",
-    "react-fastclick": "^3.0.2"
+    "react-fastclick": "^3.0.2",
+    "react-loadable": "^5.5.0"
   },
   "devDependencies": {
     "babel-plugin-dva-hmr": "^0.3.2",
