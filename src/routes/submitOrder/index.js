@@ -5,20 +5,35 @@ import {Stepper,List,Picker} from 'antd-mobile';
 
 class SubmitOrder extends React.Component{
   render(){
-    const seasons=[
-      {
-        label:'营业厅自提',
-        value:1
-      },
-      {
-        label:'送货上门',
-        value:2
-      }
-    ];
     const item = {
             bc: '#37caec',
             m: 10
         };
+    const renderAddressInfo=()=>{
+        return(
+            <Block bc='#FFF' p={10} h={100} mt={10} wf>
+            <Block h={80} w={80} bc></Block>
+            <Block f={1} vf>
+                <Block fs={18} style={{fontWeight: 'bold',}}>Apple AirPots无线蓝牙耳机 iphoneX双耳pods入耳式耳机</Block>
+                <Block>黑色</Block>
+                <Block wf pt={10}>
+                    <Block f={1}>X1</Block>
+                    <Block w={100}>￥ 1099.00</Block>
+                </Block>
+            </Block>
+        </Block>
+        )
+    }
+    const seasons=[
+        {
+          label:renderAddressInfo(),
+          value:1
+        },
+        {
+          label:renderAddressInfo(),
+          value:2
+        }
+      ];
     return(
       <Block vf>
         <Block h={80} wf bc='#FFF'>
@@ -42,6 +57,7 @@ class SubmitOrder extends React.Component{
             <List style={{ backgroundColor: 'white' }}>
             <Picker extra="请选择(可选)"
                 data={seasons}
+                col={1}
                 >
                 <List.Item arrow="horizontal">收货方式</List.Item>
                 </Picker>
