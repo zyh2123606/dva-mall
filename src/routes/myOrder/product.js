@@ -13,16 +13,17 @@ class Product extends Component{
 
     }
     render(){
+        const {name,imgurl,pay_sum,count} = this.props.data
         return (
                 <Block wf className={Styles.prod_cont}>
                     <Block j='c' className={Styles.prod_pic}>
-                        <img />
+                        <img src={imgurl}/>
                     </Block>
                     <Block f={1} ml={10} vf>
-                        <Block>小米 红米Note5 全网通版64G 红色全网联通4G手机 双卡双待</Block>
+                        <Block>{name}</Block>
                         <Block mt={5} wf>
-                            <Block f={1}>实付：<span className={Styles.orangeColor}>￥2799.00</span></Block>
-                            <Block>×1</Block>
+                            <Block f={1}>实付：<span className={Styles.orangeColor}>￥ {pay_sum}</span></Block>
+                            <Block>×{count}</Block>
                         </Block>
                         <Block mt={15} j='e'>
                             <Block className={Styles.prod_btn_ghost}>再次购买</Block>

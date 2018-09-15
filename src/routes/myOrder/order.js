@@ -20,7 +20,12 @@ class Order extends Component{
                     <Block f={1}>订单编号：{this.props.order_id}</Block>
                     <Block>删除</Block>
                 </Block>
-                <Product/>
+                {this.props.products?this.props.products.map((item,idx)=>(
+                  <Product
+                    key = {idx}
+                    data={item}
+                  />
+                  )):null}
             </Block>
         )
     }
