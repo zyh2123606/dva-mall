@@ -3,21 +3,29 @@ import Block from 'fs-flex'
 import Styles from './index.less'
 import { Stepper, Icon } from 'antd-mobile'
 import Service from '../../services/productService'
+import ShoppingCartService from '../../services/shoppingCartService';// 购物车service
 import { createForm } from 'rc-form'
-import { Badge } from 'antd-mobile'
+import { Badge,Toast } from 'antd-mobile'
+import {connect} from 'dva';
 
 class OrderDetail extends Component{
-    state = { pageData: null, cur_tag: 0 }
-    //dom挂载完成请求数据
+    state = { pageData: null, cur_tag: 0,defaultSkuPrice:0,typeId:0,shoppingCartCount:0}
+    //dom挂在完成请求数据
     async componentDidMount(){
+        const {match:{params:{pid}}}  =this.props
         const res = await Service.getDetailById()
-        const { data, result } = res
-        if(result)
-            this.setState({ pageData: data})
+        const { data, code } = res
+        if(code==='1111'){
+            const colors =data.goodsTypeAttrList.filter(item=>item.attrName==='颜色')||[]
+            this.setState({ pageData: {...data,colors:colors?colors[0].attrValList:[]},defaultSkuPrice:this.toMoney(data.defaultSkuPrice),typeId:pid})
+        }
+        // 查询购物车商品数量
+        this.shoppingCart()
     }
     //选择颜色
     selectColor(color_id, idx){
         const { form } = this.props
+        this.queryPriceByGoodsColor(color_id)
         form.setFieldsValue({ color_id: color_id })
         this.setState({cur_tag: idx}, () => {
             const { getFieldProps } = this.props.form
@@ -25,33 +33,75 @@ class OrderDetail extends Component{
             onChange(color_id)
         })
     }
+    // 点击颜色，查询该颜色属性对应的商品信息
+    async queryPriceByGoodsColor(color_id) {
+        const {data,code} = await Service.queryPriceByGoodsColor({typeId:1,attrList:[{attrId:1,attrValld:color_id}]})
+        if(code==='1111'){
+            this.setState({defaultSkuPrice:this.toMoney(data.salePrice)})
+        }
+
+    }
+    // 金额转换
+    toMoney(num){
+        return (num/100).toFixed(2);
+    }
     //立即购买
     sureBuy(){
-        const { form } = this.props
-        const values = form.getFieldsValue()
+        const { form,dispatch} = this.props
+        const {color_id,num} = form.getFieldsValue()
+        dispatch({
+            type:'orderDetail/submitOrder',
+            payload:{
+                typeId:this.state.typeId,
+                colorId:color_id,
+                goodsNum:num,
+                defaultSkuPrice:this.state.defaultSkuPrice
+
+            }
+        })
+    }
+    // 添加到购物车
+    async addToShoppingCart(){
+        const data={
+            
+        }
+        const {code} = await ShoppingCartService.save(data);
+        if (code==='1111'){
+            this.setState((preState) => ({
+                shoppingCartCount: preState.shoppingCartCount + 1
+              }))
+            Toast.success('添加购物车成功！',1)
+        }
+    }
+    async shoppingCart(){
+        const {data,code} = await ShoppingCartService.query({start:0})
+        if (code==='1111'){
+            this.setState({shoppingCartCount:data.length})
+        }
     }
     render(){
-        const { pageData, cur_tag } = this.state
-        const { name, amount, colors=[] } = pageData || {}
+        const { pageData, cur_tag,defaultSkuPrice,shoppingCartCount} = this.state
+        const { logoPath,title,colors,goodsPicList } = pageData || {}
+        
         const { getFieldProps } = this.props.form
         return (
             pageData?<Block bc='#fff' vf p={15} className={Styles.order_det_wrapper}>
                 <Block h={250} vf className={Styles.pro_panel}>
-                    <Block f={1} bc='#eee'></Block>
+                    <Block f={1} bc='#eee'><img src={logoPath} alt='商品logo'/></Block>
                     <Block p={20} vf>
-                        <Block fs={16}>{name}</Block>
-                        <Block className={Styles.money_color} fs={20} mt={10}>￥{amount}</Block>
+                        <Block fs={16}>{title}</Block>
+                        <Block className={Styles.money_color} fs={20} mt={10}>￥{defaultSkuPrice}</Block>
                     </Block>
                 </Block>
                 <Block pt={20} pb={13} fs={18}>颜色分类</Block>
                 <Block wf>
-                    {colors.map(({color_id, color}, idx) => (
-                        <Block onClick={this.selectColor.bind(this, color_id, idx)} 
+                    {colors.map(({attrValId, attrCode}, idx) => (
+                        <Block onClick={this.selectColor.bind(this, attrValId, idx)} 
                             {...getFieldProps('color_id', {initialValue: 100})}
                             key={idx}  
                             mr={idx !=0 && idx%3 == 0?0:10}
                             className={cur_tag === idx?Styles.color_tag_select:Styles.color_tag}>
-                            {color}
+                            {attrCode}
                         </Block>
                     ))}
                 </Block>
@@ -67,7 +117,13 @@ class OrderDetail extends Component{
                     />
                 </Block>
                 <Block pt={20} pb={20} fs={18} style={{fontWeight: 'bold',}}>套餐详情</Block>
-                <Block h={300} bc='#eee' mb={60}></Block>
+                <Block h={300} bc='#eee' mb={60}>
+                    {
+                        goodsPicList.map((item,index)=>(
+                            <img key={index} src={item.picPath} alt={item.picName}/>
+                        ))
+                    }
+                </Block>
                 <Block wf fs={16} className={Styles.footer_bar}>
                     <Block a='c' j='c' w={60} vf>
                         <Block fs={12}>购物车</Block>
@@ -75,10 +131,10 @@ class OrderDetail extends Component{
                     <Block a='c' j='c' w={60} vf>
                         <Block>
                         </Block>
-                        <Block fs={12}>购物车</Block>
+                        <Block fs={12}><Badge text={shoppingCartCount}><span>购物车</span></Badge></Block>
                     </Block>
                     <Block wf f={1} ml={10} mr={10}>
-                        <Block className={Styles.car_sty} f={1}>加入购物车</Block>
+                        <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>
                         <Block onClick={this.sureBuy.bind(this)} className={Styles.buy_sty} f={1}>立即购买</Block>
                     </Block>
                 </Block>
@@ -87,4 +143,4 @@ class OrderDetail extends Component{
     }
 }
 
-export default createForm()(OrderDetail)
+export default connect(state=>state)(createForm()(OrderDetail))
