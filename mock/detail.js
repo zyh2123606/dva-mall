@@ -27,5 +27,27 @@ module.exports = {
 				errorcode: ''
 			});
 		}, 1000);
+    },
+  'POST /api/get-my-order': function(req, res){
+    let data = {
+      1001: {
+        amount: 2,
+        orders: [{
+          order_id: 'ORDER100',
+          product_count: 1
+        },{
+          order_id: 'ORDER200',
+          product_count: 2
+        }]
+      }
     }
+    setTimeout(()=>{
+      res.json({
+        result: true,
+        data: data[1001],
+        msg: 'success',
+        errorcode: '0'
+      });
+    }, 1000);
+  }
 }
