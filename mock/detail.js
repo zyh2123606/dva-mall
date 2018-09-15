@@ -32,11 +32,11 @@ module.exports = {
         let data = {
             1001: {
                 amount: 2,
-                orders: [{
-                    order_id: 'ORDER10067854567898',
+                data: [{
+                    orderCode: 'ORDER10067854567898',
                     status: 1,
                     product_count: 1,
-                    products: [{
+                    goodsInfo: [{
                         name: '小米手机最新款，不要998不要698只有88',
                         imgurl: 'https://2e.zol-img.com.cn/product/192_100x75/618/cegGc5GCdPxxo.jpg',
                         pay_sum: 3874,
@@ -48,20 +48,20 @@ module.exports = {
                         count: 3
                     }]
                 }, {
-                    order_id: 'ORDER20045894567389HK',
+                    orderCode: 'ORDER20045894567389HK',
                     status: 2,
                     product_count: 2,
-                    products: [{
+                    goodsInfo: [{
                         name: '小米手机最新款，不要998不要698只有88',
                         imgurl: 'https://2e.zol-img.com.cn/product/192_100x75/618/cegGc5GCdPxxo.jpg',
                         pay_sum: 3874,
                         count: 2
                     }]
                 }, {
-                    order_id: 'ORDER20045894567389HK',
+                    orderCode: 'ORDER20045894567389HK',
                     status: 3,
                     product_count: 2,
-                    products: [{
+                    goodsInfo: [{
                         name: '小米手机最新款，不要998不要698只有88',
                         imgurl: 'https://2e.zol-img.com.cn/product/192_100x75/618/cegGc5GCdPxxo.jpg',
                         pay_sum: 3874,

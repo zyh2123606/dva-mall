@@ -45,8 +45,8 @@ class All extends Component{
                 refreshing={refreshing}
                 onRefresh={this.pulUpFresh}
                 damping={100}>
-                {this.state.data?this.state.data.orders.map(({order_id,status,products},idx)=>(
-                  <Order key={idx} order_id={order_id} status = {status} products={products}/>
+                {this.state.data?this.state.data.data.map(({orderCode,status,goodsInfo},idx)=>(
+                  <Order key={idx} orderCode={orderCode} status = {status} goodsInfo={goodsInfo}/>
 
                 )):<Empty/>}
             </PullToRefresh>

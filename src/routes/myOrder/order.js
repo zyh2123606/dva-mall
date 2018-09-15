@@ -18,10 +18,10 @@ class Order extends Component{
         return (
             <Block vf className={Styles.prod_panel}p={15}>
                 <Block pb={15} wf>
-                    <Block f={1}>订单编号：{this.props.order_id}</Block>
+                    <Block f={1}>订单编号：{this.props.orderCode}</Block>
                     <Block>删除</Block>
                 </Block>
-                {this.props.products?this.props.products.map((item,idx)=>(
+                {this.props.goodsInfo?this.props.goodsInfo.map((item,idx)=>(
                   <Product
                       status ={order_status}
                     key = {idx}
