@@ -37,35 +37,35 @@ module.exports = {
                     status: 1,
                     product_count: 1,
                     goodsInfo: [{
-                        name: '小米手机最新款，不要998不要698只有88',
+                        goodsName: '小米手机最新款，不要998不要698只有88',
                         imgurl: 'https://2e.zol-img.com.cn/product/192_100x75/618/cegGc5GCdPxxo.jpg',
-                        pay_sum: 3874,
-                        count: 2
+                        Money: 3874,
+                        Amount: 2
                     }, {
-                        name: '大米手机最新款，不要998不要698只有88',
+                        goodsName: '大米手机最新款，不要998不要698只有88',
                         imgurl: 'https://2e.zol-img.com.cn/product/192_100x75/618/cegGc5GCdPxxo.jpg',
-                        pay_sum: 6778,
-                        count: 3
+                        Money: 6778,
+                        Amount: 1
                     }]
                 }, {
                     orderCode: 'ORDER20045894567389HK',
                     status: 2,
                     product_count: 2,
                     goodsInfo: [{
-                        name: '小米手机最新款，不要998不要698只有88',
+                        goodsName: '小米手机最新款，不要998不要698只有88',
                         imgurl: 'https://2e.zol-img.com.cn/product/192_100x75/618/cegGc5GCdPxxo.jpg',
-                        pay_sum: 3874,
-                        count: 2
+                        Money: 3874,
+                        Amount: 2
                     }]
                 }, {
                     orderCode: 'ORDER20045894567389HK',
                     status: 3,
                     product_count: 2,
                     goodsInfo: [{
-                        name: '小米手机最新款，不要998不要698只有88',
+                        goodsName: '小米手机最新款，不要998不要698只有88',
                         imgurl: 'https://2e.zol-img.com.cn/product/192_100x75/618/cegGc5GCdPxxo.jpg',
-                        pay_sum: 3874,
-                        count: 2
+                        Money: 3874,
+                        Amount: 2
                     }]
                 }]
             }

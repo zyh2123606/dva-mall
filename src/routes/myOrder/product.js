@@ -30,17 +30,17 @@ class Product extends Component{
     }
     render(){
         const status = this.props.status
-        const {name,imgurl,pay_sum,count} = this.props.data
+        const {goodsName,imgurl,Money,Amount} = this.props.data
         return (
                 <Block wf className={Styles.prod_cont}>
                     <Block j='c' className={Styles.prod_pic}>
                         <img src={imgurl}/>
                     </Block>
                     <Block f={1} ml={10} vf>
-                        <Block>{name}</Block>
+                        <Block>{goodsName}</Block>
                         <Block mt={5} wf>
-                            <Block f={1}>实付：<span className={Styles.orangeColor}>￥ {pay_sum}</span></Block>
-                            <Block>×{count}</Block>
+                            <Block f={1}>实付：<span className={Styles.orangeColor}>￥ {Money}</span></Block>
+                            <Block>×{Amount}</Block>
                         </Block>
                         <Block mt={15} j='e'>
                             {this.createButByStatus(status)}
