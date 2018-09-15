@@ -1,0 +1,49 @@
+@import '../../common.less';
+/**商品样式**/
+.prod_panel{
+    background: #fff;
+    margin-top: 10px;
+    .prod_cont{
+        padding: 15px;
+        border-radius: @borderRadius;
+        box-shadow: 0 2px 8px 0 rgba(60,96,148,0.14);
+        .prod_pic{
+            width: 78px;
+            height: 78px;
+            padding: 2px;
+            border: #e6e6e6 solid 1px;
+            border-radius: @borderRadius;
+            img{
+                display: block;
+                height: 100%; 
+                width: auto;
+            }
+        }
+        .prod_act_btn(){
+            width: 73px;
+            height: 27px;
+            font-size: 12px;
+            border-radius: 14px;
+            text-align: center;
+        }
+        .prod_btn_ghost{
+            .prod_act_btn();
+            color: @orange;
+            border: @orange solid 1px;
+        }
+        .prod_btn_primary{
+            .prod_act_btn();
+            background: @orange;
+            border: @orange solid 1px;
+            color: #fff;
+        }
+        .prod_btn_normal{
+            .prod_act_btn();
+            border: #d2d2d2 solid 1px;
+            color: #666;
+        }
+    }
+}
+.prod_panel:first-child{
+    margin-top: 0;
+}

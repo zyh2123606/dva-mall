@@ -1,14 +1,14 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-import { Stepper } from 'antd-mobile'
+import { Stepper, Icon } from 'antd-mobile'
 import Service from '../../services/productService'
 import { createForm } from 'rc-form'
 import { Badge } from 'antd-mobile'
 
 class OrderDetail extends Component{
     state = { pageData: null, cur_tag: 0 }
-    //dom挂在完成请求数据
+    //dom挂载完成请求数据
     async componentDidMount(){
         const res = await Service.getDetailById()
         const { data, result } = res
@@ -29,7 +29,6 @@ class OrderDetail extends Component{
     sureBuy(){
         const { form } = this.props
         const values = form.getFieldsValue()
-        console.log(values)
     }
     render(){
         const { pageData, cur_tag } = this.state
@@ -71,11 +70,11 @@ class OrderDetail extends Component{
                 <Block h={300} bc='#eee' mb={60}></Block>
                 <Block wf fs={16} className={Styles.footer_bar}>
                     <Block a='c' j='c' w={60} vf>
-                        <Block className={Styles.service_icon}></Block>
                         <Block fs={12}>购物车</Block>
                     </Block>
                     <Block a='c' j='c' w={60} vf>
-                        <Block className={Styles.car_icon}></Block>
+                        <Block>
+                        </Block>
                         <Block fs={12}>购物车</Block>
                     </Block>
                     <Block wf f={1} ml={10} mr={10}>

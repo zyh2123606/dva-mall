@@ -1,4 +1,7 @@
-import React, { Component } from 'react'
+/**
+ * 自定义icon
+ * @param {CustomIcon} param0 
+ */
 const CustomIcon = ({ type, className = '', size = 'md', ...restProps }) => {
   return(
      <svg
