@@ -1,8 +1,9 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
-import Product from './product'
+import Order from './order'
 import { PullToRefresh, Empty } from '../../components'
 import { Toast } from 'antd-mobile'
+import Service from '../../services/orderService'
 
 /**
  *全部
@@ -15,8 +16,11 @@ class All extends Component{
     pageIndex = 1
     pageSize = 10
     pageCount = 1
-    componentDidMount(){
-
+    async componentDidMount(){
+      const res = await Service.getMyOrder()
+      const { data, result } = res
+      if(result)
+        this.setState({ data: data})
     }
     //获取数据
     async getList(loading=true){
@@ -41,8 +45,10 @@ class All extends Component{
                 refreshing={refreshing}
                 onRefresh={this.pulUpFresh}
                 damping={100}>
-                <Product />
-                <Empty />
+                {this.state.data?this.state.data.data.map(({orderCode,status,goodsInfo},idx)=>(
+                  <Order key={idx} orderCode={orderCode} status = {status} goodsInfo={goodsInfo}/>
+
+                )):<Empty/>}
             </PullToRefresh>
         )
     }
