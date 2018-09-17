@@ -7,27 +7,44 @@ import ShoppingCartService from '../../services/shoppingCartService';// 购物�
 import { createForm } from 'rc-form'
 import { Badge,Toast } from 'antd-mobile'
 import {connect} from 'dva';
+import {routerRedux} from 'dva/router';
 
 class OrderDetail extends Component{
-    state = { pageData: null, cur_tag: 0,defaultSkuPrice:0,typeId:0,shoppingCartCount:0}
+    state = { pageData: null, cur_tag: 0,defaultSkuPrice:0,typeId:0,shoppingCartCount:0,logoPath:'',colorName:''}
     //dom挂在完成请求数据
     async componentDidMount(){
         const {match:{params:{pid}}}  =this.props
         const res = await Service.getDetailById()
         const { data, code } = res
         if(code==='1111'){
-            const colors =data.goodsTypeAttrList.filter(item=>item.attrName==='颜色')||[]
-            this.setState({ pageData: {...data,colors:colors?colors[0].attrValList:[]},defaultSkuPrice:this.toMoney(data.defaultSkuPrice),typeId:pid})
+            let colors =data.goodsTypeAttrList.filter(item=>item.attrName==='颜色')||[];
+            colors=colors?colors[0].attrValList:[];
+            let selectColorIdx=0;
+            let selectColor='';
+            colors.map((item,index)=>{
+                if(item.selected===1){
+                    selectColorIdx=index
+                    selectColor=item.attrCode
+                }
+            })
+            this.setState({
+                cur_tag:selectColorIdx,
+                pageData: {...data,colors:colors},
+                defaultSkuPrice:this.toMoney(data.defaultSkuPrice),
+                typeId:pid,
+                title:data.title,
+                logoPath:data.logoPath,
+                colorName:selectColor})
         }
         // 查询购物车商品数量
         this.shoppingCart()
     }
     //选择颜色
-    selectColor(color_id, idx){
+    selectColor(color_id, idx,attrCode){
         const { form } = this.props
         this.queryPriceByGoodsColor(color_id)
         form.setFieldsValue({ color_id: color_id })
-        this.setState({cur_tag: idx}, () => {
+        this.setState({cur_tag: idx,colorName:attrCode}, () => {
             const { getFieldProps } = this.props.form
             const { onChange } = getFieldProps('color_id')
             onChange(color_id)
@@ -49,16 +66,21 @@ class OrderDetail extends Component{
     sureBuy(){
         const { form,dispatch} = this.props
         const {color_id,num} = form.getFieldsValue()
+        const {typeId,defaultSkuPrice,logoPath,colorName,title}=this.state
         dispatch({
             type:'orderDetail/submitOrder',
             payload:{
-                typeId:this.state.typeId,
+                typeId:typeId,
                 colorId:color_id,
                 goodsNum:num,
-                defaultSkuPrice:this.state.defaultSkuPrice
+                defaultSkuPrice:defaultSkuPrice,
+                logoPath:logoPath,
+                colorName:colorName,
+                title:title
 
             }
         })
+        dispatch(routerRedux.push(`/order-sure/${this.state.typeId}`))
     }
     // 添加到购物车
     async addToShoppingCart(){
@@ -96,7 +118,7 @@ class OrderDetail extends Component{
                 <Block pt={20} pb={13} fs={18}>颜色分类</Block>
                 <Block wf>
                     {colors.map(({attrValId, attrCode}, idx) => (
-                        <Block onClick={this.selectColor.bind(this, attrValId, idx)} 
+                        <Block onClick={this.selectColor.bind(this, attrValId, idx,attrCode)} 
                             {...getFieldProps('color_id', {initialValue: 100})}
                             key={idx}  
                             mr={idx !=0 && idx%3 == 0?0:10}
@@ -126,7 +148,7 @@ class OrderDetail extends Component{
                 </Block>
                 <Block wf fs={16} className={Styles.footer_bar}>
                     <Block a='c' j='c' w={60} vf>
-                        <Block fs={12}>购物车</Block>
+                        <Block fs={12}>客服</Block>
                     </Block>
                     <Block a='c' j='c' w={60} vf>
                         <Block>

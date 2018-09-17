@@ -6,10 +6,14 @@ export default {
         colorId:0,// 商品颜色ID
         goodsNum:0,//商品数量
         defaultSkuPrice:0,//商品单价,
+        logoPath:'',// 商品logo
+        colorName:'',//颜色
+        title:''//展示标题
+
     },
     reducers:{
         saveOrder(state,{payload}){
-            return {...state,payload}
+            return {...payload}
         },
     },
     subscriptions: { 

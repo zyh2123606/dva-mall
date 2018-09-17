@@ -44,12 +44,12 @@ module.exports = {
                         {
                             attrValId:88,
                             attrCode:'白色',
-                            selected:1
+                            selected:0
                         },
                         {
                             attrValId:89,
                             attrCode:'黑色',
-                            selected:1
+                            selected:0
                         },
                         {
                             attrValId:90,
@@ -59,7 +59,7 @@ module.exports = {
                         {
                             attrValId:91,
                             attrCode:'金色',
-                            selected:1
+                            selected:0
                         },
                     ]
                 },
@@ -97,8 +97,8 @@ module.exports = {
                     showSort:4
                 }
             ],
-            defaultSkuId:1,
-            defaultSkuPrice:999900000
+            defaultSkuId:3,
+            defaultSkuPrice:999900003
             }
         }
 		setTimeout(()=>{
