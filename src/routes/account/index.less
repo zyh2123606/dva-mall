@@ -15,6 +15,20 @@
     margin: 0 15px;
     padding: 10px 0;
     background: #FFFFFF;
-    box-shadow: 0 2px 8px 0 rgba(60,96,148,0.14);
+    .boxShadow();
     border-radius: @borderRadius;
+}
+.act_menu{
+    margin: 15px;
+    .boxShadow();
+    position: relative;
+    overflow: hidden;
+    border-radius: @borderRadius;
+    padding: 0 15px;
+    .act_item{
+        padding: 10px 5px 10px 0;
+        &:not(:last-child){
+            .thin-by-line();
+        };
+    }
 }

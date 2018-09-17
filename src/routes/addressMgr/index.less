@@ -1,0 +1,35 @@
+@import '../../common.less';
+.container{
+    .addr_panel{
+        background: #fff;
+        .boxShadow();
+        border-radius: @borderRadius;
+        margin-top: 15px;
+        .act_addr{
+            padding: 5px 0;
+            .thin-ty-line();
+        }
+        .bac-img(@url){
+            background: url(@url) no-repeat;
+            background-size: cover;
+        }
+        .edit{
+            width: 16px;
+            height: 16px;
+           .bac-img('../../assets/svg/edit.svg');
+        }
+        .del{
+            width: 20px;
+            height: 20px;
+            .bac-img('../../assets/svg/del.svg');
+        }
+    }
+    .footer{
+        background: @bodyColor;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 100;
+    }
+}

@@ -1,5 +1,4 @@
 import { Component } from 'react'
-import Block from 'fs-flex'
 import Product from './product'
 import { PullToRefresh, Empty } from '../../components'
 import { Toast } from 'antd-mobile'
