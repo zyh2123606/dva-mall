@@ -107,3 +107,28 @@
         }
     }
 }
+.pop_wrapper{
+    color: #333;
+    text-align: left;
+    max-height: 400px;
+    .pop_header{
+        padding: 10px 0;
+        .thin-by-line();
+    }
+    .pop_item{
+        padding: 10px 15px;
+        .thin-by-line();
+    }
+    .pop_content{
+        overflow: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .pos_icon{
+        width: 20px;
+        height: 20px;
+        background: url(../../assets/svg/positon.svg) no-repeat;
+        background-size: cover;
+        margin-right: 3px;
+    }
+}

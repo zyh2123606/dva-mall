@@ -1,11 +1,11 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-import { List, InputItem, Button, DatePicker, Picker } from 'antd-mobile'
+import { List, Button, Modal, Picker } from 'antd-mobile'
 import { createForm } from 'rc-form'
-import {connect} from 'dva';
-import UserService from '../../services/userSeervice';
-import DeptService from '../../services/deptService';
+import {connect} from 'dva'
+import UserService from '../../services/userSeervice'
+import DeptService from '../../services/deptService'
 /**
  *订单确认
  *
@@ -21,6 +21,7 @@ class OrderSure extends Component{
         adoptDeptList:[],//自提营业厅列表
         saleNum:0,//库存
         collectAddress:{},//收货地址
+        popVisible: false
     }
     componentDidMount(){
         this.queryCollectUserInfo()
@@ -79,9 +80,6 @@ class OrderSure extends Component{
     seletedAdoptDept=(val)=>{
         const {adoptDeptList}=this.state
         const seleted=adoptDeptList.filter(item=>item.value===val[0])
-        console.log('val',val)
-        console.log('adoptDeptList',adoptDeptList)
-        console.log('selected:',seleted)
         if (seleted){
             this.setState({
                 saleNum:seleted[0].saleNum
@@ -97,6 +95,12 @@ class OrderSure extends Component{
     toMoney(num){
         return num.toFixed(2);
     }
+    openPopWin = () => {
+        this.setState({popVisible: true})
+    }
+    closePopWin = () => {
+        this.setState({popVisible: false})
+    }
     renderCollectInfo(){
         const {adoptDeptList,collectMode,saleNum}=this.state
         const { getFieldProps } = this.props.form
@@ -106,13 +110,7 @@ class OrderSure extends Component{
                 {
                     collectMode===1002?
                     <Block>
-                        <Picker
-                            data={adoptDeptList}
-                            cols={1}
-                            onOk={this.seletedAdoptDept}
-                            {...getFieldProps('business')}>
-                            <Item wrap arrow='horizontal' extra='请选择'>推荐自提营业厅</Item>
-                        </Picker>
+                        <Item onClick={this.openPopWin} wrap arrow='horizontal' extra='请选择'>推荐自提营业厅</Item>
                         <Item>
                             <Block wf>
                                 <Block f={1}>门店库存量</Block>
@@ -139,8 +137,8 @@ class OrderSure extends Component{
     }
     render(){
         const { getFieldProps } = this.props.form
-        const { reciveWay, businessHall,collectMode } = this.state
-        const {typeId,colorId,goodsNum,defaultSkuPrice,logoPath,colorName,title}=this.props
+        const { reciveWay, popVisible } = this.state
+        const {goodsNum,defaultSkuPrice,logoPath,colorName,title}=this.props
         return (
             <Block vf className={Styles.order_sure_wrapper}>
                 <List>
@@ -172,6 +170,51 @@ class OrderSure extends Component{
                 <Block m={15} mt={20}>
                     <Button style={{borderRadius: 25}} type='primary' onClick={this.orderSubmit}>提交订单</Button>
                 </Block>
+                {/* 选择推荐营业厅 */}
+                <Modal
+                    popup
+                    visible={popVisible}
+                    animationType='slide-up'>
+                    <Block vf className={Styles.pop_wrapper}>
+                        <section className={Styles.pop_header}>
+                            <Block wf>
+                                <Block onClick={this.closePopWin} ml={15} fc='#999'>取消</Block>
+                                <Block j='c' f={1}>选择自提营业厅</Block>
+                                <Block mr={15} className={Styles.orangeColor}>确定</Block>
+                            </Block>
+                        </section>
+                        <Block className={Styles.pop_content} f={1}>
+                            {/* 选中 */}
+                            <Block bc='#FFF9F2' vf className={Styles.pop_item}>
+                                <Block style={{fontWeight: 'bold'}}>东岭营业厅</Block>
+                                <Block mt={10} wf>
+                                    <Block f={1}>门店库存量</Block>
+                                    <Block>5件</Block>
+                                </Block>
+                                <Block mt={5} wf>
+                                    <Block f={1}>吉林省长春市南关区东岭南街1103号</Block>
+                                    <Block ml={10} wf a='c'>
+                                        <Block className={Styles.pos_icon}></Block>2.6km
+                                    </Block>
+                                </Block>
+                            </Block>
+                            <Block vf className={Styles.pop_item}>
+                                <Block style={{fontWeight: 'bold'}}>东岭营业厅</Block>
+                                <Block mt={10} wf>
+                                    <Block f={1}>门店库存量</Block>
+                                    <Block>5件</Block>
+                                </Block>
+                                <Block mt={5} wf>
+                                    <Block f={1}>吉林省长春市南关区东岭南街1103号</Block>
+                                    <Block ml={10} wf a='c'>
+                                        <Block className={Styles.pos_icon}></Block>2.6km
+                                    </Block>
+                                </Block>
+                            </Block>
+                            {/* 正常 */}
+                        </Block>
+                    </Block>
+                </Modal>
             </Block>
         )
     }

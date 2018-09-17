@@ -63,7 +63,6 @@ class OrderDetail extends Component{
     // 点击颜色，查询该颜色属性对应的商品信息
     async queryPriceByGoodsColor(color_id) {
         const {data,code} = await Service.queryPriceByGoodsColor({typeId:1,attrList:[{attrId:1,attrValld:color_id}]})
-        console.log('queryPriceByGoodsColor:data',data)
         if(code==='1111'){
             this.setState({
                 defaultSkuPrice:this.toMoney(data.salePrice),
