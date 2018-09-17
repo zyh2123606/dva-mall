@@ -1,0 +1,109 @@
+@import '../../common.less';
+/**订单详情**/
+.order_det_wrapper{
+    .pro_panel{
+        border-radius: @borderRadius;
+        .boxShadow();
+    }
+    .car_icon{
+        width: 30px;
+        height: 30px;
+        background-size: cover;
+    }
+    .service_icon{
+        width: 25px;
+        height: 25px;
+        background-size: cover;
+    }
+    .color_tag{
+        @mlVal: 10px;
+        width: calc(~"25% - @{mlVal}");
+        width: -webkit-calc(~"25% - @{mlVal}");
+        height: 35px;
+        line-height: 35px;
+        text-align: center;
+        border: #ddd solid 1px;
+        border-radius: 18px;
+        margin-top: 7px;
+    }
+    .color_tag_select{
+        .color_tag;
+        border-color: @orange;
+        color: @orange;
+    }
+    .footer_bar{
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #fff;
+        border-top: #ddd solid 1px;
+        padding: 10px 0;
+    }
+    .money_color{
+        color: @orange;
+    }
+    .car_sty, .buy_sty{
+        background: @orange; 
+        color: #fff;
+        height: 45px;
+        border-radius: 22.5px 0 0 22.5px;
+        line-height: 45px;
+        text-align: center;
+        font-size: 16px;
+        .transition();
+    }
+    .car_sty:active{
+        background: @orangeTap;
+    }
+    .buy_sty{
+        background: @orangeRed;
+        border-radius: 0 22.5px 22.5px 0;
+    }
+    .buy_sty:active{
+        background: @orangeRedTap;
+    }
+}
+/**订单确认**/
+.order_sure_wrapper{
+    .prod_pic{
+        width: 78px;
+        height: 78px;
+        padding: 2px;
+        border: #e6e6e6 solid 1px;
+        border-radius: @borderRadius;
+        img{
+            display: block;
+            height: 100%; 
+            width: auto;
+        }
+    }
+    .order_pop_wrap{
+        position: relative;
+        z-index: 100;
+        .order_popover{
+            background: rgba(255, 142, 68, .9);
+            height: 30px;
+            line-height: 30px;
+            color: #fff;
+            font-size: 12px;
+            text-align: center;
+            padding: 0 10px;
+            position: absolute;
+            border-radius: @borderRadius;
+            left: -138px;
+            top: -2px;
+        }
+        .pop_arr{
+            width: 0;
+            height: 0;
+            border-width: 6px 0 6px 6px;
+            border-style: solid;
+            border-color: transparent;
+            position: absolute;
+            left: -11px;
+            bottom: 6px;
+            border-left-color: rgba(255, 142, 68, .9);
+        }
+    }
+}

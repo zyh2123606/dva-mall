@@ -1,8 +1,9 @@
 /**
  * 自定义icon
- * @param {CustomIcon} param0 
+ * @param {CustomIcon} param 
  */
 const CustomIcon = ({ type, className = '', size = 'md', ...restProps }) => {
+  console.log(type)
   return(
      <svg
        className={`am-icon am-icon-${size} ${className}`}
