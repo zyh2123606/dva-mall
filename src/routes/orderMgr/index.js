@@ -10,7 +10,16 @@ import {connect} from 'dva';
 import {routerRedux} from 'dva/router';
 
 class OrderDetail extends Component{
-    state = { pageData: null, cur_tag: 0,defaultSkuPrice:0,typeId:0,shoppingCartCount:0,logoPath:'',colorName:''}
+    state = {
+        pageData: null, 
+        cur_tag: 0,
+        defaultSkuPrice:0,
+        typeId:0,
+        shoppingCartCount:0,
+        logoPath:'',
+        colorName:'',
+        skuid:0,
+    }
     //dom挂在完成请求数据
     async componentDidMount(){
         const {match:{params:{pid}}}  =this.props
@@ -34,7 +43,8 @@ class OrderDetail extends Component{
                 typeId:pid,
                 title:data.title,
                 logoPath:data.logoPath,
-                colorName:selectColor})
+                colorName:selectColor,
+                skuid:data.defaultSkuId})
         }
         // 查询购物车商品数量
         this.shoppingCart()
@@ -53,8 +63,11 @@ class OrderDetail extends Component{
     // 点击颜色，查询该颜色属性对应的商品信息
     async queryPriceByGoodsColor(color_id) {
         const {data,code} = await Service.queryPriceByGoodsColor({typeId:1,attrList:[{attrId:1,attrValld:color_id}]})
+        console.log('queryPriceByGoodsColor:data',data)
         if(code==='1111'){
-            this.setState({defaultSkuPrice:this.toMoney(data.salePrice)})
+            this.setState({
+                defaultSkuPrice:this.toMoney(data.salePrice),
+                skuid:data.id})
         }
 
     }
@@ -77,7 +90,6 @@ class OrderDetail extends Component{
                 logoPath:logoPath,
                 colorName:colorName,
                 title:title
-
             }
         })
         dispatch(routerRedux.push(`/order-sure/${this.state.typeId}`))

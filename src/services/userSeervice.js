@@ -7,6 +7,10 @@ class UserService extends HttpBase{
     login = (data=undefined) => {
         return this.post('/login', data)
     }
+    //获取用户收货列表
+    getAddressList=(userId)=>{
+        return this.get(`/mem/addr/getList?userId=${userId}`)
+    }
 }
 
-export default UserService
+export default new UserService()

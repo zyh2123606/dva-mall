@@ -4,6 +4,8 @@ import Styles from './index.less'
 import { List, InputItem, Button, DatePicker, Picker } from 'antd-mobile'
 import { createForm } from 'rc-form'
 import {connect} from 'dva';
+import UserService from '../../services/userSeervice';
+import DeptService from '../../services/deptService';
 /**
  *订单确认
  *
@@ -13,22 +15,131 @@ import {connect} from 'dva';
 const Item = List.Item
 class OrderSure extends Component{
     state = {
+        collectMode:1001,//收货方式，shsm:送货上门，yytzt:营业厅自提
         reciveWay: [{label: '送货上门', value: 1001},{label: '营业厅自提', value: 1002}],
-        businessHall: [{label: '南屏街店', value: '1002'}]
+        collectUserInfo:[],//用户收货地址列表
+        adoptDeptList:[],//自提营业厅列表
+        saleNum:0,//库存
+        collectAddress:{},//收货地址
     }
+    componentDidMount(){
+        this.queryCollectUserInfo()
+        this.queryAdoptDeptList()
+    }
+
+    // 查询用户收货的地址列表
+    async queryCollectUserInfo(){
+        const {code,data}=await UserService.getAddressList(1);
+        if (code==='1111'){
+            const result=[]
+            let collectAddress=null;
+            data.map((item,index)=>{
+                result.push({
+                    label:item.address,
+                    value:item.id
+                })
+                if(item.defaultFlag===1){
+                    //设置默认收货地址
+                    collectAddress=item
+                }
+            })
+            this.setState({collectUserInfo:result,collectAddress})
+        }
+    }
+    // 查询周边自提营业厅
+    async queryAdoptDeptList(){
+        const {code,data}=await DeptService.getAdoptDeptList(1,1)
+
+        if (code==='1111'){
+            const result=[]
+            data.map((item,index)=>{
+                result.push({
+                    label:item.deptName,
+                    value:item.deptId,
+                    saleNum:item.saleNum
+                })
+            })
+            this.setState({adoptDeptList:result})
+        }
+    }
+
     //日期选择
     dateHandleChange = date => {
         const { getFieldProps } = this.props.form
         const { onChange } = getFieldProps('date')
         onChange(date)
     }
+    // 选择收货方式，回调函数
+    seletedOrderSureWrapper=(val)=>{
+        this.setState({
+            collectMode:val[0]
+        })
+    }
+    // 选择自提营业厅，回调
+    seletedAdoptDept=(val)=>{
+        const {adoptDeptList}=this.state
+        const seleted=adoptDeptList.filter(item=>item.value===val[0])
+        console.log('val',val)
+        console.log('adoptDeptList',adoptDeptList)
+        console.log('selected:',seleted)
+        if (seleted){
+            this.setState({
+                saleNum:seleted[0].saleNum
+            })
+        }
+    }
     //提交订单
     orderSubmit = e => {
         const { form } = this.props
+        console.log('submit order:',form.getFieldsValue())
+    }
+    // 金额转换
+    toMoney(num){
+        return num.toFixed(2);
+    }
+    renderCollectInfo(){
+        const {adoptDeptList,collectMode,saleNum}=this.state
+        const { getFieldProps } = this.props.form
+        const {defaultSkuPrice,goodsNum}=this.props
+        return (
+                <List renderHeader='收货信息'>
+                {
+                    collectMode===1002?
+                    <Block>
+                        <Picker
+                            data={adoptDeptList}
+                            cols={1}
+                            onOk={this.seletedAdoptDept}
+                            {...getFieldProps('business')}>
+                            <Item wrap arrow='horizontal' extra='请选择'>推荐自提营业厅</Item>
+                        </Picker>
+                        <Item>
+                            <Block wf>
+                                <Block f={1}>门店库存量</Block>
+                                <Block className={Styles.order_pop_wrap}>{saleNum}件
+                                    <Block className={Styles.order_popover}>可以看看其他门店哦</Block>
+                                    <i className={Styles.pop_arr}></i>
+                                </Block>
+                            </Block>
+                        </Item>
+                    </Block>:
+                    <Item arrow='horizontal' multipleLine wrap>
+                    <Block vf>
+                        <Block wf f={1} style={{fontWeight: 'bold'}}>
+                            <Block f={1}>张三</Block>
+                            <Block>18313858906</Block>
+                        </Block>
+                        <Block mt={5}>收货地址：长春市万宁区 自由大路与百汇街交汇处 自由大路 1000号</Block>
+                    </Block>
+                </Item>
+                }
+                    <Item extra={<Block className={Styles.orangeColor}>￥{this.toMoney(defaultSkuPrice*goodsNum)}</Block>}>商品金额</Item>
+                </List>
+        )
     }
     render(){
         const { getFieldProps } = this.props.form
-        const { reciveWay, businessHall } = this.state
+        const { reciveWay, businessHall,collectMode } = this.state
         const {typeId,colorId,goodsNum,defaultSkuPrice,logoPath,colorName,title}=this.props
         return (
             <Block vf className={Styles.order_sure_wrapper}>
@@ -36,7 +147,11 @@ class OrderSure extends Component{
                     <Picker
                         data={reciveWay}
                         cols={1}
-                        {...getFieldProps('recive')}>
+                        value={1001}
+                        onOk={this.seletedOrderSureWrapper}
+                        {...getFieldProps('recive',{
+                            initialValue:[reciveWay[0].value]
+                        })}>
                         <Item arrow='horizontal' extra='请选择'>收货方式</Item>
                     </Picker>
                 </List>
@@ -45,41 +160,15 @@ class OrderSure extends Component{
                         <img alt={title} src={logoPath} />
                     </Block>
                     <Block vf f={1} ml={15}>
-                        <Block>{title}</Block>
+                        <Block style={{fontWeight: 'bold'}}>{title}</Block>
                         <Block fs={12} fc='#666'>{colorName}</Block>
                         <Block wf>
                             <Block f={1}>×{goodsNum}</Block>
-                            <Block className={Styles.orangeColor}>￥{defaultSkuPrice*goodsNum}</Block>
+                            <Block className={Styles.orangeColor}>￥{defaultSkuPrice}</Block>
                         </Block>
                     </Block>
                 </Block>
-                <List renderHeader='收货信息'>
-                    <Item arrow='horizontal' multipleLine wrap>
-                        <Block vf>
-                            <Block wf f={1} style={{fontWeight: 'bold'}}>
-                                <Block f={1}>张三</Block>
-                                <Block>18313858906</Block>
-                            </Block>
-                            <Block mt={5}>收货地址：长春市万宁区 自由大路与百汇街交汇处 自由大路 1000号</Block>
-                        </Block>
-                    </Item>
-                    <Picker
-                        data={businessHall}
-                        cols={1}
-                        {...getFieldProps('business')}>
-                        <Item wrap arrow='horizontal' extra='请选择'>推荐自提营业厅</Item>
-                    </Picker>
-                    <Item>
-                        <Block wf>
-                            <Block f={1}>门店库存量</Block>
-                            <Block className={Styles.order_pop_wrap}>1件
-                                <Block className={Styles.order_popover}>可以看看其他门店哦</Block>
-                                <i className={Styles.pop_arr}></i>
-                            </Block>
-                        </Block>
-                    </Item>
-                    <Item extra={<Block className={Styles.orangeColor}>￥1099.00</Block>}>商品金额</Item>
-                </List>
+                {this.renderCollectInfo()}
                 <Block m={15} mt={20}>
                     <Button style={{borderRadius: 25}} type='primary' onClick={this.orderSubmit}>提交订单</Button>
                 </Block>
@@ -89,8 +178,8 @@ class OrderSure extends Component{
 }
 
 function mapStateToProps(state){
-    const {typeId,colorId,goodsNum,defaultSkuPrice,logoPath,colorName,title}=state.orderDetail
-    return {typeId,colorId,goodsNum,defaultSkuPrice,logoPath,colorName,title}
+    const {typeId,colorId,goodsNum,defaultSkuPrice,logoPath,colorName,title,skuid}=state.orderDetail
+    return {typeId,colorId,goodsNum,defaultSkuPrice,logoPath,colorName,title,skuid}
 }
 
 const mainForm = createForm()(OrderSure)

@@ -232,5 +232,104 @@ module.exports = {
                 result:true
 			});
 		}, 200);
+    },
+    'GET /api/dept/getAdoptDeptList':function(req,res){
+        let data = {
+            1001:[
+                {
+                    deptId:1,
+                    deptName:'自提门店1',
+                    deptAddress:'云南省昆明市和五华区XXX1',
+                    deptTel:'11111111',
+                    deptManager:'张三',
+                    deptLatitude:234.11,
+                    saleNum:9,
+                    sharePrice:99999000.4,
+                    distance:7.9
+                },
+                {
+                    deptId:2,
+                    deptName:'自提门店2',
+                    deptAddress:'云南省昆明市和五华区XXX2',
+                    deptTel:'11111112',
+                    deptManager:'李四',
+                    deptLatitude:234.11,
+                    saleNum:10,
+                    sharePrice:99999000.4,
+                    distance:9.9
+                },
+                {
+                    deptId:3,
+                    deptName:'自提门店3',
+                    deptAddress:'云南省昆明市和五华区XXX3',
+                    deptTel:'11111113',
+                    deptManager:'王五',
+                    deptLatitude:234.11,
+                    saleNum:9,
+                    sharePrice:99999000.4,
+                    distance:12.9
+                }
+            ],
+        }
+		setTimeout(()=>{
+			res.json({
+				hasnext: false,
+				data: data[1001],
+				msg: '成功',
+                code: '1111',
+                result:true
+			});
+		}, 200);
+    },
+    'GET /api/mem/addr/getList':function(req,res){
+        let data = {
+            1001:[
+                {
+                    id:1,
+                    memId:1,
+                    defaultFlag:2,
+                    deptTel:'11111111',
+                    province:1,
+                    city:1,
+                    county:1,
+                    address:'云南省昆明市五华区moumou接到',
+                    receiver:'张三',
+                    tel:'15908891121'
+                },
+                {
+                    id:2,
+                    memId:1,
+                    defaultFlag:1,
+                    deptTel:'222222',
+                    province:1,
+                    city:1,
+                    county:1,
+                    address:'云南省昆明市盘龙区昆明同德广场',
+                    receiver:'李四',
+                    tel:'1830987890'
+                },
+                {
+                    id:1,
+                    memId:1,
+                    defaultFlag:2,
+                    deptTel:'3333333',
+                    province:1,
+                    city:1,
+                    county:1,
+                    address:'云南省昆明市XXXXXXX',
+                    receiver:'张学友',
+                    tel:'13988822222'
+                },
+            ],
+        }
+		setTimeout(()=>{
+			res.json({
+				hasnext: false,
+				data: data[1001],
+				msg: '成功',
+                code: '1111',
+                result:true
+			});
+		}, 200);
     }
 }
