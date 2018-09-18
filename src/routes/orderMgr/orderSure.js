@@ -1,11 +1,13 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-import { List, Button, Modal, Picker } from 'antd-mobile'
+import { List, Button, Modal, Picker,Toast } from 'antd-mobile'
 import { createForm } from 'rc-form'
 import {connect} from 'dva'
 import UserService from '../../services/userSeervice'
 import DeptService from '../../services/deptService'
+import OrderService from '../../services/orderService'
+import CollectInfoList from './collectInfoList'
 /**
  *订单确认
  *
@@ -15,13 +17,14 @@ import DeptService from '../../services/deptService'
 const Item = List.Item
 class OrderSure extends Component{
     state = {
-        collectMode:1001,//收货方式，shsm:送货上门，yytzt:营业厅自提
-        reciveWay: [{label: '送货上门', value: 1001},{label: '营业厅自提', value: 1002}],
+        collectMode:2,//收货方式，shsm:送货上门，yytzt:营业厅自提
+        reciveWay: [{label: '送货上门', value: 2},{label: '营业厅自提', value: 3}],
         collectUserInfo:[],//用户收货地址列表
         adoptDeptList:[],//自提营业厅列表
-        saleNum:0,//库存
         collectAddress:{},//收货地址
-        popVisible: false
+        popVisible: false,
+        selectAdoptIndex:0,
+        selectedAdopt:{deptId:0,deptName:'',saleNum:0},//自提营业厅列表选中项
     }
     componentDidMount(){
         this.queryCollectUserInfo()
@@ -32,35 +35,14 @@ class OrderSure extends Component{
     async queryCollectUserInfo(){
         const {code,data}=await UserService.getAddressList(1);
         if (code==='1111'){
-            const result=[]
-            let collectAddress=null;
-            data.map((item,index)=>{
-                result.push({
-                    label:item.address,
-                    value:item.id
-                })
-                if(item.defaultFlag===1){
-                    //设置默认收货地址
-                    collectAddress=item
-                }
-            })
-            this.setState({collectUserInfo:result,collectAddress})
+            this.setState({collectUserInfo:data})
         }
     }
     // 查询周边自提营业厅
     async queryAdoptDeptList(){
         const {code,data}=await DeptService.getAdoptDeptList(1,1)
-
         if (code==='1111'){
-            const result=[]
-            data.map((item,index)=>{
-                result.push({
-                    label:item.deptName,
-                    value:item.deptId,
-                    saleNum:item.saleNum
-                })
-            })
-            this.setState({adoptDeptList:result})
+            this.setState({adoptDeptList:data})
         }
     }
 
@@ -72,14 +54,25 @@ class OrderSure extends Component{
     }
     // 选择收货方式，回调函数
     seletedOrderSureWrapper=(val)=>{
-        this.setState({
-            collectMode:val[0]
-        })
+        if(val[0]===1001){
+            // 送货上门
+            this.setState({
+                collectMode:val[0],
+                selectedAdopt:{index:0,deptId:0,deptName:''}
+            })
+        }else{
+            // 营业厅自提
+            this.setState({
+                collectMode:val[0],
+                collectAddress:{}
+            })
+        }
     }
     // 选择自提营业厅，回调
     seletedAdoptDept=(val)=>{
         const {adoptDeptList}=this.state
         const seleted=adoptDeptList.filter(item=>item.value===val[0])
+        console.log('....',seleted)
         if (seleted){
             this.setState({
                 saleNum:seleted[0].saleNum
@@ -87,34 +80,103 @@ class OrderSure extends Component{
         }
     }
     //提交订单
-    orderSubmit = e => {
+    async orderSubmit () {
         const { form } = this.props
-        console.log('submit order:',form.getFieldsValue())
+        const {collectMode,selectedAdopt,collectAddress}=this.state
+        const {goodsNum,defaultSkuPrice,logoPath,colorName,title}=this.props
+        let params={
+            cartIds:[1],// 购物车ID集合
+            dispatchWay:collectMode,// 送货方式
+            deptId:1,//下单门店Id
+            memo:'',//订单备注
+            adoptDeptId:0,//自提门店ID
+            addrId:0,//收货地址Id
+        }
+        if (collectMode===2){
+            if(Object.getOwnPropertyNames(collectAddress).length===0){
+                Toast.fail('请选择收货方式!', 1);
+                return
+            }
+            // 送货上门
+            params.addrId=collectAddress.id//收货地址Id
+        }else{
+            // 门店自提
+            if(selectedAdopt.deptId===0){
+                Toast.fail('请选择自提营业厅!', 1);
+                return
+            }
+
+            if(selectedAdopt.saleNum===0){
+                Toast.fail('当前门店该商品库存为0，请选择其他门店!', 1);
+                return
+            }
+            params.adoptDeptId=selectedAdopt.deptId//自提门店ID
+        }
+        const {data,code}= await OrderService.addOrder({...params})
+        console.log(data,code)
+        if (code==='1111'){
+            console.log('submit order success! order Id:',data)
+        }
     }
     // 金额转换
     toMoney(num){
         return num.toFixed(2);
     }
+    // 确认选中自提地址
+    confirmAdopt=()=>{
+        const {selectAdoptIndex,adoptDeptList}=this.state
+        const selected=adoptDeptList.filter((item,i)=>i===selectAdoptIndex)
+        this.setState({
+            popVisible: false,
+            selectedAdopt:{
+                deptId:selected[0].deptId,
+                deptName:selected[0].deptName,
+                saleNum:selected[0].saleNum
+            }
+        })
+    }
+    // 弹出选择自提营业厅列表
     openPopWin = () => {
         this.setState({popVisible: true})
     }
+    // 关闭（取消）选择营业厅列表
     closePopWin = () => {
-        this.setState({popVisible: false})
+        this.setState({
+            popVisible: false,
+            selectedAdopt:{
+                deptId:0,
+                deptName:'',
+                saleNum:0,
+            }
+        })
     }
+    // 点击营业厅列表项
+    selectAdoptItem(index,adoptItem){
+        this.setState({
+            selectAdoptIndex:index
+        })
+    }
+
+    // 选择收货地址完成
+    selectedCollectInfo=(data,index)=>{
+        this.setState({
+            collectAddress:data
+        })
+    }
+
     renderCollectInfo(){
-        const {adoptDeptList,collectMode,saleNum}=this.state
-        const { getFieldProps } = this.props.form
+        const {selectedAdopt,collectMode,selectAdoptIndex,collectUserInfo}=this.state
         const {defaultSkuPrice,goodsNum}=this.props
         return (
                 <List renderHeader='收货信息'>
                 {
-                    collectMode===1002?
+                    collectMode===3?
                     <Block>
-                        <Item onClick={this.openPopWin} wrap arrow='horizontal' extra='请选择'>推荐自提营业厅</Item>
+                        <Item onClick={this.openPopWin} wrap arrow='horizontal' extra={selectedAdopt.deptName===''?'请选择':selectedAdopt.deptName}>推荐自提营业厅</Item>
                         <Item>
                             <Block wf>
                                 <Block f={1}>门店库存量</Block>
-                                <Block className={Styles.order_pop_wrap}>{saleNum}件
+                                <Block className={Styles.order_pop_wrap}>{selectedAdopt.saleNum}件
                                     <Block className={Styles.order_popover}>可以看看其他门店哦</Block>
                                     <i className={Styles.pop_arr}></i>
                                 </Block>
@@ -122,22 +184,41 @@ class OrderSure extends Component{
                         </Item>
                     </Block>:
                     <Item arrow='horizontal' multipleLine wrap>
-                        <Block vf>
-                            <Block wf f={1} style={{fontWeight: 'bold'}}>
-                                <Block f={1}>张三</Block>
-                                <Block>18313858906</Block>
-                            </Block>
-                            <Block mt={5}>收货地址：长春市万宁区 自由大路与百汇街交汇处 自由大路 1000号</Block>
-                        </Block>
+                        {/* 选择收货地址 */}
+                        <CollectInfoList 
+                        data={collectUserInfo} 
+                        selectedOk={this.selectedCollectInfo}/>
                     </Item>
                 }
                     <Item extra={<Block className={Styles.orangeColor}>￥{this.toMoney(defaultSkuPrice*goodsNum)}</Block>}>商品金额</Item>
                 </List>
         )
     }
+    renderAdoptDept=()=>{
+        const {adoptDeptList,selectAdoptIndex}=this.state
+        return <Block className={Styles.pop_content} f={1}>
+            {
+                adoptDeptList.map((item,i)=>(
+                    <Block key={'adopt-'+i} bc={selectAdoptIndex===i?'#FFF9F2':null} vf className={Styles.pop_item} onClick={this.selectAdoptItem.bind(this,i,item)}>
+                        <Block style={{fontWeight: 'bold'}}>{item.deptName}</Block>
+                        <Block mt={10} wf>
+                            <Block f={1}>门店库存量</Block>
+                            <Block>{item.saleNum}件</Block>
+                        </Block>
+                        <Block mt={5} wf>
+                            <Block f={1}>{item.deptAddress}</Block>
+                            <Block ml={10} wf a='c'>
+                                <Block className={Styles.pos_icon}></Block>{item.sharePrice}km
+                            </Block>
+                        </Block>
+                    </Block>
+                ))
+            }
+        </Block>
+    }
     render(){
         const { getFieldProps } = this.props.form
-        const { reciveWay, popVisible } = this.state
+        const { reciveWay, popVisible,collectMode } = this.state
         const {goodsNum,defaultSkuPrice,logoPath,colorName,title}=this.props
         return (
             <Block vf className={Styles.order_sure_wrapper}>
@@ -145,7 +226,7 @@ class OrderSure extends Component{
                     <Picker
                         data={reciveWay}
                         cols={1}
-                        value={1001}
+                        value={collectMode}
                         onOk={this.seletedOrderSureWrapper}
                         {...getFieldProps('recive',{
                             initialValue:[reciveWay[0].value]
@@ -168,7 +249,7 @@ class OrderSure extends Component{
                 </Block>
                 {this.renderCollectInfo()}
                 <Block m={15} mt={20}>
-                    <Button style={{borderRadius: 25}} type='primary' onClick={this.orderSubmit}>提交订单</Button>
+                    <Button style={{borderRadius: 25}} type='primary' onClick={this.orderSubmit.bind(this)}>提交订单</Button>
                 </Block>
                 {/* 选择推荐营业厅 */}
                 <Modal
@@ -180,39 +261,10 @@ class OrderSure extends Component{
                             <Block wf>
                                 <Block onClick={this.closePopWin} ml={15} fc='#999'>取消</Block>
                                 <Block j='c' f={1}>选择自提营业厅</Block>
-                                <Block mr={15} className={Styles.orangeColor}>确定</Block>
+                                <Block onClick={this.confirmAdopt} mr={15} className={Styles.orangeColor}>确定</Block>
                             </Block>
                         </section>
-                        <Block className={Styles.pop_content} f={1}>
-                            {/* 选中 */}
-                            <Block bc='#FFF9F2' vf className={Styles.pop_item}>
-                                <Block style={{fontWeight: 'bold'}}>东岭营业厅</Block>
-                                <Block mt={10} wf>
-                                    <Block f={1}>门店库存量</Block>
-                                    <Block>5件</Block>
-                                </Block>
-                                <Block mt={5} wf>
-                                    <Block f={1}>吉林省长春市南关区东岭南街1103号</Block>
-                                    <Block ml={10} wf a='c'>
-                                        <Block className={Styles.pos_icon}></Block>2.6km
-                                    </Block>
-                                </Block>
-                            </Block>
-                            <Block vf className={Styles.pop_item}>
-                                <Block style={{fontWeight: 'bold'}}>东岭营业厅</Block>
-                                <Block mt={10} wf>
-                                    <Block f={1}>门店库存量</Block>
-                                    <Block>5件</Block>
-                                </Block>
-                                <Block mt={5} wf>
-                                    <Block f={1}>吉林省长春市南关区东岭南街1103号</Block>
-                                    <Block ml={10} wf a='c'>
-                                        <Block className={Styles.pos_icon}></Block>2.6km
-                                    </Block>
-                                </Block>
-                            </Block>
-                            {/* 正常 */}
-                        </Block>
+                        {this.renderAdoptDept()}
                     </Block>
                 </Modal>
             </Block>

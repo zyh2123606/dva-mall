@@ -13,6 +13,9 @@ class OrderService extends HttpBase{
   getMyOrder = (data=undefined) => {
     return this.post('/get-my-order', data)
   }
+  addOrder=(data=undefined)=>{
+    return this.post('/orders/create',data)
+  }
 }
 
 export default new OrderService()

@@ -382,5 +382,16 @@ module.exports = {
                 result:true
 			});
 		}, 200);
+    },
+    'POST /api/orders/create':function(req,res){
+		setTimeout(()=>{
+			res.json({
+				hasnext: false,
+				data: '153098786768576767',
+				msg: '成功',
+                code: '1111',
+                result:true
+			});
+		}, 200);
     }
 }
