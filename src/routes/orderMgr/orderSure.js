@@ -122,14 +122,14 @@ class OrderSure extends Component{
                         </Item>
                     </Block>:
                     <Item arrow='horizontal' multipleLine wrap>
-                    <Block vf>
-                        <Block wf f={1} style={{fontWeight: 'bold'}}>
-                            <Block f={1}>张三</Block>
-                            <Block>18313858906</Block>
+                        <Block vf>
+                            <Block wf f={1} style={{fontWeight: 'bold'}}>
+                                <Block f={1}>张三</Block>
+                                <Block>18313858906</Block>
+                            </Block>
+                            <Block mt={5}>收货地址：长春市万宁区 自由大路与百汇街交汇处 自由大路 1000号</Block>
                         </Block>
-                        <Block mt={5}>收货地址：长春市万宁区 自由大路与百汇街交汇处 自由大路 1000号</Block>
-                    </Block>
-                </Item>
+                    </Item>
                 }
                     <Item extra={<Block className={Styles.orangeColor}>￥{this.toMoney(defaultSkuPrice*goodsNum)}</Block>}>商品金额</Item>
                 </List>
