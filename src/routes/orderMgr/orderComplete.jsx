@@ -2,7 +2,7 @@ import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
 import { Icon } from 'antd-mobile'
-
+import OrderService from '../../services/orderService'
 /**
  *订单完成
  *
@@ -10,7 +10,25 @@ import { Icon } from 'antd-mobile'
  * @extends {Component}
  */
 class OrderComplete extends Component{
+    state={
+        orderInfo:{},//订单信息
+
+    }
+    async componentDidMount(){
+        await this.queryOrderInfo()
+    }
+    async queryOrderInfo(){
+        const {match:{params:{orderId,shoppingcardId}}}=this.props
+        const {data,code}= await OrderService.queryOrderById(orderId)
+        console.log('queryOrderInfo:',data)
+        if(code==='1111'){
+            this.setState({
+                orderInfo:data
+            })
+        }
+    }
     render(){
+        const {orderInfo}=this.state
         return (
             <Block vf className={Styles.complete_container}>
                 <Block a='c' className={Styles.header}>
@@ -49,28 +67,31 @@ class OrderComplete extends Component{
                     <Block pt={10} pb={10} fs={16} style={{fontWeight: 'bold'}}>订单详情</Block>
                     <Block wf>
                         <Block f={1}>订单编号：</Block>
-                        <Block>201797398978999</Block>
+                        <Block>{orderInfo.orderCode}</Block>
                     </Block>
                     <Block mt={5} wf>
                         <Block f={1}>下单时间：</Block>
-                        <Block>2018.05.03 09:00:00</Block>
+                        <Block>{orderInfo.createTime}</Block>
                     </Block>
                     <Block mt={5} wf>
                         <Block f={1}>收货方式：</Block>
-                        <Block>营业厅自提</Block>
+                        <Block>{orderInfo.dispatchWay===2?'快递':(orderInfo.dispatchWay===3?'营业厅自提':'无配送')}</Block>
                     </Block>
                     <Block mt={5} wf>
                         <Block f={1}>订单状态：</Block>
-                        <Block>已完成</Block>
+                        <Block>{orderInfo.status===1?'待付款':(orderInfo.status===2?'待收货':'完成')}</Block>
                     </Block>
                     <Block mt={5} wf>
                         <Block f={1}>商品金额：</Block>
-                        <Block className={Styles.orangeColor}>¥1099.00</Block>
+                        <Block className={Styles.orangeColor}>{orderInfo.totalMoney}</Block>
                     </Block>
-                    <Block mt={10} wf style={{fontWeight: 'bold'}}>
-                        <Block f={1}>　自提码：</Block>
-                        <Block>008 077 902 901</Block>
-                    </Block>
+                    {
+                        orderInfo.dispatchWay===3?
+                        <Block mt={10} wf style={{fontWeight: 'bold'}}>
+                            <Block f={1}>　自提码：</Block>
+                            <Block>{orderInfo.pickupCode}</Block>
+                        </Block>:null
+                    }
                 </Block>
             </Block>
         )

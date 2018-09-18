@@ -7,7 +7,9 @@ import {connect} from 'dva'
 import UserService from '../../services/userSeervice'
 import DeptService from '../../services/deptService'
 import OrderService from '../../services/orderService'
-import CollectInfoList from './collectInfoList'
+import ShoppingCartService from '../../services/shoppingCartService'
+import CollectInfoList from './CollectInfoList'
+import {routerRedux} from 'dva/router';
 /**
  *订单确认
  *
@@ -17,6 +19,9 @@ import CollectInfoList from './collectInfoList'
 const Item = List.Item
 class OrderSure extends Component{
     state = {
+        totalPrise:0,//总价格,
+        shoppingcard:[],//购物车ID集合
+        goodsList:[],// 购物车商品集合
         collectMode:2,//收货方式，shsm:送货上门，yytzt:营业厅自提
         reciveWay: [{label: '送货上门', value: 2},{label: '营业厅自提', value: 3}],
         collectUserInfo:[],//用户收货地址列表
@@ -27,10 +32,32 @@ class OrderSure extends Component{
         selectedAdopt:{deptId:0,deptName:'',saleNum:0},//自提营业厅列表选中项
     }
     componentDidMount(){
+        this.queryGoodsdAndSkuInfo()
         this.queryCollectUserInfo()
         this.queryAdoptDeptList()
     }
-
+    async queryGoodsdAndSkuInfo(){
+        let { match:{params:{shoppingcardId}} } = this.props
+        if (shoppingcardId.length>1){
+            shoppingcardId=shoppingcardId.split(',')
+        }else{
+            shoppingcardId=[shoppingcardId]
+        }
+        const {data,code}=await ShoppingCartService.query({memId:1,shoppingCarId:shoppingcardId})
+        if (code==='1111'){
+            let totalPrise=0
+            data.map(item=>{
+                totalPrise+=(item.salePrice*item.amount)
+            })
+            this.setState({
+                totalPrise:totalPrise,
+                goodsList:data
+            })
+        }
+        this.setState({
+            shoppingcard:shoppingcardId
+        })
+    }
     // 查询用户收货的地址列表
     async queryCollectUserInfo(){
         const {code,data}=await UserService.getAddressList(1);
@@ -81,11 +108,10 @@ class OrderSure extends Component{
     }
     //提交订单
     async orderSubmit () {
-        const { form } = this.props
-        const {collectMode,selectedAdopt,collectAddress}=this.state
-        const {goodsNum,defaultSkuPrice,logoPath,colorName,title}=this.props
+        const {dispatch,match:{params:{shoppingcardId}}} = this.props
+        const {collectMode,selectedAdopt,collectAddress,shoppingcard}=this.state
         let params={
-            cartIds:[1],// 购物车ID集合
+            cartIds:shoppingcard,// 购物车ID集合
             dispatchWay:collectMode,// 送货方式
             deptId:1,//下单门店Id
             memo:'',//订单备注
@@ -112,10 +138,10 @@ class OrderSure extends Component{
             }
             params.adoptDeptId=selectedAdopt.deptId//自提门店ID
         }
+        console.log('submit order params:',params)
         const {data,code}= await OrderService.addOrder({...params})
-        console.log(data,code)
         if (code==='1111'){
-            console.log('submit order success! order Id:',data)
+            dispatch(routerRedux.push(`/order-complete/${data}/${shoppingcardId}`))
         }
     }
     // 金额转换
@@ -164,9 +190,33 @@ class OrderSure extends Component{
         })
     }
 
+    renderGoodsArray=()=>{
+        return (
+            <Block>
+                {
+                    this.state.goodsList.map((item,index)=>{
+                        const color = item.attrList.filter((i)=>i.baseAttrName==='颜色')
+                        return <Block key={'goods-item-'+index} wf bc='#fff' p={15} mt={10}>
+                                <Block className={Styles.prod_pic}>
+                                    <img alt={item.goodsName} src={item.logoPath} />
+                                </Block>
+                                <Block vf f={1} ml={15}>
+                                    <Block style={{fontWeight: 'bold'}}>{item.goodsName}</Block>
+                                    <Block fs={12} fc='#666'>{color?color[0].attrCode:'无'}</Block>
+                                    <Block wf>
+                                        <Block f={1}>×{item.amount}</Block>
+                                        <Block className={Styles.orangeColor}>￥{item.salePrice}</Block>
+                                    </Block>
+                                </Block>
+                            </Block>
+                    })
+                }
+            </Block>
+        )
+    }
+
     renderCollectInfo(){
-        const {selectedAdopt,collectMode,selectAdoptIndex,collectUserInfo}=this.state
-        const {defaultSkuPrice,goodsNum}=this.props
+        const {selectedAdopt,collectMode,totalPrise,collectUserInfo}=this.state
         return (
                 <List renderHeader='收货信息'>
                 {
@@ -190,7 +240,7 @@ class OrderSure extends Component{
                         selectedOk={this.selectedCollectInfo}/>
                     </Item>
                 }
-                    <Item extra={<Block className={Styles.orangeColor}>￥{this.toMoney(defaultSkuPrice*goodsNum)}</Block>}>商品金额</Item>
+                    <Item extra={<Block className={Styles.orangeColor}>￥{totalPrise}</Block>}>商品金额</Item>
                 </List>
         )
     }
@@ -219,7 +269,6 @@ class OrderSure extends Component{
     render(){
         const { getFieldProps } = this.props.form
         const { reciveWay, popVisible,collectMode } = this.state
-        const {goodsNum,defaultSkuPrice,logoPath,colorName,title}=this.props
         return (
             <Block vf className={Styles.order_sure_wrapper}>
                 <List>
@@ -234,19 +283,7 @@ class OrderSure extends Component{
                         <Item arrow='horizontal' extra='请选择'>收货方式</Item>
                     </Picker>
                 </List>
-                <Block wf bc='#fff' p={15} mt={10}>
-                    <Block className={Styles.prod_pic}>
-                        <img alt={title} src={logoPath} />
-                    </Block>
-                    <Block vf f={1} ml={15}>
-                        <Block style={{fontWeight: 'bold'}}>{title}</Block>
-                        <Block fs={12} fc='#666'>{colorName}</Block>
-                        <Block wf>
-                            <Block f={1}>×{goodsNum}</Block>
-                            <Block className={Styles.orangeColor}>￥{defaultSkuPrice}</Block>
-                        </Block>
-                    </Block>
-                </Block>
+                {this.renderGoodsArray()}
                 {this.renderCollectInfo()}
                 <Block m={15} mt={20}>
                     <Button style={{borderRadius: 25}} type='primary' onClick={this.orderSubmit.bind(this)}>提交订单</Button>

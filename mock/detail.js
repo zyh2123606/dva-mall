@@ -201,7 +201,6 @@ module.exports = {
 		setTimeout(()=>{
             let dataResult={}
             const {typeId,attrList}=req.body
-            console.log(attrList)
             switch(Number.parseInt(attrList[0].attrValld)){
                 case 88:
                     dataResult=data[1001];
@@ -227,19 +226,19 @@ module.exports = {
 			});
 		}, 200);
     },
-    'POST /api/orders/addCart':function(req,res){
-        
+    'POST /api/cart/update':function(req,res){
 		setTimeout(()=>{
 			res.json({
 				hasnext: false,
-				data: null,
+				data: 2,
 				msg: '成功',
                 code: '1111',
                 result:true
 			});
 		}, 200);
     },
-    'GET /api/orders/myCartList':function(req,res){
+    
+    'GET /api/cart/myCartList':function(req,res){
         let data = {
             1001:[
                 {
@@ -247,9 +246,17 @@ module.exports = {
                     skuId:1,
                     goodsName:'无线蓝牙耳机 待机99999小时',
                     logoPath:'',
-                    skuAttr:[],
+                    attrList:[
+                        {
+                            attrId:1,
+                            baseAttrId:1,
+                            baseAttrName:'颜色',
+                            attrValId:'12',
+                            attrCode:'土豪金'
+                        }
+                    ],
                     amount:99,
-                    price:999900001,
+                    salePrice:999900001,
                     totalMoney:99999999999
                 },
                 {
@@ -257,23 +264,22 @@ module.exports = {
                     skuId:1,
                     goodsName:'无线蓝牙耳机 待机99999小时',
                     logoPath:'',
-                    skuAttr:[],
+                    attrList:[
+                        {
+                            attrId:1,
+                            baseAttrId:1,
+                            baseAttrName:'颜色',
+                            attrValId:'12',
+                            attrCode:'土豪金'
+                        }
+                    ],
                     amount:99,
-                    price:999900001,
-                    totalMoney:99999999999
-                },
-                {
-                    cartId:3,
-                    skuId:1,
-                    goodsName:'无线蓝牙耳机 待机99999小时',
-                    logoPath:'',
-                    skuAttr:[],
-                    amount:99,
-                    price:999900001,
+                    salePrice:999900001,
                     totalMoney:99999999999
                 }
             ],
         }
+
 		setTimeout(()=>{
 			res.json({
 				hasnext: false,
@@ -393,5 +399,31 @@ module.exports = {
                 result:true
 			});
 		}, 200);
-    }
+    },
+    'POST /api/order/pay':function(req,res){
+        let data={
+            pickupCode:'789678777777',
+            actualMoney:89348593485,
+            addrId:1,
+            deptId:1,
+            adoptDeptId:1,
+            dispatchWay:2,
+            freeMoney:0,
+            memId:0,
+            orderCode:892384488448484,
+            status:2,
+            totalMoney:89348593485,
+            createTime:'2018-09-09 12:12:12',
+            updateTime:'2018-09-20 12:12:12',
+        }
+		setTimeout(()=>{
+			res.json({
+				hasnext: false,
+				data: data,
+				msg: '成功',
+                code: '1111',
+                result:true
+			});
+		}, 200);
+    },
 }

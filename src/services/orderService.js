@@ -16,6 +16,10 @@ class OrderService extends HttpBase{
   addOrder=(data=undefined)=>{
     return this.post('/orders/create',data)
   }
+
+  queryOrderById=(data)=>{
+    return this.post('/order/pay',data)
+  }
 }
 
 export default new OrderService()

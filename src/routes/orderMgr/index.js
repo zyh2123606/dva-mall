@@ -75,30 +75,52 @@ class OrderDetail extends Component{
         return (num/100).toFixed(2);
     }
     //立即购买
-    sureBuy(){
+    async sureBuy(){
         const { form,dispatch} = this.props
         const {color_id,num} = form.getFieldsValue()
-        const {typeId,defaultSkuPrice,logoPath,colorName,title}=this.state
-        dispatch({
-            type:'orderDetail/submitOrder',
-            payload:{
-                typeId:typeId,
-                colorId:color_id,
-                goodsNum:num,
-                defaultSkuPrice:defaultSkuPrice,
-                logoPath:logoPath,
-                colorName:colorName,
-                title:title
-            }
-        })
-        dispatch(routerRedux.push(`/order-sure/${this.state.typeId}`))
+        const {typeId,defaultSkuPrice,logoPath,colorName,title,skuid}=this.state
+        
+        const params={
+            memId:1,// TODO 用户ID
+            skuId:skuid,// skuid
+            amount:num// 数量
+        }
+        // 添加购物车
+        const {code,data} = await ShoppingCartService.save(params);
+        if(code==='1111'){
+            dispatch({
+                type:'orderDetail/submitOrder',
+                payload:{
+                    typeId:typeId,
+                    colorId:color_id,
+                    goodsNum:num,
+                    defaultSkuPrice:defaultSkuPrice,
+                    logoPath:logoPath,
+                    colorName:colorName,
+                    title:title,
+                    skuId:skuid,
+                    shoppingCarId:[data]// 购物车ID
+                }
+            })
+            
+            dispatch(routerRedux.push({
+                pathname:`/order-sure/${data}`
+            }));
+        }else{
+            Toast.fail('操作失败！',1)
+        }
     }
     // 添加到购物车
     async addToShoppingCart(){
-        const data={
-            
+        const {form} = this.props
+        const {num} = form.getFieldsValue()
+        const {skuid}=this.state
+        const params={
+            memId:1,// TODO 用户ID
+            skuId:skuid,// skuid
+            amount:num// 数量
         }
-        const {code} = await ShoppingCartService.save(data);
+        const {code} = await ShoppingCartService.save(params);
         if (code==='1111'){
             this.setState((preState) => ({
                 shoppingCartCount: preState.shoppingCartCount + 1

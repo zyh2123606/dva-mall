@@ -10,7 +10,7 @@ export default {
         colorName:'',//颜色
         title:'',//展示标题
         skuid:0,//商品skuid
-
+        shoppingCarId:[],//购物车ID
     },
     reducers:{
         saveOrder(state,{payload}){
