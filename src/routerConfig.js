@@ -9,7 +9,8 @@ const RouteConfig = [
     {path: '/order-sure/:pid', component: LazyComponent(import('./routes/orderMgr/orderSure')), exact: true},
     {path: '/account', component: LazyComponent(import('./routes/account')), exact: false},
     {path: '/address-mgr', component: LazyComponent(import('./routes/addressMgr')), exact: true},
-    {path: '/add-address', component: LazyComponent(import('./routes/addressMgr/create')), exact: true}
+    {path: '/add-address', component: LazyComponent(import('./routes/addressMgr/create')), exact: true},
+    {path: '/order-info/:orderId', component: LazyComponent(import('./routes/myOrder/orderInfo')), exact: true}
 ]
 
 export default RouteConfig
