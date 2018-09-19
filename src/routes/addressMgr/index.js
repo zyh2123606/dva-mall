@@ -5,6 +5,7 @@ import { Checkbox } from 'antd-mobile'
 import { Empty } from '../../components'
 import { Toast } from 'antd-mobile'
 import { Link } from 'react-router-dom'
+import {connect} from 'dva'
 
 /**
  *收货地址管理
@@ -17,6 +18,12 @@ class AddressMgr extends Component{
     //设为默认
     checkHandleChange = e => {
 
+    }
+    setEditAddress = e =>{
+        const {dispatch,history} = this.props
+        const payload = {address:'滨江西路51号'}
+        dispatch({type:"myAddress/editAddress",payload})
+        history.push('/add-address')
     }
     render(){
         return (
@@ -35,7 +42,7 @@ class AddressMgr extends Component{
                                 <CheckboxItem onChange={this.checkHandleChange}>默认地址</CheckboxItem>
                             </Block>
                             <Block wf a='c'>
-                                <Block className={Styles.edit}></Block>
+                                <Block className={Styles.edit} onClick={this.setEditAddress}></Block>
                                 <Block mr={15} ml={10} className={Styles.del}></Block>
                             </Block>
                         </Block>
@@ -50,4 +57,4 @@ class AddressMgr extends Component{
     }
 }
 
-export default AddressMgr
+export default connect(state=>state)(AddressMgr)
