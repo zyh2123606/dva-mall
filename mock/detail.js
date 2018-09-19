@@ -426,4 +426,82 @@ module.exports = {
 			});
 		}, 200);
     },
+    'GET /api/order/getList':function(req,res){
+        let data={
+            Id:1,
+            orderCode:89348593485,
+            createTime:'2018-09-09 12:12:12',
+            totalMoney:89348593485,
+            actualMoney:89348593485,
+            status:2,
+            dispatchWay:2,
+            deptId:1,
+            deptName:'xxxxxxx联通门店分店',
+            adoptDeptId:2,
+            adoptDeptName:'自提门店一',
+            addrInfo:{
+                provinceName:'云南省',
+                cityName:'昆明市',
+                defaultFlag:1,
+                receiver:'张三',
+                tel:13577879808,
+                address:'云南省昆明市盘龙区昆明同德广场'
+            },
+            memo:'订单备注',
+            goodsInfo:[
+                {
+                    skuId:1,
+                    goodsName:'无线蓝牙耳机 超长待机 待机99999小时',
+                    price:89348593485,
+                    amount:1,
+                    skuAttr:[
+                        {
+                            attrId:1,
+                            attrName:'红色',
+                            attrValId:12,
+                            attrCode:'土土土豪金'
+                        },
+                        {
+                            attrId:2,
+                            attrName:'内存',
+                            attrValId:13,
+                            attrCode:'512GB'
+                        }
+                    ]
+                },
+                {
+                    skuId:2,
+                    goodsName:'oppo findx 100000000W像素 照亮你的丑！',
+                    price:89348593485,
+                    amount:1,
+                    skuAttr:[
+                        {
+                            attrId:1,
+                            attrName:'红色',
+                            attrValId:12,
+                            attrCode:'土土土豪金'
+                        },
+                        {
+                            attrId:2,
+                            attrName:'内存',
+                            attrValId:13,
+                            attrCode:'512GB'
+                        }
+                    ]
+                }
+            ],
+            pickupCode:89348593485111111,
+            logisticsDealer:'顺丰速运',
+            logisticsCode:'34sdf223fbfdgb23'
+        }
+		setTimeout(()=>{
+			res.json({
+				hasnext: false,
+				data: data,
+				msg: '成功',
+                code: '1111',
+                result:true
+			});
+		}, 200);
+    },
 }

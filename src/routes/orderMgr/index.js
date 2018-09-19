@@ -8,13 +8,14 @@ import { createForm } from 'rc-form'
 import { Badge,Toast } from 'antd-mobile'
 import {connect} from 'dva';
 import {routerRedux} from 'dva/router';
+import Constant from '../../utils/constant';
 
 class OrderDetail extends Component{
     state = {
         pageData: null, 
         cur_tag: 0,
         defaultSkuPrice:0,
-        typeId:0,
+        typeId:16,
         shoppingCartCount:0,
         logoPath:'',
         colorName:'',
@@ -23,31 +24,43 @@ class OrderDetail extends Component{
     //dom挂在完成请求数据
     async componentDidMount(){
         const {match:{params:{pid}}}  =this.props
-        const res = await Service.getDetailById()
+        const res = await Service.getDetailById(this.state.typeId)
         const { data, code } = res
-        if(code==='1111'){
-            let colors =data.goodsTypeAttrList.filter(item=>item.attrName==='颜色')||[];
-            colors=colors?colors[0].attrValList:[];
+        console.log('data:',data)
+        if(code===Constant.responseOK){
             let selectColorIdx=0;
             let selectColor='';
-            colors.map((item,index)=>{
+            let colors=data.goodsBaseAttrList.filter(item=>item.baseAttrName==='颜色')
+            let colorsAttrs=[]
+            if(colors){
+                const baseAttrId = colors[0].baseAttrId
+                data.goodsTypeAttrList.map(item=>{
+                    const attrs = item.attrValList.filter(i=>i.baseAttrId===baseAttrId)
+                    colorsAttrs=[...colorsAttrs,...attrs]
+                })
+            }
+            console.log('colorsAttrs:',colorsAttrs)
+            colorsAttrs.map((item,index)=>{
                 if(item.selected===1){
                     selectColorIdx=index
                     selectColor=item.attrCode
                 }
             })
+            if(selectColorIdx===0){
+                selectColor=colorsAttrs[0].attrCode
+            }
             this.setState({
                 cur_tag:selectColorIdx,
-                pageData: {...data,colors:colors},
+                pageData: {...data,colors:colorsAttrs},
                 defaultSkuPrice:this.toMoney(data.defaultSkuPrice),
                 typeId:pid,
                 title:data.title,
-                logoPath:data.logoPath,
+                logoPath:Constant.imgBaseUrl+data.logoPath,
                 colorName:selectColor,
                 skuid:data.defaultSkuId})
         }
         // 查询购物车商品数量
-        this.shoppingCart()
+        // this.shoppingCart()
     }
     //选择颜色
     selectColor(color_id, idx,attrCode){
@@ -63,7 +76,8 @@ class OrderDetail extends Component{
     // 点击颜色，查询该颜色属性对应的商品信息
     async queryPriceByGoodsColor(color_id) {
         const {data,code} = await Service.queryPriceByGoodsColor({typeId:1,attrList:[{attrId:1,attrValld:color_id}]})
-        if(code==='1111'){
+        console.log('queryPriceByGoodsColor:',data)
+        if(code===Constant.responseOK){
             this.setState({
                 defaultSkuPrice:this.toMoney(data.salePrice),
                 skuid:data.id})
@@ -87,7 +101,7 @@ class OrderDetail extends Component{
         }
         // 添加购物车
         const {code,data} = await ShoppingCartService.save(params);
-        if(code==='1111'){
+        if(code===Constant.responseOK){
             dispatch({
                 type:'orderDetail/submitOrder',
                 payload:{
@@ -121,7 +135,7 @@ class OrderDetail extends Component{
             amount:num// 数量
         }
         const {code} = await ShoppingCartService.save(params);
-        if (code==='1111'){
+        if (code===Constant.responseOK){
             this.setState((preState) => ({
                 shoppingCartCount: preState.shoppingCartCount + 1
               }))
@@ -129,20 +143,20 @@ class OrderDetail extends Component{
         }
     }
     async shoppingCart(){
-        const {data,code} = await ShoppingCartService.query({start:0})
-        if (code==='1111'){
+        const {data,code} = await ShoppingCartService.query({memId:1})
+        if (code===Constant.responseOK){
             this.setState({shoppingCartCount:data.length})
         }
     }
     render(){
         const { pageData, cur_tag,defaultSkuPrice,shoppingCartCount} = this.state
-        const { logoPath,title,colors,goodsPicList } = pageData || {}
+        const { goodsHeadPicList,title,colors,goodsPicList } = pageData || {}
         
         const { getFieldProps } = this.props.form
         return (
             pageData?<Block bc='#fff' vf p={15} className={Styles.order_det_wrapper}>
                 <Block h={250} vf className={Styles.pro_panel}>
-                    <Block f={1} bc='#eee'><img src={logoPath} alt='商品logo'/></Block>
+                    <Block f={1} bc='#eee'><img style={{maxHeight:'150px'}} src={Constant.imgBaseUrl+goodsHeadPicList[0].picPath} alt='商品logo'/></Block>
                     <Block p={20} vf>
                         <Block fs={16}>{title}</Block>
                         <Block className={Styles.money_color} fs={20} mt={10}>￥{defaultSkuPrice}</Block>
@@ -175,7 +189,7 @@ class OrderDetail extends Component{
                 <Block h={300} bc='#eee' mb={60}>
                     {
                         goodsPicList.map((item,index)=>(
-                            <img key={index} src={item.picPath} alt={item.picName}/>
+                            <img key={index} src={Constant.imgBaseUrl+item.picPath} alt={item.picName}/>
                         ))
                     }
                 </Block>

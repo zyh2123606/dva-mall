@@ -34,10 +34,10 @@ class HttpBase implements HttpInterFace {
             //请求结束后自动关闭loading
             Toast.hide()
             let { data } = response
-            if(!data.result){
-                data.data = []
-                Toast.info(data.message)
-            }
+            // if(!data.result){
+            //     data.data = []
+            //     Toast.info(data.message)
+            // }
             return data
         }, (err: any) => {
             if (err && err.response) {

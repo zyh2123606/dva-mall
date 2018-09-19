@@ -20,6 +20,13 @@ class OrderService extends HttpBase{
   queryOrderById=(data)=>{
     return this.post('/order/pay',data)
   }
+
+  getOrderList=(memId,orderCode)=>{
+    if(orderCode){
+      return this.get(`order/getList?memId=${memId}&orderCode=${orderCode}`)
+    }
+    return this.get(`order/getList?memId=${memId}`)
+  }
 }
 
 export default new OrderService()

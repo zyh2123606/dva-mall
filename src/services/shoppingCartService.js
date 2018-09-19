@@ -20,8 +20,8 @@ import { Toast } from 'antd-mobile'
     }
 
     //查询当前用户购物车商品数量（分页数据怎么传有待考量）
-    query=(data)=>{
-        return this.get(`cart/myCartList?memId=${data.memId}&cartIdList=${JSON.stringify(data.shoppingCarId)}`)
+    query=(memId,cartIdList)=>{
+        return this.post('cart/getMyCartList',{memId:memId,cartIdList:cartIdList}) 
     }
  }
  export default new ShoppingCartService();
