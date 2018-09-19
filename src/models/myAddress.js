@@ -2,12 +2,18 @@ import { routerRedux } from 'dva/router'
 export default {
     namespace: 'myAddress',
     state: {
-        address:''
+        editIndex:0,
+        edityFlag:false,
+        data:[]
     },
     reducers:{
+        initState(state,{payload}){
+            state.data = payload
+          return {...state}
+        },
         editAddress(state,{payload}){
-            state.address = payload.address
-            debugger
+            state.editIndex = payload.editIndex
+            state.editFlag = payload.editFlag
             return {...state}
         },
     },

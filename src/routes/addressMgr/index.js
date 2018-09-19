@@ -1,11 +1,12 @@
-import { Component } from 'react'
+import {Component} from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-import { Checkbox } from 'antd-mobile'
-import { Empty } from '../../components'
-import { Toast } from 'antd-mobile'
-import { Link } from 'react-router-dom'
+import {Checkbox} from 'antd-mobile'
+import {Empty} from '../../components'
+import {Toast} from 'antd-mobile'
+import {Link} from 'react-router-dom'
 import {connect} from 'dva'
+import Service from '../../services/addressService'
 
 /**
  *收货地址管理
@@ -14,47 +15,70 @@ import {connect} from 'dva'
  * @extends {Component}
  */
 const CheckboxItem = Checkbox.CheckboxItem
-class AddressMgr extends Component{
-    //设为默认
-    checkHandleChange = e => {
 
+class AddressMgr extends Component {
+    //设为默认
+    checkHandleChange = (id,index,e) => {
+        let newState = this.props.myAddress
+        if(e.target.checked){
+            newState.data.filter((data,idx)=>{
+                data.defaultFlag=2
+                if(idx===index) data.defaultFlag = 1
+            })
+        }else{
+            newState.data[index].defaultFlag = 2
+        }
+        this.setState({data:newState})
     }
-    setEditAddress = e =>{
-        const {dispatch,history} = this.props
-        const payload = {address:'滨江西路51号'}
-        dispatch({type:"myAddress/editAddress",payload})
+    setEditAddress = (item,index,e) => {
+        const {dispatch, history} = this.props
+        const payload = {editIndex:index,editFlag:true}
+        dispatch({type: "myAddress/editAddress", payload})
         history.push('/add-address')
     }
-    render(){
+
+    async componentDidMount() {
+        const res = await Service.getMyAddress()
+        const {data, result} = res
+        const {dispatch, history} = this.props
+        if (result) {
+            this.setState({data: data}, () => {
+                const payload = this.state.data
+                dispatch({type: 'myAddress/initState', payload})
+            })
+        }
+    }
+    render() {
         return (
             <Block vf className={Styles.container}>
                 <Block ml={15} mr={15} pb={15} mb={80}>
-                    <Block className={Styles.addr_panel} vf>
-                        <Block vf ml={15} mr={15}>
-                            <Block wf mt={10}>
-                                <Block f={1}>李可可</Block>
-                                <Block>18313858906</Block>
+                    {this.props.myAddress ? this.props.myAddress.data.map((data, idx)=>(
+                        <Block className={Styles.addr_panel} key = {idx} vf>
+                            <Block vf ml={15} mr={15}>
+                                <Block wf mt={10}>
+                                    <Block f={1}>{data.receiver}</Block>
+                                    <Block>{data.tel}</Block>
+                                </Block>
+                                <Block mt={5}>吉林省 长春市 {data.address}</Block>
                             </Block>
-                            <Block mt={5}>吉林省 长春市 朝阳区自由大路与百汇街交汇处自由大路1000号</Block>
+                            <Block className={Styles.act_addr} mt={10} wf>
+                                <Block f={1}>
+                                    <CheckboxItem checked={data.defaultFlag===1} onChange={this.checkHandleChange.bind(this,data.id,idx)}>默认地址</CheckboxItem>
+                                </Block>
+                                <Block wf a='c'>
+                                    <Block className={Styles.edit} onClick={this.setEditAddress.bind(this,data,idx)}></Block>
+                                    <Block mr={15} ml={10} className={Styles.del}></Block>
+                                </Block>
+                            </Block>
                         </Block>
-                        <Block className={Styles.act_addr} mt={10} wf>
-                            <Block f={1}>
-                                <CheckboxItem onChange={this.checkHandleChange}>默认地址</CheckboxItem>
-                            </Block>
-                            <Block wf a='c'>
-                                <Block className={Styles.edit} onClick={this.setEditAddress}></Block>
-                                <Block mr={15} ml={10} className={Styles.del}></Block>
-                            </Block>
-                        </Block>
-                    </Block>
+                    )):<Empty/>}
                 </Block>
-                <Empty />
                 <Block mt={10} pb={20} pt={20} pl={15} pr={15} className={Styles.footer}>
                     <Link className={Styles.link_btn} to='/add-address'>添加新地址</Link>
                 </Block>
-            </Block> 
+            </Block>
         )
     }
 }
 
-export default connect(state=>state)(AddressMgr)
+export default connect(state => state)(AddressMgr)
