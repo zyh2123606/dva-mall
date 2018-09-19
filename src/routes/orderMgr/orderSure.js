@@ -8,7 +8,7 @@ import UserService from '../../services/userSeervice'
 import DeptService from '../../services/deptService'
 import OrderService from '../../services/orderService'
 import ShoppingCartService from '../../services/shoppingCartService'
-import CollectInfoList from './CollectInfoList'
+import CollectInfoList from  './CollectInfoList'
 import {routerRedux} from 'dva/router';
 /**
  *订单确认
