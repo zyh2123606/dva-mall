@@ -16,6 +16,24 @@
 .orangeColor{
     color: @orange;
 }
+.normalTag{
+    @mlVal: 12px;
+    margin-left: 10px;
+    width: calc(~"25% - @{mlVal}");
+    width: -webkit-calc(~"25% - @{mlVal}");
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    border: #ddd solid 1px;
+    border-radius: 19px;
+    margin-top: 7px;
+    display: inline-block;
+}
+.activeTag{
+    .normalTag;
+    border-color: @orange;
+    color: @orange;
+}
 .boxShadow(){ /*阴影样式*/
     box-shadow: 0 2px 8px 0 rgba(60,96,148,0.14);
 }
