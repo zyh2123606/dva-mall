@@ -426,6 +426,7 @@ module.exports = {
 			});
 		}, 200);
     },
+<<<<<<< HEAD
     'GET /api/order/getList':function(req,res){
         let data={
             Id:1,
@@ -504,4 +505,44 @@ module.exports = {
 			});
 		}, 200);
     },
+=======
+    'GET /mem/addr/getList':function(req,res){
+        let data=[
+            {
+                id:1,
+                memid:8,
+                defaultFlag:2,
+                province:1,
+                city:1,
+                county:1,
+                address:'云南省昆明市XXXXXXX',
+                receiver:'张学友',
+                tel:'13988822222'
+
+            },
+            {
+                id:2,
+                memid:8,
+                defaultFlag:1,
+                province:1,
+                city:1,
+                county:1,
+                address:'云南省昆明市滨江西路51号',
+                receiver:'张学友1',
+                tel:'13988811111'
+            }
+        ]
+        setTimeout(()=>{
+            res.json({
+                hasnext: false,
+                data: data,
+                msg: '成功',
+                code: '1111',
+                result:true
+            });
+        }, 200);
+    },
+
+>>>>>>> 494d877b5a421e21ac58a84cdfc4a14fb23ddd7b
 }
+
