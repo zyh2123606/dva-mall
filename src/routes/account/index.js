@@ -54,10 +54,12 @@ class Account extends Component{
                     </Block>
                 </Block>
                 <Block className={Styles.act_menu} vf>
-                    <Block className={Styles.act_item} wf a='c'>
-                        <Block f={1}>收货地址</Block>
-                        <i className={Styles.arrow_right}></i>
-                    </Block>
+                    <Link to='/address-mgr'>
+                        <Block className={Styles.act_item} wf a='c'>
+                            <Block f={1}>收货地址</Block>
+                            <i className={Styles.arrow_right}></i>
+                        </Block>
+                    </Link>
                     <Block className={Styles.act_item} wf a='c'>
                         <Block f={1}>联系客服</Block>
                         <i className={Styles.arrow_right}></i>
