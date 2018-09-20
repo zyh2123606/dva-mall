@@ -16,12 +16,12 @@ import { Toast } from 'antd-mobile'
     }
 
     save=(data=undefined)=>{
-        return this.post('cart/update',data)
+        return this.postJson('cart/update',data)
     }
 
     //查询当前用户购物车商品数量（分页数据怎么传有待考量）
-    query=(memId,cartIdList)=>{
-        return this.post('cart/getMyCartList',{memId:memId,cartIdList:cartIdList}) 
+    query=({memId,cartIdList})=>{
+        return this.postJson('cart/getMyCartList',{memId:memId,cartIdList:cartIdList}) 
     }
  }
  export default new ShoppingCartService();

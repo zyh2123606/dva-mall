@@ -3,6 +3,7 @@ import Block from 'fs-flex'
 import Styles from './index.less'
 import { Icon } from 'antd-mobile'
 import OrderService from '../../services/orderService'
+import Constant from '../../utils/constant';
 /**
  *订单完成
  *
@@ -23,7 +24,7 @@ class OrderComplete extends Component{
             deptName:'',
             adoptDeptId:0,
             adoptDeptName:'',
-            addrInfo:{
+            addressInfo:{
                 provinceName:'',
                 cityName:'',
                 defaultFlag:0,
@@ -32,21 +33,8 @@ class OrderComplete extends Component{
                 address:''
             },
             memo:'',
-            goodsInfo:[
-                {
-                    skuId:0,
-                    goodsName:'',
-                    price:0,
-                    amount:0,
-                    skuAttr:[
-                        {
-                            attrId:0,
-                            attrName:'',
-                            attrValId:0,
-                            attrCode:'0'
-                        }
-                    ]
-                }
+            goodsList:[
+                
             ],
             pickupCode:0,
             logisticsDealer:'',
@@ -60,14 +48,14 @@ class OrderComplete extends Component{
     async queryOrderInfo(){
         const {match:{params:{orderId,shoppingcardId}}}=this.props
         const {data,code}= await OrderService.getOrderList(1,orderId)
-        if(code==='1111'){
+        if(code===Constant.responseOK){
             this.setState({
-                orderInfo:data
+                orderInfo:data[0]
             })
         }
     }
     render(){
-        const {orderInfo,orderInfo:{addrInfo,goodsInfo}}=this.state
+        const {orderInfo,orderInfo:{addressInfo,goodsList}}=this.state
         return (
             <Block vf className={Styles.complete_container}>
                 <Block a='c' className={Styles.header}>
@@ -82,11 +70,11 @@ class OrderComplete extends Component{
                     <Block className={Styles.pos_ico}></Block>
                     <Block vf f={1} mr={15}>
                         <Block wf>
-                            <Block f={1}>{addrInfo.receiver}</Block>
-                            <Block>{addrInfo.tel}</Block>
+                            <Block f={1}>{addressInfo.receiver}</Block>
+                            <Block>{addressInfo.tel}</Block>
                         </Block>
                         <Block mt={5} wf>
-                            <Block>{addrInfo.address}</Block>
+                            <Block>{addressInfo.address}</Block>
                         </Block>
                     </Block>
                 </Block>:null
@@ -95,14 +83,14 @@ class OrderComplete extends Component{
                 <Block vf bc='#fff' pl={15} pr={15} mt={10} pb={15}>
                     <Block pt={10} pb={10} fs={16} style={{fontWeight: 'bold'}}>商品信息</Block>
                     {
-                        goodsInfo.map((item,index)=>{
+                        goodsList.map((item,index)=>{
                             return <Block mt={5} wf key={'goods-item-'+index}>
-                            <Block className={Styles.prod_pic}></Block>
+                            <Block className={Styles.prod_pic}><img style={{width:'78px'}} src={Constant.imgBaseUrl+item.logoPath} alt={item.goodsName}/></Block>
                             <Block f={1} ml={15}>
                                 <Block>{item.goodsName}</Block>
                                 <Block wf>
                                     {
-                                    item.skuAttr.map((attrItem,idx)=>{
+                                    item.attrList.map((attrItem,idx)=>{
                                         return <Block key={'goods-skuattr-'+idx} mt={5} ml={5} fs={12} fc='#999'>{attrItem.attrCode}</Block>
                                     })
                                 }

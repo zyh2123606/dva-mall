@@ -103,7 +103,8 @@ class HttpBase implements HttpInterFace {
      * @param data 
      */
     postJson(url: string, data=undefined){
-        return this.post(url,data,{headers: {'Content-Type': 'application/json;charset=UTF-8'}})
+        // return this.post(url,data,{headers: {'Content-Type': 'application/json;charset=UTF-8'}})
+        return this.$http.post(url,data,{headers: {'Content-Type': 'application/json;charset=UTF-8'}})
     }
     /**
      * 主要用于更新

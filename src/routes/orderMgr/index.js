@@ -12,13 +12,13 @@ import Constant from '../../utils/constant';
 
 class OrderDetail extends Component{
     state = {
+        memId:1,
         pageData: null, 
-        cur_tag: 0,
+        cur_tag:null,
         defaultSkuPrice:0,
         typeId:16,
-        shoppingCartCount:0,
+        shoppingCartCount:0,//购物车商品数量
         logoPath:'',
-        colorName:'',
         skuid:0,
     }
     //dom挂在完成请求数据
@@ -26,56 +26,56 @@ class OrderDetail extends Component{
         const {match:{params:{pid}}}  =this.props
         const res = await Service.getDetailById(this.state.typeId)
         const { data, code } = res
-        console.log('data:',data)
         if(code===Constant.responseOK){
-            let selectColorIdx=0;
-            let selectColor='';
-            let colors=data.goodsBaseAttrList.filter(item=>item.baseAttrName==='颜色')
-            let colorsAttrs=[]
-            if(colors){
-                const baseAttrId = colors[0].baseAttrId
-                data.goodsTypeAttrList.map(item=>{
-                    const attrs = item.attrValList.filter(i=>i.baseAttrId===baseAttrId)
-                    colorsAttrs=[...colorsAttrs,...attrs]
-                })
-            }
-            console.log('colorsAttrs:',colorsAttrs)
-            colorsAttrs.map((item,index)=>{
-                if(item.selected===1){
-                    selectColorIdx=index
-                    selectColor=item.attrCode
+            let colorsAttrs=new Map()
+            data.goodsTypeAttrList.map(item=>{
+                const attrs = item.attrValList.filter(i=>i.selected===1)
+                if(attrs && attrs.length>0){
+                    colorsAttrs.set(attrs[0].baseAttrId,attrs[0].attrValId)
                 }
+                
             })
-            if(selectColorIdx===0){
-                selectColor=colorsAttrs[0].attrCode
-            }
+            console.log('colorsAttrs',colorsAttrs)
             this.setState({
-                cur_tag:selectColorIdx,
+                cur_tag:colorsAttrs,
                 pageData: {...data,colors:colorsAttrs},
                 defaultSkuPrice:this.toMoney(data.defaultSkuPrice),
                 typeId:pid,
                 title:data.title,
                 logoPath:Constant.imgBaseUrl+data.logoPath,
-                colorName:selectColor,
                 skuid:data.defaultSkuId})
         }
         // 查询购物车商品数量
-        // this.shoppingCart()
+        this.shoppingCart()
     }
     //选择颜色
-    selectColor(color_id,idx,attrCode,attr_id){
+    selectColor(attrValId,baseAttrId){
         const { form } = this.props
-        this.queryPriceByGoodsColor(color_id,attr_id)
-        form.setFieldsValue({ color_id: color_id })
-        this.setState({cur_tag: idx,colorName:attrCode}, () => {
+        const {cur_tag}=this.state
+        form.setFieldsValue({ color_id: attrValId })
+        
+        const new_cur_tag=cur_tag.set(baseAttrId,attrValId)
+        this.setState({cur_tag: new_cur_tag}, () => {
             const { getFieldProps } = this.props.form
             const { onChange } = getFieldProps('color_id')
-            onChange(color_id)
+            onChange(attrValId)
         })
+        this.queryPriceByGoodsColor(attrValId)
     }
     // 点击颜色，查询该颜色属性对应的商品信息
-    async queryPriceByGoodsColor(color_id,attr_id) {
-        const {data,code} = await Service.queryPriceByGoodsColor({typeId:1,attrList:[{attrId:attr_id,attrValld:color_id}]})
+    async queryPriceByGoodsColor() {
+        const {typeId,cur_tag,pageData:{goodsTypeAttrList}}=this.state
+        let attrList=[]
+        cur_tag.forEach((value,key)=>{
+            goodsTypeAttrList.map(attrItem=>{
+                const attrItems = attrItem.attrValList.filter((v,i)=>v.attrValId===value)
+                if (attrItems && attrItems.length>0){
+                    attrList.push({attrId:attrItems[0].attrId,attrValId:attrItems[0].attrValId})
+                }
+            })
+            
+        })
+        const {data,code} = await Service.queryPriceByGoodsColor({typeId:typeId,attrList:attrList})
         console.log('queryPriceByGoodsColor:',data)
         if(code===Constant.responseOK){
             this.setState({
@@ -92,31 +92,16 @@ class OrderDetail extends Component{
     async sureBuy(){
         const { form,dispatch} = this.props
         const {color_id,num} = form.getFieldsValue()
-        const {typeId,defaultSkuPrice,logoPath,colorName,title,skuid}=this.state
+        const {memId,typeId,defaultSkuPrice,logoPath,colorName,title,skuid}=this.state
         
         const params={
-            memId:1,// TODO 用户ID
+            memId:memId,// TODO 用户ID
             skuId:skuid,// skuid
             amount:num// 数量
         }
         // 添加购物车
         const {code,data} = await ShoppingCartService.save(params);
         if(code===Constant.responseOK){
-            dispatch({
-                type:'orderDetail/submitOrder',
-                payload:{
-                    typeId:typeId,
-                    colorId:color_id,
-                    goodsNum:num,
-                    defaultSkuPrice:defaultSkuPrice,
-                    logoPath:logoPath,
-                    colorName:colorName,
-                    title:title,
-                    skuId:skuid,
-                    shoppingCarId:[data]// 购物车ID
-                }
-            })
-            
             dispatch(routerRedux.push({
                 pathname:`/order-sure/${data}`
             }));
@@ -128,9 +113,9 @@ class OrderDetail extends Component{
     async addToShoppingCart(){
         const {form} = this.props
         const {num} = form.getFieldsValue()
-        const {skuid}=this.state
+        const {memId,skuid}=this.state
         const params={
-            memId:1,// TODO 用户ID
+            memId:memId,// TODO 用户ID
             skuId:skuid,// skuid
             amount:num// 数量
         }
@@ -143,13 +128,50 @@ class OrderDetail extends Component{
         }
     }
     async shoppingCart(){
-        const {data,code} = await ShoppingCartService.query({memId:1})
+        const {data,code} = await ShoppingCartService.query({memId:this.state.memId})
         if (code===Constant.responseOK){
             this.setState({shoppingCartCount:data.length})
         }
     }
+    // 渲染商品属性部分
+    renderAttrBlock=(baseAttrId)=>{
+        const { getFieldProps } = this.props.form
+        const {cur_tag}=this.state
+        const {pageData:{goodsTypeAttrList}}=this.state
+        let attrList=[]
+
+        goodsTypeAttrList.map(item=>{
+            const attrItems = item.attrValList.filter((v,i)=>v.baseAttrId===baseAttrId)
+            if (attrItems && attrItems.length>0){
+                attrList=[...attrList,...attrItems]
+            }
+        })
+        return (
+            <Block wf>
+                {
+                    attrList.map(({attrValId,attrCode,attrId,baseAttrId},idx)=>{
+                        let selected=false
+                        cur_tag.forEach((value,key)=>{
+                            if(key===baseAttrId && value===attrValId){
+                                selected=true
+                                return
+                            }
+                            
+                        })
+                        return <Block key={'attr-item-'+idx} onClick={this.selectColor.bind(this, attrValId,baseAttrId)} 
+                                {...getFieldProps('color_id', {initialValue: 100})}
+                                key={idx}  
+                                mr={idx !=0 && idx%3 == 0?0:10}
+                                className={selected?Styles.color_tag_select:Styles.color_tag}>
+                                {attrCode}
+                            </Block>
+                    })
+                }
+            </Block>
+        )
+    }
     render(){
-        const { pageData, cur_tag,defaultSkuPrice,shoppingCartCount} = this.state
+        const { pageData,defaultSkuPrice,shoppingCartCount} = this.state
         const { goodsHeadPicList,title,colors,goodsPicList } = pageData || {}
         
         const { getFieldProps } = this.props.form
@@ -162,18 +184,16 @@ class OrderDetail extends Component{
                         <Block className={Styles.money_color} fs={20} mt={10}>￥{defaultSkuPrice}</Block>
                     </Block>
                 </Block>
-                <Block pt={20} pb={13} fs={18}>颜色分类</Block>
-                <Block wf>
-                    {colors.map(({attrValId, attrCode,attrId}, idx) => (
-                        <Block onClick={this.selectColor.bind(this, attrValId, idx,attrCode,attrId)} 
-                            {...getFieldProps('color_id', {initialValue: 100})}
-                            key={idx}  
-                            mr={idx !=0 && idx%3 == 0?0:10}
-                            className={cur_tag === idx?Styles.color_tag_select:Styles.color_tag}>
-                            {attrCode}
-                        </Block>
-                    ))}
-                </Block>
+                {
+                    pageData.goodsBaseAttrList.map(({baseAttrId,baseAttrName},baseIndex)=>{
+                        return <Block key={'base-attr-'+baseIndex}>
+                                <Block pt={20} pb={13} fs={18}>{baseAttrName}</Block>
+                                {
+                                    this.renderAttrBlock(baseAttrId)
+                                }
+                            </Block>
+                    })
+                }
                 <Block mt={20} a='c' wf>
                     <Block fs={18} f={1}>购买数量</Block>
                     <Stepper

@@ -13,7 +13,12 @@ class  CollectInfoList extends React.Component{
             tel:''
         }
     }
-    componentWillReceiveProps(){
+    async componentDidMount(){
+        setTimeout(() => {
+            this.init()
+        }, 500);
+    }
+    init(){
         const {data}=this.props
         let selectedItem={id:0,address:'',receiver:'',tel:''}
         let selectIndex=0;

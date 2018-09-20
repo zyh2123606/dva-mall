@@ -9,7 +9,7 @@ class UserService extends HttpBase{
     }
     //获取用户收货列表
     getAddressList=(userId)=>{
-        return this.get(`/mem/addr/getList?userId=${userId}`)
+        return this.get(`/mem/addr/getList?memId=${userId}`)
     }
 }
 
