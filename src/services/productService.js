@@ -15,7 +15,7 @@ class ProductService extends HttpBase{
     }
 
     queryPriceByGoodsColor=(data)=>{
-        return this.post('/goods/getSkuInfo',data);
+        return this.postJson('/goods/getSkuInfo',data)
     }
 }
 

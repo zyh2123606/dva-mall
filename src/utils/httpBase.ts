@@ -10,6 +10,7 @@ import { watch } from 'fs';
 interface HttpInterFace{
     get: (url: string, config: any) => any,
     post: (url: string, data: any, config: any) => any,
+    postJson: (url: string, data: any, config: any) => any,
     put: (url: string, data: any, config: any) => any,
     delete: (url: string, data: any, config: any) => any,
     cancel: () => void
@@ -95,6 +96,14 @@ class HttpBase implements HttpInterFace {
      */
     post(url: string, data=undefined, config={}){
         return this.$http.post(url, data, {...this.dataMethodDefault, ...config})
+    }
+    /**
+     * post 请求，json格式
+     * @param url 
+     * @param data 
+     */
+    postJson(url: string, data=undefined){
+        return this.post(url,data,{headers: {'Content-Type': 'application/json;charset=UTF-8'}})
     }
     /**
      * 主要用于更新

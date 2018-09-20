@@ -63,9 +63,9 @@ class OrderDetail extends Component{
         // this.shoppingCart()
     }
     //选择颜色
-    selectColor(color_id, idx,attrCode){
+    selectColor(color_id,idx,attrCode,attr_id){
         const { form } = this.props
-        this.queryPriceByGoodsColor(color_id)
+        this.queryPriceByGoodsColor(color_id,attr_id)
         form.setFieldsValue({ color_id: color_id })
         this.setState({cur_tag: idx,colorName:attrCode}, () => {
             const { getFieldProps } = this.props.form
@@ -74,8 +74,8 @@ class OrderDetail extends Component{
         })
     }
     // 点击颜色，查询该颜色属性对应的商品信息
-    async queryPriceByGoodsColor(color_id) {
-        const {data,code} = await Service.queryPriceByGoodsColor({typeId:1,attrList:[{attrId:1,attrValld:color_id}]})
+    async queryPriceByGoodsColor(color_id,attr_id) {
+        const {data,code} = await Service.queryPriceByGoodsColor({typeId:1,attrList:[{attrId:attr_id,attrValld:color_id}]})
         console.log('queryPriceByGoodsColor:',data)
         if(code===Constant.responseOK){
             this.setState({
@@ -164,8 +164,8 @@ class OrderDetail extends Component{
                 </Block>
                 <Block pt={20} pb={13} fs={18}>颜色分类</Block>
                 <Block wf>
-                    {colors.map(({attrValId, attrCode}, idx) => (
-                        <Block onClick={this.selectColor.bind(this, attrValId, idx,attrCode)} 
+                    {colors.map(({attrValId, attrCode,attrId}, idx) => (
+                        <Block onClick={this.selectColor.bind(this, attrValId, idx,attrCode,attrId)} 
                             {...getFieldProps('color_id', {initialValue: 100})}
                             key={idx}  
                             mr={idx !=0 && idx%3 == 0?0:10}
