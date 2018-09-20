@@ -20,6 +20,7 @@ import Constant from '../../utils/constant';
 const Item = List.Item
 class OrderSure extends Component{
     state = {
+        typeId:1,
         memId:1,
         orderDeptId:1,// 当前营业厅
         totalPrise:0,//总价格,
@@ -34,7 +35,7 @@ class OrderSure extends Component{
         selectAdoptIndex:0,
         selectedAdopt:{deptId:0,deptName:'',saleNum:0},//自提营业厅列表选中项
     }
-    componentDidMount(){
+    async componentDidMount(){
         this.queryGoodsdAndSkuInfo()
         this.queryCollectUserInfo()
         setTimeout(() => {
@@ -42,7 +43,7 @@ class OrderSure extends Component{
         }, 1000);
     }
     async queryGoodsdAndSkuInfo(){
-        let { match:{params:{shoppingcardId}} } = this.props
+        let { match:{params:{shoppingcardId}},dispatch} = this.props
         if (shoppingcardId.length>1){
             shoppingcardId=shoppingcardId.split(',')
         }else{
@@ -51,6 +52,10 @@ class OrderSure extends Component{
         const {data,code}=await ShoppingCartService.query({memId:1,cartIdList:shoppingcardId})
         if (code===Constant.responseOK){
             let totalPrise=0
+            if(data && data.length===0){
+                // TODO 这里应该跳转到购物车？个人中心？
+                dispatch(routerRedux.push(`/order-detail/${this.state.typeId}`))
+            }
             data.map(item=>{
                 totalPrise+=(item.salePrice*item.amount)
             })
@@ -205,6 +210,7 @@ class OrderSure extends Component{
     }
 
     renderGoodsArray=()=>{
+        console.log(this.state.goodsList)
         return (
             <Block>
                 {
@@ -323,5 +329,10 @@ class OrderSure extends Component{
     }
 }
 
+function mapStateToProps(state){
+    const {typeId,colorId,goodsNum,defaultSkuPrice,logoPath,colorName,title,skuid}=state.orderDetail
+    return {typeId,colorId,goodsNum,defaultSkuPrice,logoPath,colorName,title,skuid}
+}
+
 const mainForm = createForm()(OrderSure)
-export default mainForm
+export default connect(mapStateToProps)(mainForm)

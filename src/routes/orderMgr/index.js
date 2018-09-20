@@ -76,10 +76,9 @@ class OrderDetail extends Component{
             
         })
         const {data,code} = await Service.queryPriceByGoodsColor({typeId:typeId,attrList:attrList})
-        console.log('queryPriceByGoodsColor:',data)
         if(code===Constant.responseOK){
             this.setState({
-                defaultSkuPrice:this.toMoney(data.salePrice),
+                defaultSkuPrice:this.toMoney(data.skuPrice.salePrice),
                 skuid:data.id})
         }
 
@@ -175,6 +174,13 @@ class OrderDetail extends Component{
         const { goodsHeadPicList,title,colors,goodsPicList } = pageData || {}
         
         const { getFieldProps } = this.props.form
+        var clientWhidth = 0;
+        if (document.body.clientWidth && document.documentElement.clientWidth) {
+            var clientWhidth = (document.body.clientWidth < document.documentElement.clientWidth) ? document.body.clientWidth : document.documentElement.clientWidth;
+        }
+        else {
+            var clientWhidth = (document.body.clientWidth > document.documentElement.clientWidth) ? document.body.clientWidth : document.documentElement.clientWidth;
+        }
         return (
             pageData?<Block bc='#fff' vf p={15} className={Styles.order_det_wrapper}>
                 <Block h={250} vf className={Styles.pro_panel}>
@@ -209,7 +215,7 @@ class OrderDetail extends Component{
                 <Block h={300} bc='#eee' mb={60}>
                     {
                         goodsPicList.map((item,index)=>(
-                            <img key={index} src={Constant.imgBaseUrl+item.picPath} alt={item.picName}/>
+                            <img style={{width:clientWhidth}} key={index} src={Constant.imgBaseUrl+item.picPath} alt={item.picName}/>
                         ))
                     }
                 </Block>
