@@ -39,10 +39,10 @@ class AddressMgr extends Component {
     }
 
     async componentDidMount() {
-        const res = await Service.getMyAddress()
-        const {data, result} = res
+        const res = await Service.getMyAddress(1)
+        const {data, code} = res
         const {dispatch, history} = this.props
-        if (result) {
+        if (code==="0000") {
             this.setState({data: data}, () => {
                 const payload = this.state.data
                 dispatch({type: 'myAddress/initState', payload})

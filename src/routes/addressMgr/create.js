@@ -50,6 +50,7 @@ class Create extends Component{
                     <Picker data={AreaData} value={this.state.pickerValue} onChange={v=>this.setState({pickerValue:v})} 
                         onOk={()=>this.setState({visible:false})}
                         onDisemiss={()=>this.setState({visible:false})}
+                        {...getFieldProps('pcc',{initialValue:editAddr?[editAddr.province,editAddr.city,editAddr.county]:''})}
                         title='选择地区'>
                         <Item arrow='horizontal'>所在地区</Item>
                     </Picker>
