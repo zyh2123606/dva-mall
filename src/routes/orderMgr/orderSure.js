@@ -10,6 +10,7 @@ import OrderService from '../../services/orderService'
 import ShoppingCartService from '../../services/shoppingCartService'
 import CollectInfoList from  './CollectInfoList'
 import {routerRedux} from 'dva/router';
+import Constant from '../../utils/constant';
 /**
  *订单确认
  *
@@ -19,6 +20,9 @@ import {routerRedux} from 'dva/router';
 const Item = List.Item
 class OrderSure extends Component{
     state = {
+        typeId:1,
+        memId:1,
+        orderDeptId:1,// 当前营业厅
         totalPrise:0,//总价格,
         shoppingcard:[],//购物车ID集合
         goodsList:[],// 购物车商品集合
@@ -31,24 +35,31 @@ class OrderSure extends Component{
         selectAdoptIndex:0,
         selectedAdopt:{deptId:0,deptName:'',saleNum:0},//自提营业厅列表选中项
     }
-    componentDidMount(){
+    async componentDidMount(){
         this.queryGoodsdAndSkuInfo()
         this.queryCollectUserInfo()
-        this.queryAdoptDeptList()
+        setTimeout(() => {
+            this.queryAdoptDeptList()
+        }, 1000);
     }
     async queryGoodsdAndSkuInfo(){
-        let { match:{params:{shoppingcardId}} } = this.props
+        let { match:{params:{shoppingcardId}},dispatch} = this.props
         if (shoppingcardId.length>1){
             shoppingcardId=shoppingcardId.split(',')
         }else{
-            shoppingcardId=[shoppingcardId]
+            shoppingcardId=[Number.parseInt(shoppingcardId)]
         }
-        const {data,code}=await ShoppingCartService.query({memId:1,shoppingCarId:shoppingcardId})
-        if (code==='1111'){
+        const {data,code}=await ShoppingCartService.query({memId:1,cartIdList:shoppingcardId})
+        if (code===Constant.responseOK){
             let totalPrise=0
+            if(data && data.length===0){
+                // TODO 这里应该跳转到购物车？个人中心？
+                dispatch(routerRedux.push(`/order-detail/${this.state.typeId}`))
+            }
             data.map(item=>{
                 totalPrise+=(item.salePrice*item.amount)
             })
+            console.log('queryGoodsdAndSkuInfo:',data)
             this.setState({
                 totalPrise:totalPrise,
                 goodsList:data
@@ -60,15 +71,19 @@ class OrderSure extends Component{
     }
     // 查询用户收货的地址列表
     async queryCollectUserInfo(){
-        const {code,data}=await UserService.getAddressList(1);
-        if (code==='1111'){
+        const {memId}=this.state
+        const {code,data}=await UserService.getAddressList(memId);
+        if (code===Constant.responseOK){
             this.setState({collectUserInfo:data})
         }
     }
     // 查询周边自提营业厅
     async queryAdoptDeptList(){
-        const {code,data}=await DeptService.getAdoptDeptList(1,1)
-        if (code==='1111'){
+        const {goodsList,orderDeptId} = this.state
+        // 因为有多个商品的情况，所以默认去第一个商品的skuID
+        const {code,data}=await DeptService.getAdoptDeptList(goodsList[0].skuId,orderDeptId)
+        if (code===Constant.responseOK && data){
+            console.log('data',data)
             this.setState({adoptDeptList:data})
         }
     }
@@ -109,9 +124,10 @@ class OrderSure extends Component{
     //提交订单
     async orderSubmit () {
         const {dispatch,match:{params:{shoppingcardId}}} = this.props
-        const {collectMode,selectedAdopt,collectAddress,shoppingcard}=this.state
+        const {memId,collectMode,selectedAdopt,collectAddress,shoppingcard}=this.state
         let params={
-            cartIds:shoppingcard,// 购物车ID集合
+            cartIdList:shoppingcard,// 购物车ID集合
+            memId:memId,// 用户ID
             dispatchWay:collectMode,// 送货方式
             deptId:1,//下单门店Id
             memo:'',//订单备注
@@ -140,8 +156,11 @@ class OrderSure extends Component{
         }
         console.log('submit order params:',params)
         const {data,code}= await OrderService.addOrder({...params})
-        if (code==='1111'){
+        if (code===Constant.responseOK){
+            Toast.success('提交订单成功！',1)
             dispatch(routerRedux.push(`/order-complete/${data}/${shoppingcardId}`))
+        }else{
+            Toast.fail('提交订单失败！',1)
         }
     }
     // 金额转换
@@ -191,6 +210,7 @@ class OrderSure extends Component{
     }
 
     renderGoodsArray=()=>{
+        console.log(this.state.goodsList)
         return (
             <Block>
                 {
@@ -198,7 +218,7 @@ class OrderSure extends Component{
                         const color = item.attrList.filter((i)=>i.baseAttrName==='颜色')
                         return <Block key={'goods-item-'+index} wf bc='#fff' p={15} mt={10}>
                                 <Block className={Styles.prod_pic}>
-                                    <img alt={item.goodsName} src={item.logoPath} />
+                                    <img alt={item.goodsName} src={Constant.imgBaseUrl+item.logoPath} />
                                 </Block>
                                 <Block vf f={1} ml={15}>
                                     <Block style={{fontWeight: 'bold'}}>{item.goodsName}</Block>

@@ -21,7 +21,7 @@ class DeptService extends HttpBase{
      * orderDeptId：下单门店ID
      */
     getAdoptDeptList=(skuid,orderDeptId)=>{
-        return this.get(`/dept/getAdoptDeptList?skuid=${skuid}&orderDeptId=${orderDeptId}`);
+        return this.get(`/dept/getAdoptDeptList?skuId=${skuid}&orderDeptId=${orderDeptId}`);
     }
 
 }

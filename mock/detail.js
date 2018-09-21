@@ -426,6 +426,7 @@ module.exports = {
 			});
 		}, 200);
     },
+<<<<<<< HEAD
     'GET /api/order/getList':function(req,res){
         let data={
             Id:1,

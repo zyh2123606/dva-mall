@@ -14,7 +14,7 @@ class OrderService extends HttpBase{
     return this.post('/get-my-order', data)
   }
   addOrder=(data=undefined)=>{
-    return this.post('/orders/create',data)
+    return this.postJson('/order/create',data)
   }
 
   queryOrderById=(data)=>{
