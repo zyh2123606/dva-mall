@@ -2,12 +2,186 @@ const areaData=[
     {
         value:110000,
         label: '北京市',
-        children:[]
+        children:[
+        {
+            value:110100,
+            label: '北京市',
+            children:[
+            {
+                value:110101,
+                label: '东城区',
+                children:[]
+            },
+            {
+                value:110102,
+                label: '西城区',
+                children:[]
+            },
+            {
+                value:110105,
+                label: '朝阳区',
+                children:[]
+            },
+            {
+                value:110106,
+                label: '丰台区',
+                children:[]
+            },
+            {
+                value:110107,
+                label: '石景山区',
+                children:[]
+            },
+            {
+                value:110108,
+                label: '海淀区',
+                children:[]
+            },
+            {
+                value:110109,
+                label: '门头沟区',
+                children:[]
+            },
+            {
+                value:110111,
+                label: '房山区',
+                children:[]
+            },
+            {
+                value:110112,
+                label: '通州区',
+                children:[]
+            },
+            {
+                value:110113,
+                label: '顺义区',
+                children:[]
+            },
+            {
+                value:110114,
+                label: '昌平区',
+                children:[]
+            },
+            {
+                value:110115,
+                label: '大兴区',
+                children:[]
+            },
+            {
+                value:110116,
+                label: '怀柔区',
+                children:[]
+            },
+            {
+                value:110117,
+                label: '平谷区',
+                children:[]
+            },
+            {
+                value:110118,
+                label: '密云区',
+                children:[]
+            },
+            {
+                value:110119,
+                label: '延庆区',
+                children:[]
+            }
+            ]
+        }
+        ]
     },
     {
         value:120000,
         label: '天津市',
-        children:[]
+        children:[
+        {
+            value:120100,
+            label: '天津市',
+            children:[
+            {
+                value:120101,
+                label: '和平区',
+                children:[]
+            },
+            {
+                value:120102,
+                label: '河东区',
+                children:[]
+            },
+            {
+                value:120103,
+                label: '河西区',
+                children:[]
+            },
+            {
+                value:120104,
+                label: '南开区',
+                children:[]
+            },
+            {
+                value:120105,
+                label: '河北区',
+                children:[]
+            },
+            {
+                value:120106,
+                label: '红桥区',
+                children:[]
+            },
+            {
+                value:120110,
+                label: '东丽区',
+                children:[]
+            },
+            {
+                value:120111,
+                label: '西青区',
+                children:[]
+            },
+            {
+                value:120112,
+                label: '津南区',
+                children:[]
+            },
+            {
+                value:120113,
+                label: '北辰区',
+                children:[]
+            },
+            {
+                value:120114,
+                label: '武清区',
+                children:[]
+            },
+            {
+                value:120115,
+                label: '宝坻区',
+                children:[]
+            },
+            {
+                value:120116,
+                label: '滨海新区',
+                children:[]
+            },
+            {
+                value:120117,
+                label: '宁河区',
+                children:[]
+            },
+            {
+                value:120118,
+                label: '静海区',
+                children:[]
+            },
+            {
+                value:120119,
+                label: '蓟州区',
+                children:[]
+            }
+            ]
+        }
+        ]
     },
     {
         value:130000,
@@ -3863,7 +4037,94 @@ const areaData=[
     {
         value:310000,
         label: '上海市',
-        children:[]
+        children:[
+        {
+            value:310100,
+            label: '上海市',
+            children:[
+            {
+                value:310101,
+                label: '黄浦区',
+                children:[]
+            },
+            {
+                value:310104,
+                label: '徐汇区',
+                children:[]
+            },
+            {
+                value:310105,
+                label: '长宁区',
+                children:[]
+            },
+            {
+                value:310106,
+                label: '静安区',
+                children:[]
+            },
+            {
+                value:310107,
+                label: '普陀区',
+                children:[]
+            },
+            {
+                value:310109,
+                label: '虹口区',
+                children:[]
+            },
+            {
+                value:310110,
+                label: '杨浦区',
+                children:[]
+            },
+            {
+                value:310112,
+                label: '闵行区',
+                children:[]
+            },
+            {
+                value:310113,
+                label: '宝山区',
+                children:[]
+            },
+            {
+                value:310114,
+                label: '嘉定区',
+                children:[]
+            },
+            {
+                value:310115,
+                label: '浦东新区',
+                children:[]
+            },
+            {
+                value:310116,
+                label: '金山区',
+                children:[]
+            },
+            {
+                value:310117,
+                label: '松江区',
+                children:[]
+            },
+            {
+                value:310118,
+                label: '青浦区',
+                children:[]
+            },
+            {
+                value:310120,
+                label: '奉贤区',
+                children:[]
+            },
+            {
+                value:310151,
+                label: '崇明区',
+                children:[]
+            }
+            ]
+        }
+        ]
     },
     {
         value:320000,
