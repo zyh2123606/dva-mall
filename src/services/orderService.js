@@ -10,12 +10,11 @@ class OrderService extends HttpBase{
             return config
         })
     }
-    getMyOrder = (memId,orderCode)=>{
-        if(orderCode){
-            return this.get(`rder/getList?memId=${memId}&orderCode=${orderCode}`)
+    getMyOrder = (memId,status)=>{
+        if(status){
+            return this.get(`order/getList?memId=${memId}&status=${status}`)
         }
         let res = this.get(`order/getList?memId=${memId}`)
-        debugger
         return res
     }  
     addOrder=(data=undefined)=>{

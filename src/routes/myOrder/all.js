@@ -17,10 +17,12 @@ class All extends Component{
     pageSize = 10
     pageCount = 1
     async componentDidMount(){
-      const res = await Service.getMyOrder()
-      const { data, result } = res
-      if(result)
-        this.setState({ data: data})
+        const currentmemid=1
+        const statusall = 0//0获取全部状态
+        const res = await Service.getMyOrder(currentmemid,statusall)
+        const { data, code } = res
+        if(code==="0000")
+            this.setState({ data: data})
     }
     //获取数据
     async getList(loading=true){
@@ -45,8 +47,8 @@ class All extends Component{
                 refreshing={refreshing}
                 onRefresh={this.pulUpFresh}
                 damping={100}>
-                {this.state.data?this.state.data.data.map(({orderCode,status,goodsInfo},idx)=>(
-                  <Order key={idx} orderCode={orderCode} status = {status} goodsInfo={goodsInfo}/>
+                {this.state.data?this.state.data.map(({orderCode,status,goodsList},idx)=>(
+                  <Order key={idx} orderCode={orderCode} status = {status} goodsList={goodsList}/>
 
                 )):<Empty/>}
             </PullToRefresh>

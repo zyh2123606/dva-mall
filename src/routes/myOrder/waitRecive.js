@@ -1,7 +1,9 @@
 import { Component } from 'react'
+import Block from 'fs-flex'
 import Order from './order'
 import { PullToRefresh, Empty } from '../../components'
 import { Toast } from 'antd-mobile'
+import Service from '../../services/orderService'
 
 /**
  *待收货
@@ -14,8 +16,13 @@ class WaitRecive extends Component{
     pageIndex = 1
     pageSize = 10
     pageCount = 1
-    componentDidMount(){
-
+    async componentDidMount(){
+        const currentmemid=1
+        const statuswaitrecive = 2//0获取全部状态
+        const res = await Service.getMyOrder(currentmemid,statuswaitrecive)
+        const { data, code } = res
+        if(code==="0000")
+            this.setState({ data: data})
     }
     //获取数据
     async getList(loading=true){
@@ -40,8 +47,10 @@ class WaitRecive extends Component{
                 refreshing={refreshing}
                 onRefresh={this.pulUpFresh}
                 damping={100}>
-                <Order />
-                <Empty />
+                {this.state.data?this.state.data.map(({orderCode,status,goodsList},idx)=>(
+                  <Order key={idx} orderCode={orderCode} status = {status} goodsList={goodsList}/>
+
+                )):<Empty/>}
             </PullToRefresh>
         )
     }
