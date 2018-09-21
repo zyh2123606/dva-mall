@@ -3,7 +3,7 @@ import Block from 'fs-flex'
 import { Route } from 'react-router-dom'
 import { Tabs } from 'antd-mobile'
 import Styles from './index.less'
-import LazyComponent from '../../utils/lazyComponent'
+import { myOrderAllPage, myOrderWaitPayPage, myOrderWaitRecivePage, myOrderCompletePage } from '../../lazyRoutes'
 
 /**
  *我的订单
@@ -11,10 +11,6 @@ import LazyComponent from '../../utils/lazyComponent'
  * @class MyOrder
  * @extends {Component}
  */
-const allPage = LazyComponent(import('./all'))
-const waitPayPage = LazyComponent(import('./waitPay'))
-const waitRecivePage = LazyComponent(import('./waitRecive'))
-const completePage = LazyComponent(import('./complete'))
 class MyOrder extends Component{
     state = {currentTab: '/'}
     tabs = [
@@ -38,10 +34,10 @@ class MyOrder extends Component{
         return (
             <Block className={Styles.container} vf>
                 <Tabs swipeable={false} activeTab={currentTab} onTabClick={this.tabHandleChange} tabs={this.tabs}>
-                    <Route component={allPage} />
-                    <Route path={`${url}/wait-pay`} component={waitPayPage} />
-                    <Route path={`${url}/wait-recive`} component={waitRecivePage} />
-                    <Route path={`${url}/complete`} component={completePage} />
+                    <Route component={myOrderAllPage} />
+                    <Route path={`${url}/wait-pay`} component={myOrderWaitPayPage} />
+                    <Route path={`${url}/wait-recive`} component={myOrderWaitRecivePage} />
+                    <Route path={`${url}/complete`} component={myOrderCompletePage} />
                 </Tabs>
             </Block>
         )
