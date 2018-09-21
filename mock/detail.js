@@ -426,7 +426,6 @@ module.exports = {
 			});
 		}, 200);
     },
-<<<<<<< HEAD
     'GET /api/order/getList':function(req,res){
         let data={
             Id:1,
@@ -505,8 +504,7 @@ module.exports = {
 			});
 		}, 200);
     },
-=======
-    'GET /mem/addr/getList':function(req,res){
+    'GET /api/mem/myaddr/getList':function(req,res){
         let data=[
             {
                 id:1,
@@ -542,7 +540,5 @@ module.exports = {
             });
         }, 200);
     },
-
->>>>>>> 494d877b5a421e21ac58a84cdfc4a14fb23ddd7b
 }
 

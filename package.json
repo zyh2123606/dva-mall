@@ -22,6 +22,7 @@
     "svg-sprite-loader": "^3.8.0"
   },
   "devDependencies": {
+    "antd-mobile-demo-data": "^0.2.0",
     "babel-plugin-dva-hmr": "^0.3.2",
     "babel-plugin-import": "^1.8.0",
     "eslint": "^4.14.0",

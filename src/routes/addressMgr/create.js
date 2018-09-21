@@ -3,6 +3,7 @@ import Block from 'fs-flex'
 import { createForm } from 'rc-form'
 import { List, InputItem, TextareaItem, Picker, Checkbox, Button } from 'antd-mobile'
 import { connect } from 'dva'
+import AreaData from '../../components/areaData'
 
 /**
  *添加收货地址
@@ -13,6 +14,19 @@ import { connect } from 'dva'
 const Item = List.Item
 const CheckboxItem = Checkbox.CheckboxItem
 class Create extends Component{
+    state = {
+            data: [],
+            cols: 1,
+            pickerValue: [],
+            asyncValue: [],
+            sValue: ['2013', '春'],
+            visible: false,
+            colorValue: ['#00FF00'],
+          
+    }
+    submit=()=>{
+        console.log(this.props.form.getFieldsValue())
+    }
     render(){
         const {myAddress} = this.props
         let editAddr = null
@@ -33,7 +47,10 @@ class Create extends Component{
                         style={{textAlign: 'right'}}
                         maxLength={11} 
                         {...getFieldProps('tel',{initialValue:editAddr? editAddr.tel:''})}>联系电话</InputItem>
-                    <Picker title='选择地区'>
+                    <Picker data={AreaData} value={this.state.pickerValue} onChange={v=>this.setState({pickerValue:v})} 
+                        onOk={()=>this.setState({visible:false})}
+                        onDisemiss={()=>this.setState({visible:false})}
+                        title='选择地区'>
                         <Item arrow='horizontal'>所在地区</Item>
                     </Picker>
                     <TextareaItem
@@ -45,10 +62,11 @@ class Create extends Component{
                         maxLength={100}/>
                 </List>
                 <Block mt={10}>
-                    <CheckboxItem checked={editAddr?editAddr.defaultFlag:false}{...getFieldProps('defaultFlag')}>设为默认地址</CheckboxItem>
+                    <CheckboxItem defaultChecked={editAddr?editAddr.defaultFlag===1:false}
+                        {...getFieldProps('defaultFlag',{initialValue:editAddr?editAddr.defaultFlag===1:false})}>设为默认地址</CheckboxItem>
                 </Block>
                 <Block ml={15} mr={15} mt={20}>
-                    <Button style={{borderRadius: 25}} type='primary'>保存</Button>
+                    <Button style={{borderRadius: 25}} type='primary' onClick={this.submit}>保存</Button>
                 </Block>
             </Block>
         )

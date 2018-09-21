@@ -7,6 +7,7 @@ import {Toast} from 'antd-mobile'
 import {Link} from 'react-router-dom'
 import {connect} from 'dva'
 import Service from '../../services/addressService'
+import { district } from 'antd-mobile-demo-data'
 
 /**
  *收货地址管理
@@ -47,7 +48,9 @@ class AddressMgr extends Component {
                 dispatch({type: 'myAddress/initState', payload})
             })
         }
+        console.log(district)
     }
+    
     render() {
         return (
             <Block vf className={Styles.container}>
