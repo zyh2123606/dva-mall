@@ -21,7 +21,7 @@ class Order extends Component{
                     <Block f={1}>订单编号：{this.props.orderCode}</Block>
                     <Block>删除</Block>
                 </Block>
-                {this.props.goodsInfo?this.props.goodsInfo.map((item,idx)=>(
+                {this.props.goodsList?this.props.goodsList.map((item,idx)=>(
                   <Product
                       status ={order_status}
                     key = {idx}
