@@ -237,7 +237,6 @@ module.exports = {
 			});
 		}, 200);
     },
-    
     'GET /api/cart/myCartList':function(req,res){
         let data = {
             1001:[
@@ -426,7 +425,6 @@ module.exports = {
 			});
 		}, 200);
     },
-<<<<<<< HEAD
     'GET /api/order/getList':function(req,res){
         let data={
             Id:1,
