@@ -54,7 +54,7 @@ class SearchProduct extends Component{
                     </Block>
                 </Block>
                 {/* 弹出层 */}
-                <section style={{display: popVisible?'block':'none'}} className={Styles.search_masker}>
+                <section style={{display: popVisible?'block':'none'}} className={Styles.search_masker} onClick={this.close}>
                     <article className={Styles.search_pop}>
                         <Block className={Styles.normalTag}>白色</Block>
                         <Block className={Styles.activeTag}>白色</Block>

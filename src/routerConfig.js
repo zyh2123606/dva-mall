@@ -14,7 +14,8 @@ const RouteConfig = [
     {path: '/order-complete/:orderId', component: LazyComponent(import('./routes/orderMgr/orderComplete')), exact: true},
     {path: '/product', component: LazyComponent(import('./routes/product')), exact: true},
     {path: '/search', component: LazyComponent(import('./routes/product/search')), exact: true},
-    {path: '/order-complete/:orderId/:shoppingcardId', component: LazyComponent(import('./routes/orderMgr/orderComplete')), exact: true}
+    {path: '/order-complete/:orderId/:shoppingcardId', component: LazyComponent(import('./routes/orderMgr/orderComplete')), exact: true},
+    {path: '/cart', component: LazyComponent(import('./routes/shoppingCart')), exact: true}
 ]
 
 export default RouteConfig

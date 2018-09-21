@@ -1,0 +1,65 @@
+@import '../../common.less';
+.cart_container{
+    .container;
+    background: #fff;
+    .cart_content{
+        overflow: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 60px;
+    }
+    .shop_panel{
+        background: #fff;
+        box-shadow: 0 2px 8px 0 rgba(60,96,148,0.14);
+        border-radius: @borderRadius;
+        margin: 15px 15px 0 15px;
+        overflow: hidden;
+        position: relative;
+        .prod_tag{
+            background: #F0F0F0;
+            color: #666;
+            font-size: 12px;
+            padding: 0 5px;
+            display: inline-block;
+            margin-right: 5px;
+            border-radius: 2px;
+        }
+        .custom_check{
+            width: 20px;
+            height: 20px;
+            border: #D2D2D2 solid 1px;
+            border-radius: 11px;
+            background: #fff;
+        }
+        .current_checked{
+            .custom_check;
+            border-color: @orange;
+            font-size: 10px;
+        }
+        .prod_pic{
+            width: 76px;
+            height: 76px;
+            padding: 2px;
+            border-radius: @borderRadius;
+            border: 1px solid #E6E6E6;
+        }
+    }
+    .footer_bar{
+        height: 50px;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 100;
+        background: #fff;
+        .footer_content{
+            height: 50px;
+            .thin-ty-line();
+        }
+        .pay_btn{
+            border-radius: 0;
+            padding: 0 15px;
+            height: 50px;
+        }
+    }
+}
