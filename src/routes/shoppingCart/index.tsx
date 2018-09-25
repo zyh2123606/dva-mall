@@ -6,6 +6,7 @@ import { SwipeAction, Icon, Stepper, Checkbox, Button,Toast,Modal } from 'antd-m
 import ShoppingCartService from '../../services/shoppingCartService'
 import Constant from '../../utils/constant';
 import {routerRedux} from 'dva/router';
+import {connect} from 'dva';
 const alert = Modal.alert;
 /**
  *购物车
@@ -41,13 +42,17 @@ class Cart extends Component<IPropos>{
         const {memId,}=this.state
         alert('删除', '确定删除该商品?', [
             { text: '取消', onPress: () => console.log('cancel') },
-            { text: '确定', onPress: () =>{
-                const {code,data}=ShoppingCartService.delete(record.cartId,memId)
-                if(code===Constant.responseOK){
-                    this.queryShoppingCart()
-                }
-            } }
+            { text: '确定', onPress: () =>this.delted(record.cartId)
+            }
           ])
+    }
+
+    async delted(cartId){
+        const {memId,}=this.state
+        const {code,data}= await ShoppingCartService.delete(cartId,memId)
+        if(code===Constant.responseOK){
+            this.queryShoppingCart()
+        }
     }
 
     async goodsCountChange(val,item){
@@ -114,26 +119,32 @@ class Cart extends Component<IPropos>{
         })
     }
     settlement=()=>{
-        const {selectedCartId}=this.state
+        const {selectedCartId,goodsList}=this.state
         const {dispatch} =this.props;
         if(selectedCartId.size<1){
             Toast.fail('未选中任何商品！',1)
             return
         }
         let shoppinCartIdStr=''
-        selectedCartId.forEach((item,index)=>{
-            if(index!==selectedCartId.size-1){
-                shoppinCartIdStr+=(item+',')
-            }else{
-                shoppinCartIdStr+=(item)
-            }
+        let index=0
+        selectedCartId.forEach(item=>{
+            goodsList.map((v,i)=>{
+                if(item===i){
+                    if(selectedCartId.size===1 || index===(selectedCartId.size-1)){
+                        shoppinCartIdStr+=(v.cartId)
+                    }else{
+                        shoppinCartIdStr+=(v.cartId+',')
+                    }   
+                }
+            })
+            index++
         })
         if(shoppinCartIdStr.length>0){
+            console.log(`shoppinCartIdStr:${shoppinCartIdStr}`)
             dispatch(routerRedux.push({
                 pathname:`/order-sure/${shoppinCartIdStr}`
             }));
         }
-        
     }
     renderCartItem=()=>{
         const {goodsList,selectedCartId,totalPrise} =this.state
@@ -169,7 +180,7 @@ class Cart extends Component<IPropos>{
                                         <Block mt={5}>
                                             {
                                                 item.attrList.map((subItem,subIndex)=>{
-                                                    return <Block key={'attr-item-index-'+subIndex} className={Styles.prod_tag}>{subItem.baseAttrName}</Block>
+                                                    return <Block key={'attr-item-index-'+subIndex} className={Styles.prod_tag}>{subItem.attrCode}</Block>
                                                 })
                                             }
                                         </Block>
@@ -228,4 +239,4 @@ class Cart extends Component<IPropos>{
 }
 
 const mainForm = createForm()(Cart)
-export default mainForm
+export default connect()(mainForm)
