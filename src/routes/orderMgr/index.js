@@ -132,6 +132,13 @@ class OrderDetail extends Component{
             this.setState({shoppingCartCount:data.length})
         }
     }
+    // 查看购物车
+    toShoppingCart=()=>{
+        const {dispatch} =this.props;
+        dispatch(routerRedux.push({
+            pathname:'/cart'
+        }));
+    }
     // 渲染商品属性部分
     renderAttrBlock=(baseAttrId)=>{
         const { getFieldProps } = this.props.form
@@ -226,7 +233,7 @@ class OrderDetail extends Component{
                     <Block a='c' j='c' w={60} vf>
                         <Block>
                         </Block>
-                        <Block fs={12}><Badge text={shoppingCartCount}><span>购物车</span></Badge></Block>
+                        <Block fs={12} onClick={this.toShoppingCart}><Badge text={shoppingCartCount}><span>购物车</span></Badge></Block>
                     </Block>
                     <Block wf f={1} ml={10} mr={10}>
                         <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>

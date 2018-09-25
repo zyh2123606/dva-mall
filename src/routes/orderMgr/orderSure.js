@@ -158,7 +158,9 @@ class OrderSure extends Component{
         const {data,code}= await OrderService.addOrder({...params})
         if (code===Constant.responseOK){
             Toast.success('提交订单成功！',1)
-            dispatch(routerRedux.push(`/order-complete/${data}/${shoppingcardId}`))
+            setTimeout(() => {
+                dispatch(routerRedux.push(`/order-result/${data}/${shoppingcardId}/${code}`))
+            }, 1000);
         }else{
             Toast.fail('提交订单失败！',1)
         }
