@@ -28,6 +28,9 @@ class ProductService extends HttpBase{
     queryFilterItem=(parentType)=>{
         return this.get(`/goods/getFacet?parentTypeId=${parentType}`)
     }
+    searchGoods=(params)=>{
+        return this.postJson('goods/search',params)
+    }
 }
 
 export default new ProductService()
