@@ -3,7 +3,8 @@ import Block from 'fs-flex'
 import Styles from './index.less'
 import { SearchBar, Button, Toast } from 'antd-mobile'
 import { PullToRefresh, Empty } from '../../components'
-
+import ProductService from '../../services/productService'
+import Constatn from '../../utils/constant'
 /**
  *商品搜索页
  *
@@ -11,20 +12,46 @@ import { PullToRefresh, Empty } from '../../components'
  * @extends {Component}
  */
 class SearchProduct extends Component{
-    state = { refreshing: true, data: null, popVisible: false, curMenu: null }
+    state = { 
+        refreshing: true, 
+        data: null, 
+        popVisible: false, 
+        curMenu: null,
+        filterConditions:[],// 过滤条件
+        selectedSku: new Map()//存放选中的sku属性
+    }
     pageIndex = 1
     pageSize = 10
     pageCount = 1
+    skuNameFieldMapping={'brandName':'品牌','colour':'颜色','memory':'内存'}
     menus = [
-        {key: 100, title: '综合'},
-        {key: 200, title: '品牌'},
-        {key: 300, title: '价格'},
-        {key: 400, title: '颜色'}
+        {title: '综合',content:[]},
     ]
     componentDidMount() {
-        
+        this.aqueryFilterItem()
+    }
+    async aqueryFilterItem(){
+        let { match:{params:{parentType,name}},dispatch} = this.props
+        const {data,code} = await ProductService.queryFilterItem(parentType)
+        if(code===Constatn.responseOK){
+            if(data){
+                let filterConditions=[{title: '综合',content:[]}]
+                for (let key of Object.keys(data)){
+                    const name=this.skuNameFieldMapping[key]
+                    filterConditions.push({
+                        title:name,
+                        content:data[key]
+                    })
+                }
+                this.setState({
+                    filterConditions
+                })
+            }
+        }
     }
     menuHandleClk(curMenu){
+        let {selectedSku}=this.state
+        selectedSku[curMenu.title]=''
         this.setState({curMenu, popVisible: true})
     }
     handleClose = e => {
@@ -44,6 +71,21 @@ class SearchProduct extends Component{
         this.pageIndex++
         this.setState({refreshing: true})
     }
+    renderSkuSelectBar(){
+        const {filterConditions,selectedSku}=this.state
+        return (
+            <Block className={Styles.contrl} wf>
+                {
+                    filterConditions.map((item,index)=>{
+                        return  <Block onClick={this.menuHandleClk.bind(this, item)} key={index} f={1} j='c' a='c'>
+                                    {/* <Block mr={5} className={title===curMenu?Styles.orangeColor:''}>{item.title}</Block>
+                                    <i className={title===curMenu?Styles.arrow_b:Styles.arrow_t}></i> */}
+                                </Block>
+                    })
+                }
+            </Block>
+        )
+    }
     render(){
         const { popVisible, curMenu, refreshing } = this.state
         return (
@@ -52,10 +94,10 @@ class SearchProduct extends Component{
                     showCancelButton={true} 
                     cancelText={<Button style={{marginTop: 6, borderRadius: 15}} type='primary' size='small'>搜索</Button>}/>
                 <Block className={Styles.contrl} wf>
-                    {this.menus.map(({key, title}, idx) => (
-                        <Block onClick={this.menuHandleClk.bind(this, key)} key={idx} f={1} j='c' a='c'>
-                            <Block mr={5} className={key===curMenu?Styles.orangeColor:''}>{title}</Block>
-                            <i className={key===curMenu?Styles.arrow_b:Styles.arrow_t}></i>
+                    {this.menus.map(({title}, idx) => (
+                        <Block onClick={this.menuHandleClk.bind(this, title)} key={idx} f={1} j='c' a='c'>
+                            <Block mr={5} className={title===curMenu?Styles.orangeColor:''}>{title}</Block>
+                            <i className={title===curMenu?Styles.arrow_b:Styles.arrow_t}></i>
                         </Block>
                     ))}
                 </Block>

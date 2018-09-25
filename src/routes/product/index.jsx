@@ -1,7 +1,10 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-
+import ProductService from '../../services/productService'
+import Constant from '../../utils/constant'
+import {routerRedux} from 'dva/router';
+import {connect} from 'dva'
 /**
  *商品列表入口
  *
@@ -9,34 +12,68 @@ import Styles from './index.less'
  * @extends {Component}
  */
 class DefaultPage extends Component{
+    state={
+        firstTypeList:[],// 第一级分类集合
+        secondTypeList:[],// 第二级分类集合
+    }
+    async componentDidMount(){
+        const {data,code} =await ProductService.getTypeList()
+        if(code === Constant.responseOK){
+            this.setState({firstTypeList:data})
+            if(data && data.length>0){
+                this.querychildTypeList(data[0].id)
+            }
+        }
+    }
+    async querychildTypeList(parentId){
+        const {data,code} =await ProductService.getTypeList(parentId)
+        if(code === Constant.responseOK){
+            this.setState({secondTypeList:data})
+        }
+    }
+    // 点击选中第一级菜单
+    selectedParentItem(parent){
+        this.querychildTypeList(parent.id)
+    }
+    // 选中第二级菜单
+    selectChildItem(item){
+        this.props.dispatch(routerRedux.push(`/search/${item.parentType}/${item.typeName}`))
+    }
+    renderSecondType=()=>{
+        const {secondTypeList}=this.state
+        return (
+            <dl className={Styles.prod_panel}>
+                {
+                    secondTypeList.map((item,index)=>{
+                        let itemClass=Styles.prod_item
+                        if(index===2){
+                            itemClass=Styles.prod_item_r_f
+                        } else if((index+1)%3===0){
+                            itemClass=Styles.prod_item_r
+                        }
+                        return <dd key={'child-type-'+index} className={itemClass} onClick={this.selectChildItem.bind(this,item)}><img src={Constant.imgBaseUrl+item.logoPath} alt={item.title}/></dd>
+                    })
+                }
+            </dl>
+        )
+    }
     render(){
+        const {firstTypeList}=this.state
         return (
             <Block className={Styles.default_wrapper} wf>
                 <Block className={Styles.left_menu}>
-                    <Block j='c' a='c' className={Styles.menu_item}>移动终端</Block>
-                    <Block j='c' a='c' className={Styles.menu_item}>穿戴设备</Block>
-                    <Block j='c' a='c' className={Styles.menu_item}>智能家居</Block>
-                    <Block j='c' a='c' className={Styles.menu_item}>辅助配件</Block>
+                {
+                    firstTypeList.map((item,index)=>
+                        <Block j='c' onClick={this.selectedParentItem.bind(this,item)} key={'firstType-'+index} a='c' className={Styles.menu_item}>{item.title}</Block>
+                    )
+                }
                 </Block>
                 <Block vf f={1} ml={15} mr={15}>
-                    <Block pt={10} pb={10} className={Styles.orangeColor}>手机</Block>
-                    <dl className={Styles.prod_panel}>
-                        <dd className={Styles.prod_item}></dd>
-                        <dd className={Styles.prod_item}></dd>
-                        <dd className={Styles.prod_item_r_f}></dd>
-
-                        <dd className={Styles.prod_item}></dd>
-                        <dd className={Styles.prod_item}></dd>
-                        <dd className={Styles.prod_item_r}></dd>
-
-                        <dd className={Styles.prod_item}></dd>
-                        <dd className={Styles.prod_item}></dd>
-                        <dd className={Styles.prod_item_r}></dd>
-                    </dl>
+                    {this.renderSecondType()}
                 </Block>
             </Block>
         )
     }
 }
 
-export default DefaultPage
+export default connect()(DefaultPage)

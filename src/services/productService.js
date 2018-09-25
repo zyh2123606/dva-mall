@@ -17,6 +17,17 @@ class ProductService extends HttpBase{
     queryPriceByGoodsColor=(data)=>{
         return this.postJson('/goods/getSkuInfo',data)
     }
+    // 查询商品属性，根据parentID
+    getTypeList=(parentTypeId=undefined)=>{
+        if(parentTypeId){
+            return this.get(`/goods/getTypeList?parentType=${parentTypeId}`)
+        }
+        return this.get('/goods/getTypeList')
+    }
+
+    queryFilterItem=(parentType)=>{
+        return this.get(`/goods/getFacet?parentTypeId=${parentType}`)
+    }
 }
 
 export default new ProductService()
