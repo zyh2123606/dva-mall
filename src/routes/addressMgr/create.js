@@ -27,8 +27,28 @@ class Create extends Component{
     }
     submit=async()=>{
         const submitVales = this.props.form.getFieldsValue()
-        const {address,defaultFlag,pcc:[province,city,county],receiver,tel}=submitVales
         debugger
+        if(submitVales.receiver===undefined || submitVales.receiver.length===0){
+            Toast.info("请输入有效的收货人！")
+            return
+        }
+        if(submitVales.tel===undefined || submitVales.tel.length===0){
+            Toast.info("请输入有效的联系电话！")
+            return
+        }
+        if(submitVales.tel.length!==11){
+            Toast.info("请输入有效的手机号")
+            return
+        }
+        if(submitVales.pcc===undefined || submitVales.pcc.length===0){
+            Toast.info("请输入有效的所属区域！")
+            return
+        }
+        if(submitVales.address===undefined || submitVales.address.length===0){
+            Toast.info("请输入有效的收货地址！")
+            return
+        }
+        const {address,defaultFlag,pcc:[province,city,county],receiver,tel}=submitVales
         const temp={tel:tel,memId:1,address:address,receiver:receiver,defaultFlag:defaultFlag?1:2,province:province,city:city,county:county}
         const res = await Service.updateAddress(temp)
         const{code,msg} = res
