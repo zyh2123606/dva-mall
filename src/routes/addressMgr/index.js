@@ -2,7 +2,7 @@ import AreaData from '../../components/areaData'
 import {Component} from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-import {Checkbox} from 'antd-mobile'
+import {Modal,Checkbox} from 'antd-mobile'
 import {Empty} from '../../components'
 import {Toast} from 'antd-mobile'
 import {Link} from 'react-router-dom'
@@ -37,22 +37,28 @@ class AddressMgr extends Component {
         dispatch({type: "myAddress/editAddress", payload})
         history.push('/add-address')
     }
-    detetAddress=async(item,index,e)=>{
-        //TODO-这里需要加个删除确认
-        const {id} = item 
-        const res = await Service.deleteAddress({addrId:id,memId:1})
-        const {code,msg} = res
-        if(code==="0000"){
-            Toast.info("删除成功！")
-            let newState = this.props.myAddress
-            newState.data.filter((data,idx)=>{
-                if(data.id===id)
-                    newState.data.splice(idx,1)
-            })
-            this.setState({data:newState})
-        }else{
-            Toast.info(msg)
-        }
+    deleteAddress=(item,index,e)=>{
+        const alert = Modal.alert
+        const pcc = this.getProvince(item.province,item.city,item.county,AreaData)
+        alert('确认',`确认删除地址: ${pcc} ${item.address}么？`,[{text:'取消',onPress:()=>console.log('cancel')},
+            {text:'确认',onPress:()=>{
+                (async(item,index)=>{
+                    const {id} = item 
+                    const res = await Service.deleteAddress({addrId:id,memId:1})
+                    const {code,msg} = res
+                    if(code==="0000"){
+                        Toast.info("删除成功！")
+                        let newState = this.props.myAddress
+                        newState.data.filter((data,idx)=>{
+                            if(data.id===id)
+                                newState.data.splice(idx,1)
+                        })
+                        this.setState({data:newState})
+                    }else{
+                        Toast.info(msg)
+                    }
+                })(item,index)
+            }},])
     }
 
     async componentDidMount() {
@@ -67,7 +73,6 @@ class AddressMgr extends Component {
         }
         this.AData = AreaData
         this.forceUpdate()
-        console.log(this.AData)
     }
 
     getProvince=(provinceCode,cityCode,countyCode,AData)=>{
@@ -115,7 +120,7 @@ class AddressMgr extends Component {
                                 </Block>
                                 <Block wf a='c'>
                                     <Block className={Styles.edit} onClick={this.setEditAddress.bind(this,data,idx)}></Block>
-                                    <Block mr={15} ml={10} className={Styles.del} onClick={this.detetAddress.bind(this,data,idx)}></Block>
+                                    <Block mr={15} ml={10} className={Styles.del} onClick={this.deleteAddress.bind(this,data,idx)}></Block>
                                 </Block>
                             </Block>
                         </Block>
