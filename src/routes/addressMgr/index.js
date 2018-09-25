@@ -1,3 +1,4 @@
+import AreaData from '../../components/areaData'
 import {Component} from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
@@ -64,6 +65,35 @@ class AddressMgr extends Component {
                 dispatch({type: 'myAddress/initState', payload})
             })
         }
+        this.AData = AreaData
+        this.forceUpdate()
+        console.log(this.AData)
+    }
+
+    getProvince=(provinceCode,cityCode,countyCode,AData)=>{
+        const province = AData.filter((item,idx) => {
+            return item.value===provinceCode;
+        });
+        const provinceName = province[0].label;
+        let city =""
+        let cityname =""
+        for (var i = 0, len = province[0].children.length; i < len; i++) {
+            if(province[0].children[i].value===cityCode){
+                city = province[0].children[i]
+                cityname = city.label
+                break
+            }
+        }
+        let county=""
+        let countyName=""
+        for (var i = 0, len = city.children.length; i < len; i++) {
+            if(city.children[i].value===countyCode){
+                county = city.children[i]
+                countyName = county.label
+                break
+            }
+        }
+        return `${provinceName} ${cityname} ${countyName} `
     }
     
     render() {
@@ -77,7 +107,7 @@ class AddressMgr extends Component {
                                     <Block f={1}>{data.receiver}</Block>
                                     <Block>{data.tel}</Block>
                                 </Block>
-                                <Block mt={5}>{data.address}</Block>
+                                <Block mt={5}>{this.AData?this.getProvince(data.province,data.city,data.county,this.AData):null}{data.address}</Block>
                             </Block>
                             <Block className={Styles.act_addr} mt={10} wf>
                                 <Block f={1}>
