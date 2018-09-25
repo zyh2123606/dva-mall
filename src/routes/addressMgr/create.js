@@ -25,7 +25,7 @@ class Create extends Component{
             colorValue: ['#00FF00'],
           
     }
-    submit=async(editAddr,e)=>{
+    submit=async()=>{
         const submitVales = this.props.form.getFieldsValue()
         const {address,defaultFlag,pcc:[province,city,county],receiver,tel}=submitVales
         debugger
@@ -53,17 +53,17 @@ class Create extends Component{
                         placeholder='请输入姓名'
                         style={{textAlign: 'right'}}
                         maxLength={10} 
-                        {...getFieldProps('receiver',{initialValue: this.editAddr?this.editAddr.receiver:''})}>收货人</InputItem>
+                        {...getFieldProps('receiver')}>收货人</InputItem>
                     <InputItem 
                         type='number'
                         placeholder='请输入联系电话'
                         style={{textAlign: 'right'}}
                         maxLength={11} 
-                        {...getFieldProps('tel',{initialValue:this.editAddr? this.editAddr.tel:''})}>联系电话</InputItem>
+                        {...getFieldProps('tel')}>联系电话</InputItem>
                     <Picker data={AreaData} value={this.state.pickerValue} onChange={v=>this.setState({pickerValue:v})} 
                         onOk={()=>this.setState({visible:false})}
                         onDisemiss={()=>this.setState({visible:false})}
-                        {...getFieldProps('pcc',{initialValue:this.editAddr?[this.editAddr.province,this.editAddr.city,this.editAddr.county]:''})}
+                        {...getFieldProps('pcc')}
                         title='选择地区'>
                         <Item arrow='horizontal'>所在地区</Item>
                     </Picker>
@@ -72,15 +72,15 @@ class Create extends Component{
                         placeholder='请输入地址'
                         autoHeight
                         style={{textAlign: 'right'}}
-                        {...getFieldProps('address', {initialValue: this.editAddr?this.editAddr.address:''})}
+                        {...getFieldProps('address')}
                         maxLength={100}/>
                 </List>
                 <Block mt={10}>
-                    <CheckboxItem defaultChecked={this.editAddr?this.editAddr.defaultFlag===1:false}
-                        {...getFieldProps('defaultFlag',{initialValue:this.editAddr?this.editAddr.defaultFlag===1:false})}>设为默认地址</CheckboxItem>
+                    <CheckboxItem 
+                        {...getFieldProps('defaultFlag')}>设为默认地址</CheckboxItem>
                 </Block>
                 <Block ml={15} mr={15} mt={20}>
-                    <Button style={{borderRadius: 25}} type='primary' onClick={this.submit.bind(this,this.editAddr)}>保存</Button>
+                    <Button style={{borderRadius: 25}} type='primary' onClick={this.submit.bind(this)}>保存</Button>
                 </Block>
             </Block>
         )
