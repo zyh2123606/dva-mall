@@ -7,6 +7,7 @@ export const orderSurePage = Loadable({loader: () => import('./routes/orderMgr/o
 export const accountPage = Loadable({loader: () => import('./routes/account'), loading: () =>(<div></div>)})
 export const addressMgrPage = Loadable({loader: () => import('./routes/addressMgr'), loading: () =>(<div></div>)})
 export const addAddressPage = Loadable({loader: () => import('./routes/addressMgr/create'), loading: () =>(<div></div>)})
+export const updateAddressPage = Loadable({loader: () => import('./routes/addressMgr/update'), loading: () =>(<div></div>)})
 export const orderInfoPage = Loadable({loader: () => import('./routes/myOrder/orderInfo'), loading: () =>(<div></div>)})
 export const orderCompletePage = Loadable({loader: () => import('./routes/orderMgr/orderComplete'), loading: () =>(<div></div>)})
 export const productPage = Loadable({loader: () => import('./routes/product'), loading: () =>(<div></div>)})

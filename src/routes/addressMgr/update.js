@@ -9,12 +9,12 @@ import Service from '../../services/addressService'
 /**
  *添加收货地址
  *
- * @class Create
+ * @class Update
  * @extends {Component}
  */
 const Item = List.Item
 const CheckboxItem = Checkbox.CheckboxItem
-class Create extends Component{
+class Update extends Component{
     state = {
             data: [],
             cols: 1,
@@ -29,7 +29,7 @@ class Create extends Component{
         const submitVales = this.props.form.getFieldsValue()
         const {address,defaultFlag,pcc:[province,city,county],receiver,tel}=submitVales
         debugger
-        const temp={tel:tel,memId:1,address:address,receiver:receiver,defaultFlag:defaultFlag?1:2,province:province,city:city,county:county}
+        const temp={id:this.editAddr.id,tel:tel,memId:1,address:address,receiver:receiver,defaultFlag:defaultFlag?1:2,province:province,city:city,county:county}
         const res = await Service.updateAddress(temp)
         const{code,msg} = res
         if(code==="0000"){
@@ -87,5 +87,5 @@ class Create extends Component{
     }
 }
 
-const mainForm = createForm()(Create)
+const mainForm = createForm()(Update)
 export default connect(state => state)(mainForm)

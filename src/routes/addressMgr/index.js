@@ -35,7 +35,7 @@ class AddressMgr extends Component {
         const {dispatch, history} = this.props
         const payload = {editIndex:index,editFlag:true}
         dispatch({type: "myAddress/editAddress", payload})
-        history.push('/add-address')
+        history.push('/update-address')
     }
     deleteAddress=(item,index,e)=>{
         const alert = Modal.alert
