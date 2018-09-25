@@ -113,7 +113,7 @@ class SearchProduct extends Component{
     selectSkuItem(title,itemName){
         let selectedSku=this.state.selectedSku
         selectedSku.set(title,itemName)
-        this.queryGoods()
+         
         this.setState({
             selectedSku:selectedSku,
             popVisible:false
