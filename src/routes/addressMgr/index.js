@@ -7,7 +7,6 @@ import {Toast} from 'antd-mobile'
 import {Link} from 'react-router-dom'
 import {connect} from 'dva'
 import Service from '../../services/addressService'
-import { district } from 'antd-mobile-demo-data'
 
 /**
  *收货地址管理
@@ -39,16 +38,15 @@ class AddressMgr extends Component {
     }
 
     async componentDidMount() {
-        const res = await Service.getMyAddress()
-        const {data, result} = res
+        const res = await Service.getMyAddress(1)
+        const {data, code} = res
         const {dispatch, history} = this.props
-        if (result) {
+        if (code==="0000") {
             this.setState({data: data}, () => {
                 const payload = this.state.data
                 dispatch({type: 'myAddress/initState', payload})
             })
         }
-        console.log(district)
     }
     
     render() {

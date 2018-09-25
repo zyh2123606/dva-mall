@@ -1,7 +1,8 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-import { SearchBar, Button } from 'antd-mobile'
+import { SearchBar, Button, Toast } from 'antd-mobile'
+import { PullToRefresh, Empty } from '../../components'
 
 /**
  *商品搜索页
@@ -10,21 +11,41 @@ import { SearchBar, Button } from 'antd-mobile'
  * @extends {Component}
  */
 class SearchProduct extends Component{
-    state = {
-        popVisible: false,
-        curMenu: null
-    }
+    state = { refreshing: true, data: null, popVisible: false, curMenu: null }
+    pageIndex = 1
+    pageSize = 10
+    pageCount = 1
     menus = [
         {key: 100, title: '综合'},
         {key: 200, title: '品牌'},
         {key: 300, title: '价格'},
         {key: 400, title: '颜色'}
     ]
+    componentDidMount() {
+        
+    }
     menuHandleClk(curMenu){
         this.setState({curMenu, popVisible: true})
     }
+    handleClose = e => {
+        this.setState({popVisible: false})
+    }
+    //获取数据
+    async getList(loading=true){
+        const { pageIndex, pageSize } = this
+    }
+    //下拉刷新
+    pulUpFresh = () => {
+        if(this.pageIndex >= this.pageCount){
+            Toast.info('已没有更多数据')
+            this.setState({ refreshing: false})
+            return
+        }
+        this.pageIndex++
+        this.setState({refreshing: true})
+    }
     render(){
-        const { popVisible, curMenu } = this.state
+        const { popVisible, curMenu, refreshing } = this.state
         return (
             <Block className={Styles.search_wrapper} vf>
                 <SearchBar placeholder='请输入商品名称查询'
@@ -39,22 +60,30 @@ class SearchProduct extends Component{
                     ))}
                 </Block>
                 <Block f={1} className={Styles.sear_content}>
-                    <Block wf className={Styles.sear_list_item}>
-                        <Block className={Styles.prod_pic}></Block>
-                        <Block f={1} ml={15}>
-                            <Block>小米 红米Note5 全网通版 4GB+64G 红色 全网联通4G手机 双卡双待</Block>
-                            <Block mt={5} wf>
-                                <Block f={1}>
-                                    <Block mt={5} className={Styles.prod_tag}>4GB</Block>
-                                    <Block mt={5} className={Styles.prod_tag}>极光白/黑金/宝石红</Block>
+                    <PullToRefresh
+                        direction='up'
+                        distanceToRefresh={40}
+                        refreshing={refreshing}
+                        onRefresh={this.pulUpFresh}
+                        damping={100}>
+                        <Block wf className={Styles.sear_list_item}>
+                            <Block className={Styles.prod_pic}></Block>
+                            <Block f={1} ml={15}>
+                                <Block>小米 红米Note5 全网通版 4GB+64G 红色 全网联通4G手机 双卡双待</Block>
+                                <Block mt={5} wf>
+                                    <Block f={1}>
+                                        <Block mt={5} className={Styles.prod_tag}>4GB</Block>
+                                        <Block mt={5} className={Styles.prod_tag}>极光白/黑金/宝石红</Block>
+                                    </Block>
+                                    <Block mt={5} className={Styles.orangeColor}>￥2799.00</Block>
                                 </Block>
-                                <Block mt={5} className={Styles.orangeColor}>￥2799.00</Block>
                             </Block>
                         </Block>
-                    </Block>
+                        <Empty />
+                    </PullToRefresh>
                 </Block>
                 {/* 弹出层 */}
-                <section style={{display: popVisible?'block':'none'}} className={Styles.search_masker} onClick={this.close}>
+                <section style={{display: popVisible?'block':'none'}} className={Styles.search_masker} onClick={this.handleClose}>
                     <article className={Styles.search_pop}>
                         <Block className={Styles.normalTag}>白色</Block>
                         <Block className={Styles.activeTag}>白色</Block>
