@@ -16,6 +16,9 @@ class AddressService extends HttpBase{
     updateAddress=(data=undefined)=>{
         return this.postJson('/mem/addr/update',data)
     }
+    deleteAddress=(data=undefined)=>{
+        return this.get(`/mem/addr/delete?addrId=${data.addrId}&memId=${data.memId}`)
+    }
 }
 
 export default new AddressService()
