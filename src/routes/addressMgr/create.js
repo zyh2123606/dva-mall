@@ -1,9 +1,10 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import { createForm } from 'rc-form'
-import { List, InputItem, TextareaItem, Picker, Checkbox, Button } from 'antd-mobile'
+import { List,Toast, InputItem, TextareaItem, Picker, Checkbox, Button } from 'antd-mobile'
 import { connect } from 'dva'
 import AreaData from '../../components/areaData'
+import Service from '../../services/addressService'
 
 /**
  *添加收货地址
@@ -24,8 +25,19 @@ class Create extends Component{
             colorValue: ['#00FF00'],
           
     }
-    submit=()=>{
-        console.log(this.props.form.getFieldsValue())
+    submit=async(editAddr,e)=>{
+        const submitVales = this.props.form.getFieldsValue()
+        const {address,defaultFlag,pcc:[province,city,county],receiver,tel}=submitVales
+        const temp={tel:tel,memId:1,address:address,receiver:receiver,defaultFlag:defaultFlag?1:2,province:province,city:city,county:county}
+        const res = await Service.updateAddress(temp)
+        const{code,msg} = res
+        if(code==="0000"){
+            Toast.info("保存成功!")
+            const {history} = this.props
+            history.goBack()
+        }else{
+            Toast.Info(msg)
+        }
     }
     render(){
         const {myAddress} = this.props
@@ -67,7 +79,7 @@ class Create extends Component{
                         {...getFieldProps('defaultFlag',{initialValue:editAddr?editAddr.defaultFlag===1:false})}>设为默认地址</CheckboxItem>
                 </Block>
                 <Block ml={15} mr={15} mt={20}>
-                    <Button style={{borderRadius: 25}} type='primary' onClick={this.submit}>保存</Button>
+                    <Button style={{borderRadius: 25}} type='primary' onClick={this.submit.bind(editAddr)}>保存</Button>
                 </Block>
             </Block>
         )
