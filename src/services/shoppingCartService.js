@@ -23,5 +23,10 @@ import { Toast } from 'antd-mobile'
     query=({memId,cartIdList})=>{
         return this.postJson('cart/getMyCartList',{memId:memId,cartIdList:cartIdList}) 
     }
+
+    //删除购物车
+    delete=(cartId,memId)=>{
+        return this.get(`cart/delete?cartId=${cartId}&memId=${memId}`) 
+    }
  }
  export default new ShoppingCartService();

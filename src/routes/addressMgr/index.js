@@ -37,6 +37,7 @@ class AddressMgr extends Component {
         history.push('/add-address')
     }
     detetAddress=async(item,index,e)=>{
+        //TODO-这里需要加个删除确认
         const {id} = item 
         const res = await Service.deleteAddress({addrId:id,memId:1})
         const {code,msg} = res
