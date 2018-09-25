@@ -30,11 +30,11 @@ class Product extends Component{
     }
     render(){
         const status = this.props.status
-        const {goodsName,imgurl,price,amount} = this.props.data
+        const {goodsName,logoPath,price,amount} = this.props.data
         return (
                 <Block wf className={Styles.prod_cont}>
                     <Block j='c' className={Styles.prod_pic}>
-                        <img src={imgurl}/>
+                        <img src={"https://iretail.bonc.com.cn/pic/"+logoPath}/>
                     </Block>
                     <Block f={1} ml={10} vf>
                         <Block>{goodsName}</Block>

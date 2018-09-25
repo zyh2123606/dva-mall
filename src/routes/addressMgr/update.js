@@ -9,12 +9,12 @@ import Service from '../../services/addressService'
 /**
  *添加收货地址
  *
- * @class Create
+ * @class Update
  * @extends {Component}
  */
 const Item = List.Item
 const CheckboxItem = Checkbox.CheckboxItem
-class Create extends Component{
+class Update extends Component{
     state = {
             data: [],
             cols: 1,
@@ -25,31 +25,11 @@ class Create extends Component{
             colorValue: ['#00FF00'],
           
     }
-    submit=async()=>{
+    submit=async(editAddr,e)=>{
         const submitVales = this.props.form.getFieldsValue()
-        debugger
-        if(submitVales.receiver===undefined || submitVales.receiver.length===0){
-            Toast.info("请输入有效的收货人！")
-            return
-        }
-        if(submitVales.tel===undefined || submitVales.tel.length===0){
-            Toast.info("请输入有效的联系电话！")
-            return
-        }
-        if(submitVales.tel.length!==11){
-            Toast.info("请输入有效的手机号")
-            return
-        }
-        if(submitVales.pcc===undefined || submitVales.pcc.length===0){
-            Toast.info("请输入有效的所属区域！")
-            return
-        }
-        if(submitVales.address===undefined || submitVales.address.length===0){
-            Toast.info("请输入有效的收货地址！")
-            return
-        }
         const {address,defaultFlag,pcc:[province,city,county],receiver,tel}=submitVales
-        const temp={tel:tel,memId:1,address:address,receiver:receiver,defaultFlag:defaultFlag?1:2,province:province,city:city,county:county}
+        debugger
+        const temp={id:this.editAddr.id,tel:tel,memId:1,address:address,receiver:receiver,defaultFlag:defaultFlag?1:2,province:province,city:city,county:county}
         const res = await Service.updateAddress(temp)
         const{code,msg} = res
         if(code==="0000"){
@@ -73,17 +53,17 @@ class Create extends Component{
                         placeholder='请输入姓名'
                         style={{textAlign: 'right'}}
                         maxLength={10} 
-                        {...getFieldProps('receiver')}>收货人</InputItem>
+                        {...getFieldProps('receiver',{initialValue: this.editAddr?this.editAddr.receiver:''})}>收货人</InputItem>
                     <InputItem 
                         type='number'
                         placeholder='请输入联系电话'
                         style={{textAlign: 'right'}}
                         maxLength={11} 
-                        {...getFieldProps('tel')}>联系电话</InputItem>
+                        {...getFieldProps('tel',{initialValue:this.editAddr? this.editAddr.tel:''})}>联系电话</InputItem>
                     <Picker data={AreaData} value={this.state.pickerValue} onChange={v=>this.setState({pickerValue:v})} 
                         onOk={()=>this.setState({visible:false})}
                         onDisemiss={()=>this.setState({visible:false})}
-                        {...getFieldProps('pcc')}
+                        {...getFieldProps('pcc',{initialValue:this.editAddr?[this.editAddr.province,this.editAddr.city,this.editAddr.county]:''})}
                         title='选择地区'>
                         <Item arrow='horizontal'>所在地区</Item>
                     </Picker>
@@ -92,20 +72,20 @@ class Create extends Component{
                         placeholder='请输入地址'
                         autoHeight
                         style={{textAlign: 'right'}}
-                        {...getFieldProps('address')}
+                        {...getFieldProps('address', {initialValue: this.editAddr?this.editAddr.address:''})}
                         maxLength={100}/>
                 </List>
                 <Block mt={10}>
-                    <CheckboxItem 
-                        {...getFieldProps('defaultFlag')}>设为默认地址</CheckboxItem>
+                    <CheckboxItem defaultChecked={this.editAddr?this.editAddr.defaultFlag===1:false}
+                        {...getFieldProps('defaultFlag',{initialValue:this.editAddr?this.editAddr.defaultFlag===1:false})}>设为默认地址</CheckboxItem>
                 </Block>
                 <Block ml={15} mr={15} mt={20}>
-                    <Button style={{borderRadius: 25}} type='primary' onClick={this.submit.bind(this)}>保存</Button>
+                    <Button style={{borderRadius: 25}} type='primary' onClick={this.submit.bind(this,this.editAddr)}>保存</Button>
                 </Block>
             </Block>
         )
     }
 }
 
-const mainForm = createForm()(Create)
+const mainForm = createForm()(Update)
 export default connect(state => state)(mainForm)

@@ -1,7 +1,8 @@
+import AreaData from '../../components/areaData'
 import {Component} from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-import {Checkbox} from 'antd-mobile'
+import {Modal,Checkbox} from 'antd-mobile'
 import {Empty} from '../../components'
 import {Toast} from 'antd-mobile'
 import {Link} from 'react-router-dom'
@@ -34,7 +35,30 @@ class AddressMgr extends Component {
         const {dispatch, history} = this.props
         const payload = {editIndex:index,editFlag:true}
         dispatch({type: "myAddress/editAddress", payload})
-        history.push('/add-address')
+        history.push('/update-address')
+    }
+    deleteAddress=(item,index,e)=>{
+        const alert = Modal.alert
+        const pcc = this.getProvince(item.province,item.city,item.county,AreaData)
+        alert('确认',`确认删除地址: ${pcc} ${item.address}么？`,[{text:'取消',onPress:()=>console.log('cancel')},
+            {text:'确认',onPress:()=>{
+                (async(item,index)=>{
+                    const {id} = item 
+                    const res = await Service.deleteAddress({addrId:id,memId:1})
+                    const {code,msg} = res
+                    if(code==="0000"){
+                        Toast.info("删除成功！")
+                        let newState = this.props.myAddress
+                        newState.data.filter((data,idx)=>{
+                            if(data.id===id)
+                                newState.data.splice(idx,1)
+                        })
+                        this.setState({data:newState})
+                    }else{
+                        Toast.info(msg)
+                    }
+                })(item,index)
+            }},])
     }
 
     async componentDidMount() {
@@ -47,6 +71,34 @@ class AddressMgr extends Component {
                 dispatch({type: 'myAddress/initState', payload})
             })
         }
+        this.AData = AreaData
+        this.forceUpdate()
+    }
+
+    getProvince=(provinceCode,cityCode,countyCode,AData)=>{
+        const province = AData.filter((item,idx) => {
+            return item.value===provinceCode;
+        });
+        const provinceName = province[0].label;
+        let city =""
+        let cityname =""
+        for (var i = 0, len = province[0].children.length; i < len; i++) {
+            if(province[0].children[i].value===cityCode){
+                city = province[0].children[i]
+                cityname = city.label
+                break
+            }
+        }
+        let county=""
+        let countyName=""
+        for (var i = 0, len = city.children.length; i < len; i++) {
+            if(city.children[i].value===countyCode){
+                county = city.children[i]
+                countyName = county.label
+                break
+            }
+        }
+        return `${provinceName} ${cityname} ${countyName} `
     }
     
     render() {
@@ -60,7 +112,7 @@ class AddressMgr extends Component {
                                     <Block f={1}>{data.receiver}</Block>
                                     <Block>{data.tel}</Block>
                                 </Block>
-                                <Block mt={5}>吉林省 长春市 {data.address}</Block>
+                                <Block mt={5}>{this.AData?this.getProvince(data.province,data.city,data.county,this.AData):null}{data.address}</Block>
                             </Block>
                             <Block className={Styles.act_addr} mt={10} wf>
                                 <Block f={1}>
@@ -68,7 +120,7 @@ class AddressMgr extends Component {
                                 </Block>
                                 <Block wf a='c'>
                                     <Block className={Styles.edit} onClick={this.setEditAddress.bind(this,data,idx)}></Block>
-                                    <Block mr={15} ml={10} className={Styles.del}></Block>
+                                    <Block mr={15} ml={10} className={Styles.del} onClick={this.deleteAddress.bind(this,data,idx)}></Block>
                                 </Block>
                             </Block>
                         </Block>
