@@ -19,7 +19,7 @@ const CheckboxItem = Checkbox.CheckboxItem
 
 class AddressMgr extends Component {
     //设为默认
-    checkHandleChange = (id,index,e) => {
+    checkHandleChange = async(_id,index,e) => {
         let newState = this.props.myAddress
         if(e.target.checked){
             newState.data.filter((data,idx)=>{
@@ -29,7 +29,17 @@ class AddressMgr extends Component {
         }else{
             newState.data[index].defaultFlag = 2
         }
-        this.setState({data:newState})
+        const addr = newState.data[index]
+        const {id,tel,memId,address,receiver,defaultFlag,province,city,county}=addr
+        const temp ={id:id,tel:tel,memId:memId,address:address,receiver:receiver,defaultFlag:defaultFlag,province:province,city:city,county:county}
+        const res = await Service.updateAddress(temp)
+        const{code,msg} = res
+        if(code==="0000"){
+            Toast.info("保存成功!")
+            this.setState({data:newState})
+        }else{
+            Toast.Info(msg)
+        }
     }
     setEditAddress = (item,index,e) => {
         const {dispatch, history} = this.props

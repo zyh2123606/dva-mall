@@ -5,6 +5,7 @@ import { List,Toast, InputItem, TextareaItem, Picker, Checkbox, Button } from 'a
 import { connect } from 'dva'
 import AreaData from '../../components/areaData'
 import Service from '../../services/addressService'
+import { checkFormat } from './utils'
 
 /**
  *添加收货地址
@@ -14,6 +15,7 @@ import Service from '../../services/addressService'
  */
 const Item = List.Item
 const CheckboxItem = Checkbox.CheckboxItem
+
 class Create extends Component{
     state = {
             data: [],
@@ -27,25 +29,7 @@ class Create extends Component{
     }
     submit=async()=>{
         const submitVales = this.props.form.getFieldsValue()
-        debugger
-        if(submitVales.receiver===undefined || submitVales.receiver.length===0){
-            Toast.info("请输入有效的收货人！")
-            return
-        }
-        if(submitVales.tel===undefined || submitVales.tel.length===0){
-            Toast.info("请输入有效的联系电话！")
-            return
-        }
-        if(submitVales.tel.length!==11){
-            Toast.info("请输入有效的手机号")
-            return
-        }
-        if(submitVales.pcc===undefined || submitVales.pcc.length===0){
-            Toast.info("请输入有效的所属区域！")
-            return
-        }
-        if(submitVales.address===undefined || submitVales.address.length===0){
-            Toast.info("请输入有效的收货地址！")
+        if(!checkFormat(submitVales)){
             return
         }
         const {address,defaultFlag,pcc:[province,city,county],receiver,tel}=submitVales

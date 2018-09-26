@@ -9,6 +9,7 @@ import Swiper from 'react-id-swiper'
 import Service from '../../services/baseService'
 import Constant from '../../utils/constant'
 import ImgErr from '../../assets/img/img_error.png'
+import ContentLoader, { List, BulletList, Code } from 'react-content-loader'
 
 /**
  *首页
@@ -44,7 +45,7 @@ class Home extends Component<IProps>{
     render(){
         const { specialList, hotList, newList, productTypes, bannerList, isRequest } = this.state
         return (
-            isRequest?<Block className={Styles.container}>
+            isRequest?<Block className={Styles.container} bc='#fff'>
                 <Block vf p='0 15px'>
                     {/* top start */}
                     <Block a='c' wf pt={10}>
@@ -106,15 +107,15 @@ class Home extends Component<IProps>{
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={3}>
                         {specialList.map(({logoPath, typeName, minPrice}, idx) => (
-                            <Block key={idx} style={{lineHeight: 'normal'}}>
+                            <div key={idx} style={{lineHeight: 'normal'}}>
                                 <Block vf className={Styles.type_item} mt={15}>
                                     <Block j='c' className={Styles.prod_img_c}>
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
                                     </Block>
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
-                                    <Block j='c' pb={5} className={Styles.orangeColor}>{minPrice}</Block>
+                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
                                 </Block>
-                            </Block>
+                            </div>
                         ))}
                     </Swiper>
                 </section>
@@ -129,15 +130,15 @@ class Home extends Component<IProps>{
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={3}>
                         {hotList.map(({logoPath, typeName, minPrice}, idx) => (
-                            <Block key={idx} style={{lineHeight: 'normal'}}>
+                            <div key={idx} style={{lineHeight: 'normal'}}>
                                 <Block vf className={Styles.type_item} mt={15}>
                                     <Block j='c' className={Styles.prod_img_c}>
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
                                     </Block>
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
-                                    <Block j='c' pb={5} className={Styles.orangeColor}>{minPrice}</Block>
+                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
                                 </Block>
-                            </Block>
+                            </div>
                         ))}
                     </Swiper>
                 </section>
@@ -152,20 +153,35 @@ class Home extends Component<IProps>{
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={3}>
                         {newList.map(({logoPath, typeName, minPrice}, idx) => (
-                            <Block key={idx} style={{lineHeight: 'normal'}}>
+                            <div key={idx} style={{lineHeight: 'normal'}}>
                                 <Block vf className={Styles.type_item} mt={15}>
                                     <Block j='c' className={Styles.prod_img_c}>
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
                                     </Block>
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
-                                    <Block j='c' pb={5} className={Styles.orangeColor}>{minPrice}</Block>
+                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
                                 </Block>
-                            </Block>
+                            </div>
                         ))}
                     </Swiper>
                 </section>
                 <Block h={10} />
-            </Block>:null
+            </Block>:
+            <Block vf w='100%' h='100%' bc='#fff'>
+                <Block p={10}>
+                    <ContentLoader height={230}>
+                        <rect x="0" y="0" rx="4" ry="4" width="100%" height="10" />
+                        <rect x="0" y="20" rx="4" ry="4" width="90%" height="10" />
+                        <rect x="0" y="40" rx="4" ry="4" width="80%" height="10" />
+                        <rect x="0" y="60" rx="4" ry="4" width="60%" height="10" />
+                        <rect x="0" y="80" rx="4" ry="4" width="90%" height="10" />
+                        <rect x="0" y="100" rx="4" ry="4" width="50%" height="10" />
+                        <rect x="0" y="120" rx="4" ry="4" width="40%" height="10" />
+                        <rect x="0" y="140" rx="4" ry="4" width="60%" height="10" />
+                        <rect x="0" y="160" rx="4" ry="4" width="85%" height="10" />
+                    </ContentLoader>
+                </Block>
+            </Block>
         )
     }
 }

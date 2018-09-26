@@ -6,7 +6,6 @@ class BaseService extends HttpBase{
         super('/api')
         //添加拦截器设置请求头
         this.$http.interceptors.request.use(config => {
-            Toast.loading('正在请求', 15)
             return config
         })
     }
