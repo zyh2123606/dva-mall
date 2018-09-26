@@ -19,7 +19,7 @@ const RouteConfig = [
     {path: '/search/:parentType/:name', component: searchPage, exact: true},
     {path: '/order-complete/:orderId', component: orderCompletePage, exact: true},
     {path: '/cart', component: cartPage, exact: true},
-    {path: '/success', component: successPage, exact: true},
+    {path: '/success/:orderId', component: successPage, exact: true},
     {path: '/fail', component: failPage, exact: true}
 ]
 

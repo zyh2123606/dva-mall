@@ -155,7 +155,7 @@ class SearchProduct extends Component{
             pathname:`/order-detail/${item.typeId}`
         }));
     }
-
+    // 渲染搜索栏一级大类
     renderSkuSelectBar(){
         const {filterConditions,selectedSku}=this.state
         return (
@@ -204,7 +204,7 @@ class SearchProduct extends Component{
             onRefresh={this.pulUpFresh}
             damping={100}>
                 {
-                    goods?
+                    goods && goods.length>0?
                     goods.map((item,index) =>{
                         return <Block key={'goods-'+index} wf className={Styles.sear_list_item} onClick={this.toGoodsDetailPage.bind(this,item)}>
                                 <Block className={Styles.prod_pic}><img style={{'width':'76px',height:'76px'}} src={Constant.imgBaseUrl+item.logoPath}/></Block>
@@ -232,6 +232,7 @@ class SearchProduct extends Component{
                     showCancelButton={false} 
                     onChange={this.searchInputChange}
                     value={searchKeyword?searchKeyword:''}
+                    onSubmit={this.cancelInput}
                     onCancel={this.cancelInput}
                     cancelText={<Button style={{marginTop: 6, borderRadius: 15}} type='primary' size='small' onSubmit={this.onSubmit}>搜索</Button>}/>
                 {

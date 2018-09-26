@@ -5,6 +5,7 @@ import ProductService from '../../services/productService'
 import Constant from '../../utils/constant'
 import {routerRedux} from 'dva/router';
 import {connect} from 'dva'
+import ImgErr from '../../assets/img/img_error.png'
 /**
  *商品列表入口
  *
@@ -51,7 +52,7 @@ class DefaultPage extends Component{
                         } else if((index+1)%3===0){
                             itemClass=Styles.prod_item_r
                         }
-                        return <dd key={'child-type-'+index} className={itemClass} onClick={this.selectChildItem.bind(this,item)}><img src={Constant.imgBaseUrl+item.logoPath} alt={item.title}/></dd>
+                        return <dd key={'child-type-'+index} className={itemClass} onClick={this.selectChildItem.bind(this,item)}><img src={item.logoPath?Constant.imgBaseUrl+item.logoPath:ImgErr} alt={item.title}/></dd>
                     })
                 }
             </dl>

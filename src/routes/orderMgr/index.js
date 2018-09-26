@@ -9,6 +9,9 @@ import { Badge,Toast } from 'antd-mobile'
 import {connect} from 'dva';
 import {routerRedux} from 'dva/router';
 import Constant from '../../utils/constant';
+import ImgErr from '../../assets/img/img_error.png'
+import Gouwuche from '../../assets/img/gouwuche.png'
+import Xiaoxi from '../../assets/img/xiaoxi.png'
 
 class OrderDetail extends Component{
     state = {
@@ -222,18 +225,18 @@ class OrderDetail extends Component{
                 <Block h={300} bc='#eee' mb={60}>
                     {
                         goodsPicList.map((item,index)=>(
-                            <img style={{width:clientWhidth}} key={index} src={Constant.imgBaseUrl+item.picPath} alt={item.picName}/>
+                            <img style={{width:clientWhidth}} key={index} src={item.picPath?Constant.imgBaseUrl+item.picPath:ImgErr} alt={item.picName}/>
                         ))
                     }
                 </Block>
                 <Block wf fs={16} className={Styles.footer_bar}>
                     <Block a='c' j='c' w={60} vf>
+                        <Block><img style={{height:'17px'}} src={Xiaoxi}/></Block>
                         <Block fs={12}>客服</Block>
                     </Block>
                     <Block a='c' j='c' w={60} vf>
-                        <Block>
-                        </Block>
-                        <Block fs={12} onClick={this.toShoppingCart}><Badge text={shoppingCartCount}><span>购物车</span></Badge></Block>
+                        <Block><Badge text={shoppingCartCount}><img style={{height:'17px'}} src={Gouwuche}/></Badge></Block>
+                        <Block fs={12} onClick={this.toShoppingCart}>购物车</Block>
                     </Block>
                     <Block wf f={1} ml={10} mr={10}>
                         <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>

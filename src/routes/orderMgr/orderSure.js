@@ -159,10 +159,13 @@ class OrderSure extends Component{
         if (code===Constant.responseOK){
             Toast.success('提交订单成功！',1)
             setTimeout(() => {
-                dispatch(routerRedux.push(`/order-result/${data}/${shoppingcardId}/${code}`))
+                dispatch(routerRedux.push(`/success/${data}`))
             }, 1000);
         }else{
             Toast.fail('提交订单失败！',1)
+            setTimeout(() => {
+                dispatch(routerRedux.push(`/fail`))
+            }, 1000);
         }
     }
     // 金额转换
