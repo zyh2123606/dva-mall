@@ -49,6 +49,7 @@ class OrderComplete extends Component{
         const {match:{params:{orderId}}}=this.props
         const {data,code}= await OrderService.getOrderList(1,orderId)
         if(code===Constant.responseOK){
+            console.log(data)
             this.setState({
                 orderInfo:data[0]
             })
@@ -90,14 +91,14 @@ class OrderComplete extends Component{
                                 <Block>{item.goodsName}</Block>
                                 <Block wf>
                                     {
-                                    item.attrList.map((attrItem,idx)=>{
+                                    item.attrList?item.attrList.map((attrItem,idx)=>{
                                         return <Block key={'goods-skuattr-'+idx} mt={5} ml={5} fs={12} fc='#999'>{attrItem.attrCode}</Block>
-                                    })
+                                    }):null
                                 }
                                 </Block>
                                 <Block wf>
                                     <Block f={1}>×{item.amount}</Block>
-                                    <Block className={Styles.orangeColor}>￥{item.price}</Block>
+                                    <Block className={Styles.orangeColor}>￥{Constant.toMoney(item.price)}</Block>
                                 </Block>
                             </Block>
                         </Block>
@@ -124,7 +125,7 @@ class OrderComplete extends Component{
                     </Block>
                     <Block mt={5} wf>
                         <Block f={1}>商品金额：</Block>
-                        <Block className={Styles.orangeColor}>{orderInfo.totalMoney}</Block>
+                        <Block className={Styles.orangeColor}>{Constant.toMoney(orderInfo.totalMoney)}</Block>
                     </Block>
                     {
                         orderInfo.dispatchWay===3?

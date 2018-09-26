@@ -43,7 +43,7 @@ class OrderSure extends Component{
         }, 1000);
     }
     async queryGoodsdAndSkuInfo(){
-        let { match:{params:{shoppingcardId}},dispatch} = this.props
+        let { history,match:{params:{shoppingcardId}},dispatch} = this.props
         if (shoppingcardId.length>1){
             shoppingcardId=shoppingcardId.split(',')
         }else{
@@ -52,9 +52,10 @@ class OrderSure extends Component{
         const {data,code}=await ShoppingCartService.query({memId:1,cartIdList:shoppingcardId})
         if (code===Constant.responseOK){
             let totalPrise=0
-            if(data && data.length===0){
+            if(!data || data.length===0){
                 // TODO 这里应该跳转到购物车？个人中心？
-                dispatch(routerRedux.push(`/order-detail/${this.state.typeId}`))
+                console.log('queryGoodsdAndSkuInfo data:',data)
+                history.goBack()
             }
             data.map(item=>{
                 totalPrise+=(item.salePrice*item.amount)
@@ -227,10 +228,10 @@ class OrderSure extends Component{
                                 </Block>
                                 <Block vf f={1} ml={15}>
                                     <Block style={{fontWeight: 'bold'}}>{item.goodsName}</Block>
-                                    <Block fs={12} fc='#666'>{color?color[0].attrCode:'无'}</Block>
+                                    <Block fs={12} fc='#666'>{color && color.length>0?color[0].attrCode:'无'}</Block>
                                     <Block wf>
                                         <Block f={1}>×{item.amount}</Block>
-                                        <Block className={Styles.orangeColor}>￥{item.salePrice}</Block>
+                                        <Block className={Styles.orangeColor}>￥{Constant.toMoney(item.salePrice)}</Block>
                                     </Block>
                                 </Block>
                             </Block>
@@ -265,7 +266,7 @@ class OrderSure extends Component{
                         selectedOk={this.selectedCollectInfo}/>
                     </Item>
                 }
-                    <Item extra={<Block className={Styles.orangeColor}>￥{totalPrise}</Block>}>商品金额</Item>
+                    <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>商品金额</Item>
                 </List>
         )
     }

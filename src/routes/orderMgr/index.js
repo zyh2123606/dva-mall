@@ -19,7 +19,7 @@ class OrderDetail extends Component{
         pageData: null, 
         cur_tag:null,
         defaultSkuPrice:0,
-        typeId:16,
+        typeId:0,
         shoppingCartCount:0,//购物车商品数量
         logoPath:'',
         skuid:0,
@@ -27,18 +27,19 @@ class OrderDetail extends Component{
     //dom挂在完成请求数据
     async componentDidMount(){
         const {match:{params:{pid}}}  =this.props
-        const res = await Service.getDetailById(this.state.typeId)
+        const res = await Service.getDetailById(pid)
         const { data, code } = res
-        if(code===Constant.responseOK){
+        if(code===Constant.responseOK && data){
             let colorsAttrs=new Map()
-            data.goodsTypeAttrList.map(item=>{
-                const attrs = item.attrValList.filter(i=>i.selected===1)
-                if(attrs && attrs.length>0){
-                    colorsAttrs.set(attrs[0].baseAttrId,attrs[0].attrValId)
-                }
-                
-            })
-            console.log('colorsAttrs',colorsAttrs)
+            if(data.goodsTypeAttrList){
+                data.goodsTypeAttrList.map(item=>{
+                    const attrs = item.attrValList.filter(i=>i.selected===1)
+                    if(attrs && attrs.length>0){
+                        colorsAttrs.set(attrs[0].baseAttrId,attrs[0].attrValId)
+                    }
+                    
+                })
+            }
             this.setState({
                 cur_tag:colorsAttrs,
                 pageData: {...data,colors:colorsAttrs},
@@ -148,7 +149,9 @@ class OrderDetail extends Component{
         const {cur_tag}=this.state
         const {pageData:{goodsTypeAttrList}}=this.state
         let attrList=[]
-
+        if(!goodsTypeAttrList){
+            return
+        }
         goodsTypeAttrList.map(item=>{
             const attrItems = item.attrValList.filter((v,i)=>v.baseAttrId===baseAttrId)
             if (attrItems && attrItems.length>0){
@@ -201,14 +204,14 @@ class OrderDetail extends Component{
                     </Block>
                 </Block>
                 {
-                    pageData.goodsBaseAttrList.map(({baseAttrId,baseAttrName},baseIndex)=>{
+                    pageData.goodsBaseAttrList?pageData.goodsBaseAttrList.map(({baseAttrId,baseAttrName},baseIndex)=>{
                         return <Block key={'base-attr-'+baseIndex}>
                                 <Block pt={20} pb={13} fs={18}>{baseAttrName}</Block>
                                 {
                                     this.renderAttrBlock(baseAttrId)
                                 }
                             </Block>
-                    })
+                    }):null
                 }
                 <Block mt={20} a='c' wf>
                     <Block fs={18} f={1}>购买数量</Block>
@@ -224,9 +227,9 @@ class OrderDetail extends Component{
                 <Block pt={20} pb={20} fs={18} style={{fontWeight: 'bold',}}>套餐详情</Block>
                 <Block h={300} bc='#eee' mb={60}>
                     {
-                        goodsPicList.map((item,index)=>(
+                        goodsPicList?goodsPicList.map((item,index)=>(
                             <img style={{width:clientWhidth}} key={index} src={item.picPath?Constant.imgBaseUrl+item.picPath:ImgErr} alt={item.picName}/>
-                        ))
+                        )):null
                     }
                 </Block>
                 <Block wf fs={16} className={Styles.footer_bar}>

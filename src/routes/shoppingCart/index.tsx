@@ -174,14 +174,16 @@ class Cart extends Component<IPropos>{
                                         
                                         ):<Block j='c' m='30px 10px 5px 10px' onClick={this.checked.bind(this,index)}><Block className={Styles.custom_check}></Block></Block>
                                     }
-                                    <Block className={Styles.prod_pic}><img src={Constant.imgBaseUrl+item.logoPath} alt={item.goodsName}/></Block>
+                                    <Block className={Styles.prod_pic}>
+                                        <img style={{width:'76px'}} src={Constant.imgBaseUrl+item.logoPath} alt={item.goodsName}/>
+                                        </Block>
                                     <Block vf f={1} ml={10}>
                                         <Block fs={14}>{item.goodsName}</Block>
                                         <Block mt={5}>
                                             {
-                                                item.attrList.map((subItem,subIndex)=>{
+                                                item.attrList?item.attrList.map((subItem,subIndex)=>{
                                                     return <Block key={'attr-item-index-'+subIndex} className={Styles.prod_tag}>{subItem.attrCode}</Block>
-                                                })
+                                                }):null
                                             }
                                         </Block>
                                         <Block wf a='c'>
