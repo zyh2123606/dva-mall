@@ -10,8 +10,6 @@ import {connect} from 'dva';
 import {routerRedux} from 'dva/router';
 import Constant from '../../utils/constant';
 import ImgErr from '../../assets/img/img_error.png'
-import Gouwuche from '../../assets/img/gouwuche.png'
-import Xiaoxi from '../../assets/img/xiaoxi.png'
 
 class OrderDetail extends Component{
     state = {
@@ -231,18 +229,24 @@ class OrderDetail extends Component{
                         )):null
                     }
                 </Block>
-                <Block wf fs={16} className={Styles.footer_bar}>
-                    <Block a='c' j='c' w={60} vf>
-                        <Block><img style={{height:'17px'}} src={Xiaoxi}/></Block>
-                        <Block fs={12}>客服</Block>
-                    </Block>
-                    <Block a='c' j='c' w={60} vf>
-                        <Block><Badge text={shoppingCartCount}><img style={{height:'17px'}} src={Gouwuche}/></Badge></Block>
-                        <Block fs={12} onClick={this.toShoppingCart}>购物车</Block>
-                    </Block>
-                    <Block wf f={1} ml={10} mr={10}>
-                        <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>
-                        <Block onClick={this.sureBuy.bind(this)} className={Styles.buy_sty} f={1}>立即购买</Block>
+                <Block vf fs={16} className={Styles.footer_bar}>
+                    <Block wf className={Styles.footer_content}>
+                        <Block a='c' j='c' w={60} vf>
+                            <Block fs={22} fc='#999'>
+                                <i className={Styles.icon_server} />
+                            </Block>
+                            <Block fs={12}>客服</Block>
+                        </Block>
+                        <Block a='c' j='c' w={60} vf>
+                            <Block fs={24} fc='#999'>
+                                <Badge text={shoppingCartCount}><i className={Styles.icon_cart} /></Badge>
+                            </Block>
+                            <Block fs={12} onClick={this.toShoppingCart}>购物车</Block>
+                        </Block>
+                        <Block wf f={1} ml={10} mr={10}>
+                            <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>
+                            <Block onClick={this.sureBuy.bind(this)} className={Styles.buy_sty} f={1}>立即购买</Block>
+                        </Block>
                     </Block>
                 </Block>
             </Block>:null
