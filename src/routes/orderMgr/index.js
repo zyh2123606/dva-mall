@@ -64,7 +64,7 @@ class OrderDetail extends Component{
             const { onChange } = getFieldProps('color_id')
             onChange(attrValId)
         })
-        //this.queryPriceByGoodsColor(attrValId)
+        this.queryPriceByGoodsColor(attrValId)
     }
     // 点击颜色，查询该颜色属性对应的商品信息
     async queryPriceByGoodsColor() {
