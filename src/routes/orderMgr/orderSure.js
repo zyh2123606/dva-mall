@@ -154,7 +154,7 @@ class OrderSure extends Component{
             }
             params.adoptDeptId=selectedAdopt.deptId//自提门店ID
         }
-        console.log('submit order params:',params)
+
         const {data,code}= await OrderService.addOrder({...params})
         if (code===Constant.responseOK){
             Toast.success('提交订单成功！',1)

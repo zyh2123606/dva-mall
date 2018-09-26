@@ -1,1 +1,122 @@
 @import "../../common.less";
+.tag{
+    background: #FE4863;
+    font-size: 10px;
+    color: #fff;
+    border-radius: 2px;
+    padding: 1px 3px;
+}
+.logo_txt{
+    padding-left: 10px;
+    margin-left: 10px;
+    .thin-xl-line();
+    line-height: normal;
+}
+.head_pic{
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    background: #eee;
+}
+.addr_txt{
+    display: inline-block;
+    background: url(../../assets/img/pos.png) no-repeat right 2px;
+    background-size: auto 10px;
+    padding-right: 12px;
+}
+.sev_txt{
+    width: 70px;
+    height: 20px;
+    color: #fff;
+    background-image: linear-gradient(-45deg, #FD5A62 0%, #FC9964 100%);
+    border-radius: 10px;
+    .sev_ico{
+        width: 10px;
+        height: 13px;
+        background: url(../../assets/img/sev.png) no-repeat 0 0;
+        background-size: 10px auto;
+    }
+}
+.mobile{
+    color: @orange;
+    background: url(../../assets/img/tel.png) no-repeat right 0;
+    background-size: auto 9px;
+    padding-right: 14px;
+}
+.banner{
+    height: 160px;
+    position: relative;
+}
+.banner_inner{
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: url(../../assets/img/ban_inner.png) no-repeat 0 bottom;
+    background-size: 100% 25px;
+}
+.type_banner{
+    .banner;
+    background: url(../../assets/img/banne1.png) no-repeat 0 0;
+    background-size: 100% 160px;
+}
+.th_banner{
+    .banner;
+    background: url(../../assets/img/banner2.png) no-repeat 0 0;
+    background-size: 100% 150px;
+}
+.hot_banner{
+    .banner;
+    background: url(../../assets/img/banner3.png) no-repeat 0 0;
+    background-size: 100% 150px;
+}
+.new_banner{
+    .banner;
+    background: url(../../assets/img/banner4.png) no-repeat 0 0;
+    background-size: 100% 150px;
+}
+.type_title{
+    font-size: 17px;
+    font-weight: bold;
+    padding: 10px 0;
+    margin-top: 10px;
+}
+.type_item{
+    background: #FFFFFF;
+    .boxShadow();
+    border-radius: @borderRadius;
+    margin: 5px 5px 10px 5px;
+    font-size: 10px;
+}
+.swiper_container{
+    padding: 0 10px;
+}
+.type_img{
+    display: block;
+    width: 100%;
+    height: auto;
+}
+.type_name_txt{
+    padding: 2px 5px;
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+    text-align: center;
+}
+.link_sty{
+    color: @orange;
+}
+.prod_img_c{
+    position: relative;
+    border-radius: @borderRadius;
+}
+.prod_img{
+    display: block;
+    height: 80px;
+    width: auto;
+    border-radius: @borderRadius;
+    .boxShadow();
+    position: relative;
+    top: -10px;
+}
