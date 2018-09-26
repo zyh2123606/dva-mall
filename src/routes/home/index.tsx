@@ -8,6 +8,7 @@ import Logo from '../../assets/img/logo.png'
 import Swiper from 'react-id-swiper'
 import Service from '../../services/baseService'
 import Constant from '../../utils/constant'
+import ImgErr from '../../assets/img/img_error.png'
 
 /**
  *首页
@@ -62,8 +63,9 @@ class Home extends Component<IProps>{
                             <Block>
                                 <Block className={Styles.addr_txt}>实体店地址：云南省昆明市滨江西路51号</Block>
                             </Block>
-                            <Block fs={10} wf mt={2}>
-                                　联系电话：<Block className={Styles.mobile}>18001297665</Block>
+                            <Block a='c' fs={10} wf mt={2}>
+                                <Block>联　系电话：</Block>
+                                <Block className={Styles.mobile}>18001297665</Block>
                             </Block>
                         </Block>
                         <Block j='c' a='c' wf className={Styles.sev_txt}>
@@ -107,7 +109,7 @@ class Home extends Component<IProps>{
                             <Block key={idx} style={{lineHeight: 'normal'}}>
                                 <Block vf className={Styles.type_item} mt={15}>
                                     <Block j='c' className={Styles.prod_img_c}>
-                                        <img className={Styles.prod_img} src={Constant.imgBaseUrl+logoPath} />
+                                        <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
                                     </Block>
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
                                     <Block j='c' pb={5} className={Styles.orangeColor}>{minPrice}</Block>
@@ -130,7 +132,7 @@ class Home extends Component<IProps>{
                             <Block key={idx} style={{lineHeight: 'normal'}}>
                                 <Block vf className={Styles.type_item} mt={15}>
                                     <Block j='c' className={Styles.prod_img_c}>
-                                        <img className={Styles.prod_img} src={Constant.imgBaseUrl+logoPath} />
+                                        <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
                                     </Block>
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
                                     <Block j='c' pb={5} className={Styles.orangeColor}>{minPrice}</Block>
@@ -153,7 +155,7 @@ class Home extends Component<IProps>{
                             <Block key={idx} style={{lineHeight: 'normal'}}>
                                 <Block vf className={Styles.type_item} mt={15}>
                                     <Block j='c' className={Styles.prod_img_c}>
-                                        <img className={Styles.prod_img} src={Constant.imgBaseUrl+logoPath} />
+                                        <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
                                     </Block>
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
                                     <Block j='c' pb={5} className={Styles.orangeColor}>{minPrice}</Block>
@@ -162,7 +164,7 @@ class Home extends Component<IProps>{
                         ))}
                     </Swiper>
                 </section>
-                <Block h={20} />
+                <Block h={10} />
             </Block>:null
         )
     }
