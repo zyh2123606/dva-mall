@@ -165,7 +165,6 @@ class Home extends Component<IProps>{
                         ))}
                     </Swiper>
                 </section>
-                <Block h={10} />
             </Block>:
             <Block vf w='100%' h='100%' bc='#fff'>
                 <Block p={10}>

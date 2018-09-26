@@ -4,6 +4,9 @@ const path = require('path')
 export default{
     entry: 'src/index.js',
     theme: themeConfig,
+    copy: [
+        {from: 'src/swiper.css', to: 'swiper.css'}
+    ],
     env: {
         development: {
             extraBabelPlugins: [
