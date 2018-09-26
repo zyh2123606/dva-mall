@@ -112,7 +112,7 @@ class Home extends Component<IProps>{
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
                                     </Block>
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
-                                    <Block j='c' pb={5} className={Styles.orangeColor}>{minPrice}</Block>
+                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
                                 </Block>
                             </Block>
                         ))}
@@ -135,7 +135,7 @@ class Home extends Component<IProps>{
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
                                     </Block>
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
-                                    <Block j='c' pb={5} className={Styles.orangeColor}>{minPrice}</Block>
+                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
                                 </Block>
                             </Block>
                         ))}
@@ -158,7 +158,7 @@ class Home extends Component<IProps>{
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
                                     </Block>
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
-                                    <Block j='c' pb={5} className={Styles.orangeColor}>{minPrice}</Block>
+                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
                                 </Block>
                             </Block>
                         ))}

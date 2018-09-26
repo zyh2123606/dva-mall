@@ -13,11 +13,13 @@ class Account extends Component{
     render(){
         return (
             <Block bc='#fff' className={Styles.container} vf>
-                <Block className={Styles.header} a='c' wf>
-                    <Block j='c' a='c' fc='#eee' fs={30} ml={20} className={Styles.user_head}>
-                        <i className={Styles.icon_account} />
+                <Block className={Styles.header} vf>
+                    <Block a='c' mt={30}>
+                        <Block j='c' a='c' fc='#eee' fs={30} ml={20} className={Styles.user_head}>
+                            <i className={Styles.icon_account} />
+                        </Block>
+                        <Block ml={20} fc='#fff' fs={20}>刘可可</Block>
                     </Block>
-                    <Block ml={20} fc='#fff' fs={20}>刘可可</Block>
                 </Block>
                 <Block fs={16} p={15}>我的订单</Block>
                 <Block wf className={Styles.order_panel}>

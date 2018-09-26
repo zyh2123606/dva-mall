@@ -195,7 +195,7 @@ class OrderDetail extends Component{
                         <Block className={Styles.money_color} fs={20} mt={10}>￥{defaultSkuPrice}</Block>
                     </Block>
                 </Block>
-                {/* {
+                {
                     pageData.goodsBaseAttrList.map(({baseAttrId,baseAttrName},baseIndex)=>{
                         return <Block key={'base-attr-'+baseIndex}>
                                 <Block pt={20} pb={13} fs={18}>{baseAttrName}</Block>
@@ -204,7 +204,7 @@ class OrderDetail extends Component{
                                 }
                             </Block>
                     })
-                } */}
+                }
                 <Block mt={20} a='c' wf>
                     <Block fs={18} f={1}>购买数量</Block>
                     <Stepper
@@ -224,22 +224,24 @@ class OrderDetail extends Component{
                         ))
                     }
                 </Block>
-                <Block wf fs={16} className={Styles.footer_bar}>
-                    <Block a='c' j='c' w={60} vf>
-                        <Block fs={20} fc='#999'>
-                            <i className={Styles.icon_server} />
+                <Block vf fs={16} className={Styles.footer_bar}>
+                    <Block wf className={Styles.footer_content}>
+                        <Block a='c' j='c' w={60} vf>
+                            <Block fs={20} fc='#999'>
+                                <i className={Styles.icon_server} />
+                            </Block>
+                            <Block fs={12}>客服</Block>
                         </Block>
-                        <Block fs={12}>客服</Block>
-                    </Block>
-                    <Block a='c' j='c' w={60} vf>
-                        <Block fs={22} fc='#999'>
-                            <Badge text={shoppingCartCount}><i className={Styles.icon_cart} /></Badge>
+                        <Block a='c' j='c' w={60} vf>
+                            <Block fs={22} fc='#999'>
+                                <Badge text={shoppingCartCount}><i className={Styles.icon_cart} /></Badge>
+                            </Block>
+                            <Block fs={12} onClick={this.toShoppingCart}><span>购物车</span></Block>
                         </Block>
-                        <Block fs={12} onClick={this.toShoppingCart}><span>购物车</span></Block>
-                    </Block>
-                    <Block wf f={1} ml={10} mr={10}>
-                        <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>
-                        <Block onClick={this.sureBuy.bind(this)} className={Styles.buy_sty} f={1}>立即购买</Block>
+                        <Block wf f={1} ml={10} mr={10}>
+                            <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>
+                            <Block onClick={this.sureBuy.bind(this)} className={Styles.buy_sty} f={1}>立即购买</Block>
+                        </Block>
                     </Block>
                 </Block>
             </Block>:null

@@ -3,6 +3,17 @@
 .header{
     height: 134px;
     background-image: linear-gradient(-90deg, #FD6062 0%, #FC9264 100%);
+    position: relative;
+    &::after{
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 30px;
+        background: url(../../assets/img/bott_shadow.png) no-repeat left bottom;
+        background-size: 100% auto;
+    }
     .user_head{
         width: 48px;
         height: 48px;
