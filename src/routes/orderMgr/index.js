@@ -37,7 +37,7 @@ class OrderDetail extends Component{
                     if(attrs && attrs.length>0){
                         colorsAttrs.set(attrs[0].baseAttrId,attrs[0].attrValId)
                     }
-                    
+
                 })
             }
             this.setState({
