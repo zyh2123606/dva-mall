@@ -4,9 +4,10 @@ import Styles from './index.less'
 import { createForm } from 'rc-form'
 import { SwipeAction, Icon, Stepper, Checkbox, Button,Toast,Modal } from 'antd-mobile'
 import ShoppingCartService from '../../services/shoppingCartService'
-import Constant from '../../utils/constant';
-import {routerRedux} from 'dva/router';
-import {connect} from 'dva';
+import Constant from '../../utils/constant'
+import {routerRedux} from 'dva/router'
+import {connect} from 'dva'
+import ImgErr from '../../assets/img/img_error.png'
 const alert = Modal.alert;
 /**
  *购物车
@@ -175,7 +176,7 @@ class Cart extends Component<IPropos>{
                                         ):<Block j='c' m='30px 10px 5px 10px' onClick={this.checked.bind(this,index)}><Block className={Styles.custom_check}></Block></Block>
                                     }
                                     <Block className={Styles.prod_pic}>
-                                        <img style={{width:'76px'}} src={Constant.imgBaseUrl+item.logoPath} alt={item.goodsName}/>
+                                        <img style={{width:'76px', borderRadius: 4}} src={item.logoPath?Constant.imgBaseUrl+item.logoPath:ImgErr} alt={item.goodsName}/>
                                         </Block>
                                     <Block vf f={1} ml={10}>
                                         <Block fs={14}>{item.goodsName}</Block>
