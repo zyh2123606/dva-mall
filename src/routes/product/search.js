@@ -6,6 +6,8 @@ import { PullToRefresh, Empty } from '../../components'
 import ProductService from '../../services/productService'
 import Constatn from '../../utils/constant'
 import Constant from '../../utils/constant';
+import {routerRedux} from 'dva/router';
+import {connect} from 'dva';
 /**
  *商品搜索页
  *
@@ -54,7 +56,8 @@ class SearchProduct extends Component{
         this.queryGoods()
     }
     async aqueryFilterItem(){
-        let { match:{params:{parentType,name}},dispatch} = this.props
+        let {selectedSku}=this.state
+        let { match:{params:{parentType,name}}} = this.props
         const {data,code} = await ProductService.queryFilterItem(parentType)
        
         if(code!==Constatn.responseOK || !data){
@@ -68,11 +71,28 @@ class SearchProduct extends Component{
                 content:data[key]
             })
         }
-        console.log('filterConditions:',filterConditions)
+        // 页面打开时，设置默认选中品牌
+        filterConditions.map(({title,content},index)=>{
+            content.map(item=>{
+                if(item===name){
+                    selectedSku.set('品牌',name)
+                }
+            })
+        })
         this.setState({
-            filterConditions
+            searchKeyword:name,
+            filterConditions,
+            selectedSku:selectedSku
         })
     }
+    searchInputChange=(value)=>{
+        this.setState({searchKeyword:value})
+    }
+    cancelInput=(val)=>{
+        this.setState({searchKeyword:val})
+        this.queryGoods()
+    }
+
     menuHandleClk(curMenu){
         let {selectedSku}=this.state
         const value = selectedSku.get(curMenu.title)
@@ -86,12 +106,22 @@ class SearchProduct extends Component{
             currentAllowSk.set('content',curMenu.content)
         }
         selectedSku.set(curMenu.title,value)
-        this.setState({
-            curMenu,
-            popVisible: true,
-            selectedSku:selectedSku,
-            currentAllowSk:currentAllowSk
-        })
+        if (curMenu.title!=='综合'){
+            this.setState({
+                curMenu,
+                popVisible: true,
+                selectedSku:selectedSku,
+                currentAllowSk:currentAllowSk
+            })
+        }else{
+            this.setState({
+                curMenu,
+                selectedSku:selectedSku,
+                currentAllowSk:currentAllowSk
+            })
+            this.queryGoods()
+        }
+        
     }
 
     //获取数据
@@ -113,11 +143,17 @@ class SearchProduct extends Component{
     selectSkuItem(title,itemName){
         let selectedSku=this.state.selectedSku
         selectedSku.set(title,itemName)
-         
+        this.queryGoods()
         this.setState({
             selectedSku:selectedSku,
             popVisible:false
         })
+    }
+    // 跳转到商品详情页面
+    toGoodsDetailPage(item){
+        this.props.dispatch(routerRedux.push({
+            pathname:`/order-detail/${item.typeId}`
+        }));
     }
 
     renderSkuSelectBar(){
@@ -129,7 +165,9 @@ class SearchProduct extends Component{
                         const isSelected = selectedSku.has(item.title)
                         return  <Block onClick={this.menuHandleClk.bind(this, item)} key={index} f={1} j='c' a='c'>
                                     <Block mr={5} className={isSelected?Styles.orangeColor:''}>{item.title}</Block>
-                                    <i className={isSelected?Styles.arrow_b:Styles.arrow_t}></i>
+                                    {
+                                        item.title==='综合'?null:<i className={isSelected?Styles.arrow_b:Styles.arrow_t}></i>
+                                    }
                                 </Block>
                     })
                 }
@@ -168,7 +206,7 @@ class SearchProduct extends Component{
                 {
                     goods?
                     goods.map((item,index) =>{
-                        return <Block key={'goods-'+index} wf className={Styles.sear_list_item}>
+                        return <Block key={'goods-'+index} wf className={Styles.sear_list_item} onClick={this.toGoodsDetailPage.bind(this,item)}>
                                 <Block className={Styles.prod_pic}><img style={{'width':'76px',height:'76px'}} src={Constant.imgBaseUrl+item.logoPath}/></Block>
                                 <Block f={1} ml={15}>
                                     <Block>{item.title}</Block>
@@ -187,12 +225,15 @@ class SearchProduct extends Component{
         )
     }
     render(){
-        const { popVisible, curMenu, refreshing} = this.state
+        const { popVisible,searchKeyword} = this.state
         return (
             <Block className={Styles.search_wrapper} vf>
                 <SearchBar placeholder='请输入商品名称查询'
-                    showCancelButton={true} 
-                    cancelText={<Button style={{marginTop: 6, borderRadius: 15}} type='primary' size='small'>搜索</Button>}/>
+                    showCancelButton={false} 
+                    onChange={this.searchInputChange}
+                    value={searchKeyword?searchKeyword:''}
+                    onCancel={this.cancelInput}
+                    cancelText={<Button style={{marginTop: 6, borderRadius: 15}} type='primary' size='small' onSubmit={this.onSubmit}>搜索</Button>}/>
                 {
                     this.renderSkuSelectBar()
                 }
@@ -212,4 +253,4 @@ class SearchProduct extends Component{
     }
 }
 
-export default SearchProduct
+export default connect()(SearchProduct)
