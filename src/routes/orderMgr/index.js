@@ -31,7 +31,6 @@ class OrderDetail extends Component{
         const { data, code } = res
         if(code===Constant.responseOK && data){
             let colorsAttrs=new Map()
-<<<<<<< HEAD
             if(data.goodsTypeAttrList){
                 data.goodsTypeAttrList.map(item=>{
                     const attrs = item.attrValList.filter(i=>i.selected===1)
@@ -41,15 +40,6 @@ class OrderDetail extends Component{
                     
                 })
             }
-=======
-            data.goodsTypeAttrList.map(item=>{
-                const attrs = item.attrValList.filter(i=>i.selected===1)
-                if(attrs && attrs.length>0){
-                    colorsAttrs.set(attrs[0].baseAttrId,attrs[0].attrValId)
-                }
-                
-            })
->>>>>>> 7c483ac077895a841328dcd26aed855cd6936364
             this.setState({
                 cur_tag:colorsAttrs,
                 pageData: {...data,colors:colorsAttrs},
@@ -236,9 +226,8 @@ class OrderDetail extends Component{
                 <Block pt={20} pb={20} fs={18} style={{fontWeight: 'bold'}}>套餐详情</Block>
                 <Block vf mb={60}>
                     {
-<<<<<<< HEAD
                         goodsPicList?goodsPicList.map((item,index)=>(
-                            <img style={{width:clientWhidth}} key={index} src={item.picPath?Constant.imgBaseUrl+item.picPath:ImgErr} alt={item.picName}/>
+                            <img className={Styles.prod_img} key={index} src={item.picPath?Constant.imgBaseUrl+item.picPath:ImgErr} alt={item.picName}/>
                         )):null
                     }
                 </Block>
@@ -254,31 +243,6 @@ class OrderDetail extends Component{
                     <Block wf f={1} ml={10} mr={10}>
                         <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>
                         <Block onClick={this.sureBuy.bind(this)} className={Styles.buy_sty} f={1}>立即购买</Block>
-=======
-                        goodsPicList.map((item,index)=>(
-                            <img className={Styles.prod_img} key={index} src={Constant.imgBaseUrl+item.picPath} alt={item.picName}/>
-                        ))
-                    }
-                </Block>
-                <Block vf fs={16} className={Styles.footer_bar}>
-                    <Block wf className={Styles.footer_content}>
-                        <Block a='c' j='c' w={60} vf>
-                            <Block fs={20} fc='#999'>
-                                <i className={Styles.icon_server} />
-                            </Block>
-                            <Block fs={12}>客服</Block>
-                        </Block>
-                        <Block a='c' j='c' w={60} vf>
-                            <Block fs={22} fc='#999'>
-                                <Badge text={shoppingCartCount}><i className={Styles.icon_cart} /></Badge>
-                            </Block>
-                            <Block fs={12} onClick={this.toShoppingCart}><span>购物车</span></Block>
-                        </Block>
-                        <Block wf f={1} ml={10} mr={10}>
-                            <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>
-                            <Block onClick={this.sureBuy.bind(this)} className={Styles.buy_sty} f={1}>立即购买</Block>
-                        </Block>
->>>>>>> 7c483ac077895a841328dcd26aed855cd6936364
                     </Block>
                 </Block>
             </Block>:null
