@@ -1,14 +1,15 @@
 @import '../../common.less';
+@import '../../inconfont.less';
 .header{
     height: 134px;
-    background-image: linear-gradient(-90deg, #FC9264 0%, #FD6062 100%);
+    background-image: linear-gradient(-90deg, #FD6062 0%, #FC9264 100%);
     .user_head{
         width: 48px;
         height: 48px;
         background: #FFFFFF;
-        border: 4px solid #EE6723;
+        border: 4px solid rgba(252, 146, 100, .7);
         box-shadow: 0 4px 8px 0 rgba(185,45,18,0.57);
-        border-radius: 26px;
+        border-radius: 50px;
     }
 }
 .order_panel{
@@ -27,8 +28,8 @@
     padding: 0 15px;
     .act_item{
         padding: 10px 5px 10px 0;
-        &:not(:last-child){
-            .thin-by-line();
+        &:not(:first-child){
+            .thin-ty-line();
         };
     }
 }

@@ -1,4 +1,5 @@
 @import '../../common.less';
+@import '../../inconfont.less';
 /**订单详情**/
 .order_det_wrapper{
     .pro_panel{
@@ -62,6 +63,15 @@
     }
     .buy_sty:active{
         background: @orangeRedTap;
+    }
+    .prod_img{
+        display: block;
+        width: 100%;
+        height: auto;
+        margin-top: 5px;
+    }
+    .prod_img:first-child{
+        margin: 0;
     }
 }
 /**订单确认**/

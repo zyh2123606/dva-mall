@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-import { Stepper, Icon } from 'antd-mobile'
+import { Stepper } from 'antd-mobile'
 import Service from '../../services/productService'
 import ShoppingCartService from '../../services/shoppingCartService';// 购物车service
 import { createForm } from 'rc-form'
@@ -35,7 +35,6 @@ class OrderDetail extends Component{
                 }
                 
             })
-            console.log('colorsAttrs',colorsAttrs)
             this.setState({
                 cur_tag:colorsAttrs,
                 pageData: {...data,colors:colorsAttrs},
@@ -60,7 +59,7 @@ class OrderDetail extends Component{
             const { onChange } = getFieldProps('color_id')
             onChange(attrValId)
         })
-        this.queryPriceByGoodsColor(attrValId)
+        //this.queryPriceByGoodsColor(attrValId)
     }
     // 点击颜色，查询该颜色属性对应的商品信息
     async queryPriceByGoodsColor() {
@@ -178,26 +177,25 @@ class OrderDetail extends Component{
     }
     render(){
         const { pageData,defaultSkuPrice,shoppingCartCount} = this.state
-        const { goodsHeadPicList,title,colors,goodsPicList } = pageData || {}
+        const { goodsHeadPicList,title,goodsPicList } = pageData || {}
         
         const { getFieldProps } = this.props.form
-        var clientWhidth = 0;
-        if (document.body.clientWidth && document.documentElement.clientWidth) {
-            var clientWhidth = (document.body.clientWidth < document.documentElement.clientWidth) ? document.body.clientWidth : document.documentElement.clientWidth;
-        }
-        else {
-            var clientWhidth = (document.body.clientWidth > document.documentElement.clientWidth) ? document.body.clientWidth : document.documentElement.clientWidth;
-        }
         return (
             pageData?<Block bc='#fff' vf p={15} className={Styles.order_det_wrapper}>
                 <Block h={250} vf className={Styles.pro_panel}>
-                    <Block f={1} bc='#eee'><img style={{maxHeight:'150px'}} src={Constant.imgBaseUrl+goodsHeadPicList[0].picPath} alt='商品logo'/></Block>
+                    <Block f={1} j='c' a='c' pt={20}>
+                        <img style={{
+                            height: '100%',
+                            witdh: 'auto',
+                            display: 'block'
+                        }} src={Constant.imgBaseUrl+goodsHeadPicList[0].picPath} alt='商品logo'/>
+                    </Block>
                     <Block p={20} vf>
                         <Block fs={16}>{title}</Block>
                         <Block className={Styles.money_color} fs={20} mt={10}>￥{defaultSkuPrice}</Block>
                     </Block>
                 </Block>
-                {
+                {/* {
                     pageData.goodsBaseAttrList.map(({baseAttrId,baseAttrName},baseIndex)=>{
                         return <Block key={'base-attr-'+baseIndex}>
                                 <Block pt={20} pb={13} fs={18}>{baseAttrName}</Block>
@@ -206,11 +204,11 @@ class OrderDetail extends Component{
                                 }
                             </Block>
                     })
-                }
+                } */}
                 <Block mt={20} a='c' wf>
                     <Block fs={18} f={1}>购买数量</Block>
                     <Stepper
-                        style={{ width: '120px'}}
+                        style={{ width: '120px', touchAction: 'none'}}
                         showNumber
                         {...getFieldProps('num', {initialValue: 1})}
                         max={10}
@@ -218,22 +216,26 @@ class OrderDetail extends Component{
                         defaultValue={1}
                     />
                 </Block>
-                <Block pt={20} pb={20} fs={18} style={{fontWeight: 'bold',}}>套餐详情</Block>
-                <Block h={300} bc='#eee' mb={60}>
+                <Block pt={20} pb={20} fs={18} style={{fontWeight: 'bold'}}>套餐详情</Block>
+                <Block vf mb={60}>
                     {
                         goodsPicList.map((item,index)=>(
-                            <img style={{width:clientWhidth}} key={index} src={Constant.imgBaseUrl+item.picPath} alt={item.picName}/>
+                            <img className={Styles.prod_img} key={index} src={Constant.imgBaseUrl+item.picPath} alt={item.picName}/>
                         ))
                     }
                 </Block>
                 <Block wf fs={16} className={Styles.footer_bar}>
                     <Block a='c' j='c' w={60} vf>
+                        <Block fs={20} fc='#999'>
+                            <i className={Styles.icon_server} />
+                        </Block>
                         <Block fs={12}>客服</Block>
                     </Block>
                     <Block a='c' j='c' w={60} vf>
-                        <Block>
+                        <Block fs={22} fc='#999'>
+                            <Badge text={shoppingCartCount}><i className={Styles.icon_cart} /></Badge>
                         </Block>
-                        <Block fs={12} onClick={this.toShoppingCart}><Badge text={shoppingCartCount}><span>购物车</span></Badge></Block>
+                        <Block fs={12} onClick={this.toShoppingCart}><span>购物车</span></Block>
                     </Block>
                     <Block wf f={1} ml={10} mr={10}>
                         <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>
