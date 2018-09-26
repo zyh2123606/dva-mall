@@ -187,13 +187,12 @@ class OrderDetail extends Component{
         const { getFieldProps } = this.props.form
         return (
             pageData?<Block bc='#fff' vf p={15} className={Styles.order_det_wrapper}>
-                <Block h={250} vf className={Styles.pro_panel}>
-                    <Block f={1} j='c' a='c' pt={20}>
-                        <img style={{
-                            height: '100%',
-                            witdh: 'auto',
-                            display: 'block'
-                        }} src={Constant.imgBaseUrl+goodsHeadPicList[0].picPath} alt='商品logo'/>
+                <Block vf className={Styles.pro_panel}>
+                    <Block f={1} j='c' a='c'>
+                        <img style={{marginTop: 0, 
+                            borderRadius: '5px 5px 0 0'}} 
+                            className={Styles.prod_img} 
+                            src={Constant.imgBaseUrl+goodsHeadPicList[0].picPath} alt='商品logo'/>
                     </Block>
                     <Block p={20} vf>
                         <Block fs={16}>{title}</Block>

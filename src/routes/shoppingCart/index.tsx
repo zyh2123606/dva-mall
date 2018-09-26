@@ -154,7 +154,7 @@ class Cart extends Component<IPropos>{
                 goodsList.map((item,index)=>{
                     const selectd=selectedCartId.has(index)
                     return (
-                        <Block key={'cart-item-'+index} wf className={Styles.shop_panel}>
+                        <Block key={'cart-item-'+index} vf className={Styles.shop_panel}>
                             <SwipeAction autoClose right={[
                                 {text: '删除', onPress: this.delShopItem.bind(this,item), style: {
                                     background: '#FD5563', 
@@ -187,7 +187,7 @@ class Cart extends Component<IPropos>{
                                                 }):null
                                             }
                                         </Block>
-                                        <Block wf a='c'>
+                                        <Block wf a='c' mt={5}>
                                             <Block f={1} className={Styles.orangeColor}>￥{item.salePrice}</Block>
                                             <Block mr={10}>
                                                 <Stepper

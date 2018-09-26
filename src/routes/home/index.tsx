@@ -38,11 +38,18 @@ class Home extends Component<IProps>{
             hotList: res[2].data || [],
             newList: res[3].data || [],
             productTypes: res[4].data || [],
+            typeList: res[5].data || [],
             isRequest: true
         })
+        if(window.localStorage){
+            window.localStorage.setItem('data', JSON.stringify({name: 'zyh'}))
+            console.log(window.localStorage.getItem('data'))
+        }else{
+            console.log('不支持localStorage',window)
+        }
     }
     render(){
-        const { specialList, hotList, newList, productTypes, bannerList, isRequest } = this.state
+        const { specialList, hotList, newList, productTypes, bannerList, typeList, isRequest } = this.state
         return (
             isRequest?<Block className={Styles.container} bc='#fff'>
                 <Block vf p='0 15px'>
@@ -82,15 +89,15 @@ class Home extends Component<IProps>{
                 {/* start */}
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={4}>
-                        {productTypes.map(({name}, idx) => (
-                            <Block key={idx}>
+                        {typeList.map(({adPic, title}, idx) => (
+                            <Link to='/' key={idx}>
                                 <Block vf className={Styles.type_item}>
                                     <Block f={1}>
-                                        <img className={Styles.type_img} src={Handle} />
+                                        <img className={Styles.type_img} src={Constant.imgBaseUrl+adPic} />
                                     </Block>
-                                    <Block className={Styles.type_name_txt}>{name}</Block>
+                                    <Block className={Styles.type_name_txt}>{title}</Block>
                                 </Block>
-                            </Block>
+                            </Link>
                         ))}
                     </Swiper>
                 </section>
@@ -98,7 +105,7 @@ class Home extends Component<IProps>{
                 <Block ml={15} mr={15}>
                     <Block wf a='c'>
                         <Block f={1} className={Styles.type_title}>特惠专区</Block>
-                        <Link className={Styles.link_sty} to='/'>More</Link>
+                        {/* <Link className={Styles.link_sty} to='/'>More</Link> */}
                     </Block>
                     <Block className={Styles.th_banner}></Block>
                 </Block>
@@ -122,7 +129,7 @@ class Home extends Component<IProps>{
                 <Block ml={15} mr={15}>
                     <Block wf a='c'>
                         <Block f={1} className={Styles.type_title}>热门商品</Block>
-                        <Link className={Styles.link_sty} to='/'>More</Link>
+                        {/* <Link className={Styles.link_sty} to='/'>More</Link> */}
                     </Block>
                     <Block className={Styles.hot_banner}></Block>
                 </Block>
@@ -145,7 +152,7 @@ class Home extends Component<IProps>{
                 <Block ml={15} mr={15}>
                     <Block wf a='c'>
                         <Block f={1} className={Styles.type_title}>新品上架</Block>
-                        <Link className={Styles.link_sty} to='/'>More</Link>
+                        {/* <Link className={Styles.link_sty} to='/'>More</Link> */}
                     </Block>
                     <Block className={Styles.new_banner}></Block>
                 </Block>

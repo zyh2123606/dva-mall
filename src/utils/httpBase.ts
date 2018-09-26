@@ -27,18 +27,14 @@ class HttpBase implements HttpInterFace {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
+            withCredentials: true,
             transformRequest: [(data: any) => qs.stringify(data)],
             timeout: 30000
         }
         //添加拦截器，提前处理返回的数据
         this.$http.interceptors.response.use((response: any) => {
-            //请求结束后自动关闭loading
             Toast.hide()
             let { data } = response
-            // if(!data.result){
-            //     data.data = []
-            //     Toast.info(data.message)
-            // }
             return data
         }, (err: any) => {
             if (err && err.response) {
@@ -83,7 +79,7 @@ class HttpBase implements HttpInterFace {
      * @memberof HttpBase
      */
     get(url: string, config = {}){
-        return this.$http.get(url, config)
+        return this.$http.get(url, {...this.dataMethodDefault, ...config})
     }
     /**
      * pos请求
