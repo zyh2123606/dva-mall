@@ -107,7 +107,7 @@ class Home extends Component<IProps>{
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={3}>
                         {specialList.map(({logoPath, typeName, minPrice}, idx) => (
-                            <Block key={idx} style={{lineHeight: 'normal'}}>
+                            <div key={idx} style={{lineHeight: 'normal'}}>
                                 <Block vf className={Styles.type_item} mt={15}>
                                     <Block j='c' className={Styles.prod_img_c}>
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
@@ -115,7 +115,7 @@ class Home extends Component<IProps>{
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
                                     <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
                                 </Block>
-                            </Block>
+                            </div>
                         ))}
                     </Swiper>
                 </section>
@@ -130,7 +130,7 @@ class Home extends Component<IProps>{
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={3}>
                         {hotList.map(({logoPath, typeName, minPrice}, idx) => (
-                            <Block key={idx} style={{lineHeight: 'normal'}}>
+                            <div key={idx} style={{lineHeight: 'normal'}}>
                                 <Block vf className={Styles.type_item} mt={15}>
                                     <Block j='c' className={Styles.prod_img_c}>
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
@@ -138,7 +138,7 @@ class Home extends Component<IProps>{
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
                                     <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
                                 </Block>
-                            </Block>
+                            </div>
                         ))}
                     </Swiper>
                 </section>
@@ -153,7 +153,7 @@ class Home extends Component<IProps>{
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={3}>
                         {newList.map(({logoPath, typeName, minPrice}, idx) => (
-                            <Block key={idx} style={{lineHeight: 'normal'}}>
+                            <div key={idx} style={{lineHeight: 'normal'}}>
                                 <Block vf className={Styles.type_item} mt={15}>
                                     <Block j='c' className={Styles.prod_img_c}>
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
@@ -161,7 +161,7 @@ class Home extends Component<IProps>{
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
                                     <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
                                 </Block>
-                            </Block>
+                            </div>
                         ))}
                     </Swiper>
                 </section>
