@@ -19,10 +19,17 @@ class DefaultPage extends Component{
     }
     async componentDidMount(){
         const {data,code} =await ProductService.getTypeList()
+
+        // TODO 从路由中取TypeId，根据首页选中的typeId进行当前页面选中的tab以及tab下的品牌
+        const { match:{params:{typeId}}} = this.props
         if(code === Constant.responseOK){
             this.setState({firstTypeList:data})
             if(data && data.length>0){
-                this.querychildTypeList(data[0].id)
+                if(typeId){
+                    this.querychildTypeList(typeId)
+                }else{
+                    this.querychildTypeList(data[0].id)
+                }
             }
         }
     }

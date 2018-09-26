@@ -12,6 +12,7 @@ import Constant from '../../utils/constant';
 import ImgErr from '../../assets/img/img_error.png'
 import Gouwuche from '../../assets/img/gouwuche.png'
 import Xiaoxi from '../../assets/img/xiaoxi.png'
+import productService from '../../services/productService';
 
 class OrderDetail extends Component{
     state = {
@@ -143,6 +144,12 @@ class OrderDetail extends Component{
             pathname:'/cart'
         }));
     }
+    //联系客服
+    connectService=()=>{
+        const token=''
+        console.log('获取token')
+        // productService.connectService(token)
+    }
     // 渲染商品属性部分
     renderAttrBlock=(baseAttrId)=>{
         const { getFieldProps } = this.props.form
@@ -232,7 +239,7 @@ class OrderDetail extends Component{
                     }
                 </Block>
                 <Block wf fs={16} className={Styles.footer_bar}>
-                    <Block a='c' j='c' w={60} vf>
+                    <Block a='c' j='c' w={60} vf onClick={this.connectService}>
                         <Block><img style={{height:'17px'}} src={Xiaoxi}/></Block>
                         <Block fs={12}>客服</Block>
                     </Block>

@@ -93,7 +93,7 @@ class Cart extends Component<IPropos>{
             const selectd= goodsList.filter((item,index)=>index===element)
             if(selectd && selectd.length>0){
                 selectd.map((sItem)=>{
-                    totalPrise+=sItem.totalMoney
+                    totalPrise+= sItem.totalMoney
                 })
             }
         });
@@ -187,7 +187,7 @@ class Cart extends Component<IPropos>{
                                             }
                                         </Block>
                                         <Block wf a='c'>
-                                            <Block f={1} className={Styles.orangeColor}>￥{item.salePrice}</Block>
+                                            <Block f={1} className={Styles.orangeColor}>￥{Constant.toMoney(item.salePrice)}</Block>
                                             <Block mr={10}>
                                                 <Stepper
                                                     style={{ width: '100%', minWidth: '100px' }}
@@ -219,8 +219,6 @@ class Cart extends Component<IPropos>{
                 <Block className={Styles.cart_content}>
                     {this.renderCartItem()}
                 </Block>
-                
-                
                 {/* footer */}
                 <Block className={Styles.footer_bar}>
                     <Block a='c' wf className={Styles.footer_content}>
@@ -229,7 +227,7 @@ class Cart extends Component<IPropos>{
                         </Block>
                         <Block a='c' wf>
                             <Block wf fs={17} mr={10}>合计：
-                                <Block className={Styles.orangeColor}>￥{totalPrise}</Block>
+                                <Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>
                             </Block>
                             <Button type='primary' className={Styles.pay_btn} onClick={this.settlement}>结算({selectedCartId.size})</Button>
                         </Block>

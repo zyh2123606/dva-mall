@@ -31,6 +31,11 @@ class ProductService extends HttpBase{
     searchGoods=(params)=>{
         return this.postJson('goods/search',params)
     }
+
+    //联系客服
+    connectService=(token)=>{
+        this.post(`https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=${token}`)
+    }
 }
 
 export default new ProductService()
