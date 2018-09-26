@@ -5,6 +5,7 @@ import { List,Toast, InputItem, TextareaItem, Picker, Checkbox, Button } from 'a
 import { connect } from 'dva'
 import AreaData from '../../components/areaData'
 import Service from '../../services/addressService'
+import { checkFormat } from './utils'
 
 /**
  *添加收货地址
@@ -27,6 +28,9 @@ class Update extends Component{
     }
     submit=async(editAddr,e)=>{
         const submitVales = this.props.form.getFieldsValue()
+        if(!checkFormat(submitVales)){
+            return
+        }
         const {address,defaultFlag,pcc:[province,city,county],receiver,tel}=submitVales
         debugger
         const temp={id:this.editAddr.id,tel:tel,memId:1,address:address,receiver:receiver,defaultFlag:defaultFlag?1:2,province:province,city:city,county:county}
