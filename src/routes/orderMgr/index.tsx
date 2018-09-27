@@ -155,9 +155,7 @@ class OrderDetail extends Component{
     toShoppingCart=()=>{
         const {dispatch} =this.props;
         // TODO 处理跳转到购物车需要携带的sessionID和memId
-        const sessionId=123
-        const memId=123
-        // const {sessionId,memId}=Constant.userData
+        const {sessionId,memId}=Constant.userData
         wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/cart/${sessionId}/${memId}`})
     }
     //联系客服
