@@ -49,8 +49,8 @@ class Complete extends Component{
                 damping={100}>
                 {data?
                     data instanceof Array && data.length?
-                    this.state.data.map(({orderCode,status,goodsList},idx)=>(
-                        <Order key={idx} orderCode={orderCode} status = {status} goodsList={goodsList}/>
+                    this.state.data.map(({orderCode,status,goodsList,id},idx)=>(
+                        <Order key={idx} orderCode={orderCode} status={status} orderId={id} goodsList={goodsList}/>
                     )):<Empty />
                 :null}
             </PullToRefresh>
