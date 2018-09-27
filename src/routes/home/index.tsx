@@ -84,8 +84,8 @@ class Home extends Component<IProps>{
                     </Block>
                     <Block mt={10} className={Styles.type_banner}>
                         <Block className={Styles.banner_inner}></Block>
-                    <Block className={Styles.type_title}>商品类型</Block>
                     </Block>
+                    <Block className={Styles.type_title}>商品类型</Block>
                 </Block>
                 {/* start */}
                 <section className={Styles.swiper_container}>

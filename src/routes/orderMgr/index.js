@@ -236,18 +236,18 @@ class OrderDetail extends Component{
                 </Block>
                 <Block vf fs={16} className={Styles.footer_bar}>
                     <Block wf className={Styles.footer_content}>
-                        <Block a='c' j='c' w={60} vf>
+                        <Block a='c' j='c' w={80} vf>
                             <Block fs={22} fc='#999'>
                                 <i className={Styles.icon_server} />
                             </Block>
                             <Block fs={12}>客服</Block>
                         </Block>
-                        <Block a='c' j='c' w={60} vf>
+                        {/* <Block a='c' j='c' w={60} vf>
                             <Block fs={24} fc='#999'>
                                 <Badge text={shoppingCartCount}><i className={Styles.icon_cart} /></Badge>
                             </Block>
                             <Block fs={12} onClick={this.toShoppingCart}>购物车</Block>
-                        </Block>
+                        </Block> */}
                         <Block wf f={1} ml={10} mr={10}>
                             <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>
                             <Block onClick={this.sureBuy.bind(this)} className={Styles.buy_sty} f={1}>立即购买</Block>

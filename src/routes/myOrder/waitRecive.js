@@ -47,10 +47,12 @@ class WaitRecive extends Component{
                 refreshing={refreshing}
                 onRefresh={this.pulUpFresh}
                 damping={100}>
-                {this.state.data?this.state.data.map(({orderCode,status,goodsList},idx)=>(
-                  <Order key={idx} orderCode={orderCode} status = {status} goodsList={goodsList}/>
-
-                )):<Empty/>}
+                {data?
+                    data instanceof Array && data.length?
+                    this.state.data.map(({orderCode,status,goodsList},idx)=>(
+                        <Order key={idx} orderCode={orderCode} status = {status} goodsList={goodsList}/>
+                    )):<Empty />
+                :null}
             </PullToRefresh>
         )
     }
