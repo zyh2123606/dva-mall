@@ -3,7 +3,7 @@ import Block from 'fs-flex'
 import Styles from './index.less'
 import { Link } from 'react-router-dom'
 import { Facebook } from 'react-content-loader'
-import Contant from '../../utils/constant'
+import Constant from '../../utils/constant'
 import Service from '../../services/baseService'
 import { Toast } from 'antd-mobile'
 
@@ -16,7 +16,9 @@ import { Toast } from 'antd-mobile'
 class Account extends Component{
     state = {userInfo: null}
     async componentDidMount(){
-        const { memId=7 } = Contant.userData
+        const { params } = this.props.match
+        Constant.userData = params
+        const memId = params.memId || ''
         const res = await Service.getUserInfo(memId)
         const { code, data, msg } = res
         if(code !== '0000') return Toast.info(msg)
