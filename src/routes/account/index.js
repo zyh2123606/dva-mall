@@ -16,6 +16,7 @@ import { Toast } from 'antd-mobile'
 class Account extends Component{
     state = {userInfo: null}
     async componentDidMount(){
+        document.title = '我的'
         const { params } = this.props.match
         Constant.userData = params
         const memId = params.memId || 7
