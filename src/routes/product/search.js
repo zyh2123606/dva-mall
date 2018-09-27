@@ -34,17 +34,16 @@ class SearchProduct extends Component{
         {title: '综合',content:[]},
     ]
     async queryGoods(){
-        const { match:{params:{parentType,name}},dispatch} = this.props
         const {searchKeyword,selectedSku}=this.state
 
         const selectColor=selectedSku.get('颜色')
         const selectBrand=selectedSku.get('品牌')
         const selectMemory=selectedSku.get('内存')
         const {data,code}=await ProductService.searchGoods({
-            keyword:searchKeyword?searchKeyword:name,//关键字
-            colour:selectColor?selectColor:'',//颜色
-            brandName:selectBrand?selectBrand:'',//品牌
-            memorySize:selectMemory?selectMemory:'',//内存
+            keyword:searchKeyword?searchKeyword:null,//关键字
+            colour:selectColor?selectColor:null,//颜色
+            brandName:selectBrand?selectBrand:null,//品牌
+            memorySize:selectMemory?selectMemory:null,//内存
             sortList:[]
         })
         if (code === Constant.responseOK){
@@ -52,8 +51,12 @@ class SearchProduct extends Component{
         }
     }
     componentDidMount() {
-        this.aqueryFilterItem()
-        this.queryGoods()
+        const { match:{params:{name}}} = this.props
+        this.setState({searchKeyword:name})
+        setTimeout(() => {
+            this.aqueryFilterItem()
+            this.queryGoods()
+        }, 200);
     }
     async aqueryFilterItem(){
         let {selectedSku}=this.state

@@ -15,7 +15,7 @@ const RouteConfig = [
     {path: '/add-address', component: addAddressPage, exact: true},
     {path: '/update-address', component: updateAddressPage, exact: true},
     {path: '/order-info/:orderId', component: orderInfoPage, exact: true},
-    {path: '/product', component: productPage, exact: true},
+    {path: '/product/:typeId', component: productPage, exact: true},
     {path: '/search/:parentType/:name', component: searchPage, exact: true},
     {path: '/order-complete/:orderId', component: orderCompletePage, exact: true},
     {path: '/cart/:sessionId/:memId', component: cartPage, exact: true},
