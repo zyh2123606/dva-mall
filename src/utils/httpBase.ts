@@ -5,7 +5,6 @@
 import Axios from 'axios'
 import qs from 'qs'
 import { Toast } from 'antd-mobile'
-import { watch } from 'fs';
 
 interface HttpInterFace{
     get: (url: string, config: any) => any,
@@ -99,7 +98,6 @@ class HttpBase implements HttpInterFace {
      * @param data 
      */
     postJson(url: string, data=undefined){
-        // return this.post(url,data,{headers: {'Content-Type': 'application/json;charset=UTF-8'}})
         return this.$http.post(url,data,{headers: {'Content-Type': 'application/json;charset=UTF-8'}})
     }
     /**
@@ -123,7 +121,7 @@ class HttpBase implements HttpInterFace {
      * @memberof HttpBase
      */
     delete(url: string, data: undefined, config={}){
-        return this.$http.delete(url, config)
+        return this.$http.delete(url, {...this.dataMethodDefault, ...config})
     }
     /**
      * 取消请求

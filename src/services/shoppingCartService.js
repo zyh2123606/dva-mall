@@ -3,6 +3,7 @@
  */
 import HttpBase from '../utils/httpBase'
 import { Toast } from 'antd-mobile'
+import Constant from '../utils/constant'
 
 
  class ShoppingCartService extends HttpBase{
@@ -10,6 +11,7 @@ import { Toast } from 'antd-mobile'
         super('/api')
         //添加拦截器设置请求头
         this.$http.interceptors.request.use(config => {
+            config.headers.common['CSESSIONID'] = Constant.userData.sessionId
             Toast.loading('正在请求', 15)
             return config
         })
