@@ -2,6 +2,10 @@ import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
 import { Link } from 'react-router-dom'
+import { Facebook } from 'react-content-loader'
+import Constant from '../../utils/constant'
+import Service from '../../services/baseService'
+import { Toast } from 'antd-mobile'
 
 /**
  *账户中心
@@ -10,15 +14,27 @@ import { Link } from 'react-router-dom'
  * @extends {Component}
  */
 class Account extends Component{
+    state = {userInfo: null}
+    async componentDidMount(){
+        const { params } = this.props.match
+        Constant.userData = params
+        const memId = params.memId || ''
+        const res = await Service.getUserInfo(memId)
+        const { code, data, msg } = res
+        if(code !== '0000') return Toast.info(msg)
+        this.setState({userInfo: data})
+    }
     render(){
+        const { userInfo } = this.state
         return (
-            <Block bc='#fff' className={Styles.container} vf>
+            userInfo?<Block bc='#fff' className={Styles.container} vf>
                 <Block className={Styles.header} vf>
                     <Block a='c' mt={30}>
                         <Block j='c' a='c' fc='#eee' fs={30} ml={20} className={Styles.user_head}>
-                            <i className={Styles.icon_account} />
+                            {userInfo.avatar?<img src={userInfo.avatar} alt='' />
+                            :<i className={Styles.icon_account} />}
                         </Block>
-                        <Block ml={20} fc='#fff' fs={20}>刘可可</Block>
+                        <Block ml={20} fc='#fff' fs={20}>{userInfo.nickname}</Block>
                     </Block>
                 </Block>
                 <Block fs={16} p={15}>我的订单</Block>
@@ -83,6 +99,11 @@ class Account extends Component{
                         <Block f={1}>退出登录</Block>
                         <i className={Styles.arrow_right}></i>
                     </Block>
+                </Block>
+            </Block>:
+            <Block bc='#fff' className={Styles.container}>
+                <Block p={15}>
+                    <Facebook />
                 </Block>
             </Block>
         )

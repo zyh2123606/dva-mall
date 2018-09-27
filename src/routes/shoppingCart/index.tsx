@@ -29,6 +29,8 @@ class Cart extends Component<IPropos>{
 
     }
     async componentDidMount(){
+        const { params } = this.props.match
+        Constant.userData = params
         this.queryShoppingCart()
     }
     async queryShoppingCart(){

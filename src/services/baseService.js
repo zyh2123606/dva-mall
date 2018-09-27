@@ -11,9 +11,10 @@ class BaseService extends HttpBase{
         })
     }
     //获取用户收货列表
-    getHomeData = data => {
+    getHomeData = () => {
         return this.all([this.getBannerList(), this.getSpecialProducts(), 
-            this.getHotProducts(), this.getNewProducts(), this.getProductTypes(), this.getTypesList()])
+            this.getHotProducts(), this.getNewProducts(), this.getProductTypes(), 
+            this.getTypesList(), this.getDeptInfo()])
     }
     //获取banner图
     getBannerList = () => {
@@ -41,6 +42,10 @@ class BaseService extends HttpBase{
     //获取用户信息
     getUserInfo = memId => {
         return this.get(`/mem/info/${memId}`)
+    }
+    //获取门店信息
+    getDeptInfo = () => {
+        return this.get('/dept/getDeptInfo?id=1')
     }
 }
 
