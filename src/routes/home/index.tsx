@@ -46,6 +46,9 @@ class Home extends Component<IProps>{
             isRequest: true
         })
     }
+    goTarget(){
+        wx.miniProgram.navigateTo({url: '/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/my-order'})
+    }
     render(){
         const { specialList, hotList, typeList, newList, isRequest, deptInfo } = this.state
         const { deptAddress, deptManager, deptName, deptTel } = deptInfo || {}
@@ -62,7 +65,7 @@ class Home extends Component<IProps>{
                             </Block>
                         </Block>
                         <Block className={Styles.head_pic}></Block>
-                        <Block fs={10} ml={5}>店长：{deptManager}</Block>
+                        <Block onClick={this.goTarget.bind(this)} fs={10} ml={5}>店长：{deptManager}</Block>
                     </Block>
                     <Block wf fs={10} style={{lineHeight: 'normal'}} mt={7}>
                         <Block vf f={1}>

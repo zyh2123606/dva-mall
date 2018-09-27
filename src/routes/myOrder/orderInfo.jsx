@@ -2,6 +2,7 @@ import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
 import { Steps } from 'antd-mobile'
+import { NavTopBar } from '../../components'
 
 /**
  *查看物流
@@ -12,9 +13,11 @@ import { Steps } from 'antd-mobile'
 const Step = Steps.Step
 class OrderInfo extends Component{
     render(){
+        const { history } = this.props
         return (
-            <Block className={Styles.order_info} vf>
-                <Block ml={15} mr={15}>
+            <Block className={Styles.order_info} vf> 
+                <NavTopBar title='物流详情' leftClick={()=>{history.goBack()}} />
+                <Block ml={15} mr={15} mt={45}>
                     <Block className={Styles.info_title}>物流信息</Block>
                     <Block mt={5} wf>
                         <Block f={1}>订单编号：</Block>
