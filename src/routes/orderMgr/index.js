@@ -51,7 +51,7 @@ class OrderDetail extends Component{
                 headerImg:data.goodsHeadPicList||[]})
         }
         // 查询购物车商品数量
-        // this.shoppingCart()
+        this.shoppingCart()
     }
     //选择颜色
     selectColor(attrValId,baseAttrId){
