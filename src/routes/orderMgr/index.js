@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-import { Stepper } from 'antd-mobile'
+import { Stepper,Carousel } from 'antd-mobile'
 import Service from '../../services/productService'
 import ShoppingCartService from '../../services/shoppingCartService';// 购物车service
 import { createForm } from 'rc-form'
@@ -21,6 +21,7 @@ class OrderDetail extends Component{
         shoppingCartCount:0,//购物车商品数量
         logoPath:'',
         skuid:0,
+        headerImg:[],// 头部商品展示图片集合
     }
     //dom挂在完成请求数据
     async componentDidMount(){
@@ -45,7 +46,8 @@ class OrderDetail extends Component{
                 typeId:pid,
                 title:data.title,
                 logoPath:Constant.imgBaseUrl+data.logoPath,
-                skuid:data.defaultSkuId})
+                skuid:data.defaultSkuId,
+                headerImg:data.goodsHeadPicList||[]})
         }
         // 查询购物车商品数量
         this.shoppingCart()
@@ -79,9 +81,24 @@ class OrderDetail extends Component{
         })
         const {data,code} = await Service.queryPriceByGoodsColor({typeId:typeId,attrList:attrList})
         if(code===Constant.responseOK){
-            this.setState({
-                defaultSkuPrice:this.toMoney(data.skuPrice.salePrice),
-                skuid:data.id})
+            if(data.goodsHeadPicList && data.goodsHeadPicList.length>0){
+                let picList=[]
+                data.goodsHeadPicList.map(item=>{
+                    picList.push({
+                        "picName":"",
+                        "picPath":item,
+                    })
+                })
+                this.setState({
+                    defaultSkuPrice:this.toMoney(data.skuPrice.salePrice),
+                    skuid:data.id,
+                    headerImg:picList
+                })
+            }else{
+                this.setState({
+                    defaultSkuPrice:this.toMoney(data.skuPrice.salePrice),
+                    skuid:data.id})
+            }
         }
 
     }
@@ -189,19 +206,40 @@ class OrderDetail extends Component{
             </Block>
         )
     }
+
+    renderHeaderImges=()=>{
+        const {headerImg} =this.state
+        return <Carousel autoplay={false} infinite>
+            {
+                headerImg.map((item,index)=><img 
+                    key={'header-img-'+index}
+                    swipeSpeed={20}
+                    src={Constant.imgBaseUrl+item.picPath}
+                    alt={item.picName}
+                    style={{marginTop: 0, borderRadius: '5px 5px 0 0'}} 
+                    className={Styles.prod_img} 
+                    onLoad={() => {window.dispatchEvent(new Event('resize'));}} 
+                    />)
+            }
+        </Carousel>
+    }
+
     render(){
         const { pageData,defaultSkuPrice,shoppingCartCount} = this.state
-        const { goodsHeadPicList,title,goodsPicList } = pageData || {}
+        const { title,goodsPicList } = pageData || {}
         
         const { getFieldProps } = this.props.form
         return (
             pageData?<Block bc='#fff' vf p={15} className={Styles.order_det_wrapper}>
                 <Block vf className={Styles.pro_panel}>
                     <Block f={1} j='c' a='c'>
-                        <img style={{marginTop: 0, 
+                        {/* <img style={{marginTop: 0, 
                             borderRadius: '5px 5px 0 0'}} 
                             className={Styles.prod_img} 
-                            src={Constant.imgBaseUrl+goodsHeadPicList[0].picPath} alt='商品logo'/>
+                            src={Constant.imgBaseUrl+goodsHeadPicList[0].picPath} alt='商品logo'/> */}
+                            {
+                                this.renderHeaderImges()
+                            }
                     </Block>
                     <Block p={20} vf>
                         <Block fs={16}>{title}</Block>

@@ -35,7 +35,7 @@ class SearchProduct extends Component{
     ]
     async queryGoods(){
         const {searchKeyword,selectedSku}=this.state
-
+        const {parentType}=this.props
         const selectColor=selectedSku.get('颜色')
         const selectBrand=selectedSku.get('品牌')
         const selectMemory=selectedSku.get('内存')
@@ -44,7 +44,8 @@ class SearchProduct extends Component{
             colour:selectColor?selectColor:null,//颜色
             brandName:selectBrand?selectBrand:null,//品牌
             memorySize:selectMemory?selectMemory:null,//内存
-            sortList:[]
+            sortList:[],
+            typeId:parentType
         })
         if (code === Constant.responseOK){
             this.setState({goods:data})
