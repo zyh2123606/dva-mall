@@ -6,7 +6,7 @@ import {homePage, orderDetailPage, myOrderPage, orderSurePage, accountPage, addr
     cartPage, successPage, failPage} from './lazyRoutes'
     
 const RouteConfig = [
-    {path: '/:sessionId/:memId', component: homePage, exact: true},
+    {path: '/home/:sessionId/:memId', component: homePage, exact: true},
     {path: '/order-detail/:pid', component: orderDetailPage, exact: true},
     {path: '/my-order', component: myOrderPage, exact: false},
     {path: '/order-sure/:shoppingcardId', component: orderSurePage, exact: true},
