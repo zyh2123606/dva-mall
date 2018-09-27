@@ -137,8 +137,11 @@ class OrderDetail extends Component{
     // 查看购物车
     toShoppingCart=()=>{
         const {dispatch} =this.props;
+        // TODO 处理跳转到购物车需要携带的sessionID和memId
+        const sessionId=123
+        const memId=123
         dispatch(routerRedux.push({
-            pathname:'/cart'
+            pathname:`/cart/${sessionId}/${memId}`
         }));
     }
     //联系客服
@@ -242,11 +245,11 @@ class OrderDetail extends Component{
                             </Block>
                             <Block fs={12}>客服</Block>
                         </Block>
-                        <Block a='c' j='c' w={60} vf>
+                        <Block a='c' j='c' w={60} vf onClick={this.toShoppingCart}>
                             <Block fs={24} fc='#999'>
                                 <Badge text={shoppingCartCount}><i className={Styles.icon_cart} /></Badge>
                             </Block>
-                            <Block fs={12} onClick={this.toShoppingCart}>购物车</Block>
+                            <Block fs={12}>购物车</Block>
                         </Block>
                         <Block wf f={1} ml={10} mr={10}>
                             <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>
