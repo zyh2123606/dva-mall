@@ -31,6 +31,10 @@ class OrderService extends HttpBase{
         }
         return this.get(`order/getList?memId=${memId}`)
     }
+    //支付接口
+    pay=(orderCode,memId)=>{
+        return this.get(`/order/pay?orderCode=${orderCode}&memId=${memId}`)
+    }
 }
 
 export default new OrderService()

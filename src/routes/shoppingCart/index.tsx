@@ -188,7 +188,7 @@ class Cart extends Component<IPropos>{
                                             }
                                         </Block>
                                         <Block wf a='c' mt={5}>
-                                            <Block f={1} className={Styles.orangeColor}>￥{item.salePrice}</Block>
+                                            <Block f={1} className={Styles.orangeColor}>￥{Constant.toMoney(item.salePrice)}</Block>
                                             <Block mr={10}>
                                                 <Stepper
                                                     style={{ width: '100%', minWidth: '100px' }}

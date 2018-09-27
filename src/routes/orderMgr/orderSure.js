@@ -158,9 +158,18 @@ class OrderSure extends Component{
 
         const {data,code}= await OrderService.addOrder({...params})
         if (code===Constant.responseOK){
-            Toast.success('提交订单成功！',1)
+            this.pay(data)
+        }
+    }
+    // 调用支付接口
+    async pay(orderCode){
+        const {memId}=this.state
+        const {dispatch} = this.props
+        const {code} = await OrderService.pay(orderCode,memId)
+        if(code===Constant.responseOK){
+            Toast.success('成功！',1)
             setTimeout(() => {
-                dispatch(routerRedux.push(`/success/${data}`))
+                dispatch(routerRedux.push(`/success/${orderCode}`))
             }, 1000);
         }else{
             Toast.fail('提交订单失败！',1)
@@ -169,6 +178,7 @@ class OrderSure extends Component{
             }, 1000);
         }
     }
+
     // 金额转换
     toMoney(num){
         return num.toFixed(2);

@@ -215,7 +215,7 @@ class SearchProduct extends Component{
                                             <Block mt={5} className={Styles.prod_tag}>{item.memorySize}</Block>
                                             <Block mt={5} className={Styles.prod_tag}>{item.colour}</Block>
                                         </Block>
-                                        <Block mt={5} className={Styles.orangeColor}>￥{item.salePrice}</Block>
+                                        <Block mt={5} className={Styles.orangeColor}>￥{Constant.toMoney(item.salePrice)}</Block>
                                     </Block>
                                 </Block>
                             </Block>
