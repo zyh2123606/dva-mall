@@ -18,14 +18,17 @@ const Item = List.Item
 const CheckboxItem = Checkbox.CheckboxItem
 
 class Create extends Component{
+    componentDidMount(){
+        document.title = '添加收货地址'
+    }
     state = {
-            data: [],
-            cols: 1,
-            pickerValue: [],
-            asyncValue: [],
-            sValue: ['2013', '春'],
-            visible: false,
-            colorValue: ['#00FF00'],
+        data: [],
+        cols: 1,
+        pickerValue: [],
+        asyncValue: [],
+        sValue: ['2013', '春'],
+        visible: false,
+        colorValue: ['#00FF00'],
           
     }
     submit=async()=>{

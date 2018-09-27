@@ -46,8 +46,8 @@ class Home extends Component<IProps>{
             isRequest: true
         })
     }
-    goTarget(){
-        wx.miniProgram.navigateTo({url: '/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/my-order'})
+    gotoProdDetail(typeId){
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}`})
     }
     render(){
         const { specialList, hotList, typeList, newList, isRequest, deptInfo } = this.state
@@ -65,7 +65,7 @@ class Home extends Component<IProps>{
                             </Block>
                         </Block>
                         <Block className={Styles.head_pic}></Block>
-                        <Block onClick={this.goTarget.bind(this)} fs={10} ml={5}>店长：{deptManager}</Block>
+                        <Block fs={10} ml={5}>店长：{deptManager}</Block>
                     </Block>
                     <Block wf fs={10} style={{lineHeight: 'normal'}} mt={7}>
                         <Block vf f={1}>
@@ -115,7 +115,7 @@ class Home extends Component<IProps>{
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={3}>
                         {specialList.map(({logoPath, typeName, minPrice, typeId}, idx) => (
-                            <Link to={`/order-detail/${typeId}`} key={idx} style={{lineHeight: 'normal'}}>
+                            <Block onClick={this.gotoProdDetail.bind(this, typeId)} key={idx} style={{lineHeight: 'normal'}}>
                                 <Block vf className={Styles.type_item} mt={15}>
                                     <Block j='c' className={Styles.prod_img_c}>
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
@@ -123,7 +123,7 @@ class Home extends Component<IProps>{
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
                                     <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
                                 </Block>
-                            </Link>
+                            </Block>
                         ))}
                     </Swiper>
                 </section>
@@ -138,7 +138,7 @@ class Home extends Component<IProps>{
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={3}>
                         {hotList.map(({logoPath, typeName, minPrice, typeId}, idx) => (
-                            <Link to={`/order-detail/${typeId}`} key={idx} style={{lineHeight: 'normal'}}>
+                            <Block onClick={this.gotoProdDetail.bind(this, typeId)} key={idx} style={{lineHeight: 'normal'}}>
                                 <Block vf className={Styles.type_item} mt={15}>
                                     <Block j='c' className={Styles.prod_img_c}>
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
@@ -146,7 +146,7 @@ class Home extends Component<IProps>{
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
                                     <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
                                 </Block>
-                            </Link>
+                            </Block>
                         ))}
                     </Swiper>
                 </section>
@@ -161,7 +161,7 @@ class Home extends Component<IProps>{
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={3}>
                         {newList.map(({logoPath, typeName, minPrice, typeId}, idx) => (
-                            <Link to={`/order-detail/${typeId}`} key={idx} style={{lineHeight: 'normal'}}>
+                            <Block onClick={this.gotoProdDetail.bind(this, typeId)} key={idx} style={{lineHeight: 'normal'}}>
                                 <Block vf className={Styles.type_item} mt={15}>
                                     <Block j='c' className={Styles.prod_img_c}>
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
@@ -169,7 +169,7 @@ class Home extends Component<IProps>{
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
                                     <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
                                 </Block>
-                            </Link>
+                            </Block>
                         ))}
                     </Swiper>
                 </section>

@@ -14,6 +14,7 @@ class  CollectInfoList extends React.Component{
         }
     }
     async componentDidMount(){
+        document.title = '选择收货地址'
         setTimeout(() => {
             this.init()
         }, 500);

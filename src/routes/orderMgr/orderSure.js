@@ -11,7 +11,6 @@ import ShoppingCartService from '../../services/shoppingCartService'
 import CollectInfoList from  './CollectInfoList'
 import {routerRedux} from 'dva/router'
 import Constant from '../../utils/constant'
-import { NavTopBar } from '../../components'
 /**
  *订单确认
  *
@@ -37,6 +36,7 @@ class OrderSure extends Component{
         selectedAdopt:{deptId:0,deptName:'',saleNum:0},//自提营业厅列表选中项
     }
     async componentDidMount(){
+        document.title='订单确认'
         this.queryGoodsdAndSkuInfo()
         this.queryCollectUserInfo()
         setTimeout(() => {
@@ -305,11 +305,9 @@ class OrderSure extends Component{
     render(){
         const { getFieldProps } = this.props.form
         const { reciveWay, popVisible,collectMode } = this.state
-        const { history } = this.props
         return (
             <Block vf className={Styles.order_sure_wrapper}>
-                <NavTopBar leftClick={()=>{history.goBack()}} title='订单确认' />
-                <Block mt={45}>
+                <Block>
                     <List>
                         <Picker
                             data={reciveWay}

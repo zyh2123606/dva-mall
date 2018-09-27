@@ -4,7 +4,6 @@ import { Route } from 'react-router-dom'
 import { Tabs } from 'antd-mobile'
 import Styles from './index.less'
 import { myOrderAllPage, myOrderWaitPayPage, myOrderWaitRecivePage, myOrderCompletePage } from '../../lazyRoutes'
-import { NavTopBar } from '../../components'
 
 /**
  *我的订单
@@ -14,6 +13,9 @@ import { NavTopBar } from '../../components'
  */
 class MyOrder extends Component{
     state = {currentTab: ''}
+    componentDidMount(){
+        document.title='我的订单'
+    }
     tabs = [
         {target: '', title: '全部'},
         {target: '/wait-pay', title: '待付款'},
@@ -30,12 +32,11 @@ class MyOrder extends Component{
         })
     }
     render(){
-        const { match: { url }, history } = this.props
+        const { match: { url } } = this.props
         const { currentTab } = this.state
         return (
             <Block className={Styles.container} vf>
-                <NavTopBar leftClick={() => history.goBack()} title='我的订单' />
-                <Block mt={45} f={1} style={{position: 'relative'}}>
+                <Block f={1} style={{position: 'relative'}}>
                     <section style={{
                         position: 'absolute', 
                         left: 0,
