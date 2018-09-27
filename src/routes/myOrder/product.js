@@ -1,6 +1,8 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
+import ImgErr from '../../assets/img/img_error.png'
+import Constant from '../../utils/constant'
 
 /**
  *商品
@@ -34,7 +36,7 @@ class Product extends Component{
         return (
                 <Block wf className={Styles.prod_cont}>
                     <Block j='c' className={Styles.prod_pic}>
-                        <img src={"https://iretail.bonc.com.cn/pic/"+logoPath}/>
+                        <img src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} alt=''/>
                     </Block>
                     <Block f={1} ml={10} vf>
                         <Block>{goodsName}</Block>

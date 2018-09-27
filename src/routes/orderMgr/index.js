@@ -10,6 +10,7 @@ import {connect} from 'dva';
 import {routerRedux} from 'dva/router';
 import Constant from '../../utils/constant';
 import ImgErr from '../../assets/img/img_error.png'
+import { NavTopBar } from '../../components'
 
 class OrderDetail extends Component{
     state = {
@@ -50,7 +51,7 @@ class OrderDetail extends Component{
                 headerImg:data.goodsHeadPicList||[]})
         }
         // 查询购物车商品数量
-        this.shoppingCart()
+        // this.shoppingCart()
     }
     //选择颜色
     selectColor(attrValId,baseAttrId){
@@ -227,10 +228,11 @@ class OrderDetail extends Component{
     render(){
         const { pageData,defaultSkuPrice,shoppingCartCount} = this.state
         const { title,goodsPicList } = pageData || {}
-        
+        const { history } = this.props
         const { getFieldProps } = this.props.form
         return (
             pageData?<Block bc='#fff' vf p={15} className={Styles.order_det_wrapper}>
+                <NavTopBar leftClick={()=>{history.goBack()}} title='商品详细' />
                 <Block vf className={Styles.pro_panel}>
                     <Block f={1} j='c' a='c'>
                         {/* <img style={{marginTop: 0, 
@@ -277,18 +279,18 @@ class OrderDetail extends Component{
                 </Block>
                 <Block vf fs={16} className={Styles.footer_bar}>
                     <Block wf className={Styles.footer_content}>
-                        <Block a='c' j='c' w={60} vf>
+                        <Block a='c' j='c' w={80} vf>
                             <Block fs={22} fc='#999'>
                                 <i className={Styles.icon_server} />
                             </Block>
                             <Block fs={12}>客服</Block>
                         </Block>
-                        <Block a='c' j='c' w={60} vf onClick={this.toShoppingCart}>
+                        {/* <Block a='c' j='c' w={60} vf>
                             <Block fs={24} fc='#999'>
                                 <Badge text={shoppingCartCount}><i className={Styles.icon_cart} /></Badge>
                             </Block>
-                            <Block fs={12}>购物车</Block>
-                        </Block>
+                            <Block fs={12} onClick={this.toShoppingCart}>购物车</Block>
+                        </Block> */}
                         <Block wf f={1} ml={10} mr={10}>
                             <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>
                             <Block onClick={this.sureBuy.bind(this)} className={Styles.buy_sty} f={1}>立即购买</Block>

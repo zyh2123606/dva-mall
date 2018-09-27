@@ -1,11 +1,12 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import { createForm } from 'rc-form'
-import { List,Toast, InputItem, TextareaItem, Picker, Checkbox, Button } from 'antd-mobile'
+import { List,Toast, InputItem, TextareaItem, Picker, Checkbox, Button, NavBar } from 'antd-mobile'
 import { connect } from 'dva'
 import AreaData from '../../components/areaData'
 import Service from '../../services/addressService'
 import { checkFormat } from './utils'
+import { NavTopBar } from '../../components'
 
 /**
  *添加收货地址
@@ -45,13 +46,15 @@ class Create extends Component{
         }
     }
     render(){
-        const {myAddress} = this.props
+        const {myAddress, history} = this.props
         this.editAddr = null
         if(myAddress.editIndex>=0 && myAddress.editFlag)
             this.editAddr = myAddress.data[myAddress.editIndex]
         const { getFieldProps } = this.props.form
         return (
             <Block bc='#fff' w='100%' h='100%'>
+                <NavTopBar title='添加收货地址' leftClick={()=>{history.goBack()}} />
+                <Block h={45}/>
                 <List>
                     <InputItem 
                         placeholder='请输入姓名'

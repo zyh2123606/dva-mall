@@ -8,6 +8,7 @@ import Constatn from '../../utils/constant'
 import Constant from '../../utils/constant';
 import {routerRedux} from 'dva/router';
 import {connect} from 'dva';
+import { NavTopBar } from '../../components'
 /**
  *商品搜索页
  *
@@ -35,7 +36,8 @@ class SearchProduct extends Component{
     ]
     async queryGoods(){
         const {searchKeyword,selectedSku}=this.state
-        const {parentType}=this.props
+        const {parentType}=this.props.match.params
+        console.log('parentType:',parentType)
         const selectColor=selectedSku.get('颜色')
         const selectBrand=selectedSku.get('品牌')
         const selectMemory=selectedSku.get('内存')
@@ -230,8 +232,10 @@ class SearchProduct extends Component{
     }
     render(){
         const { popVisible,searchKeyword} = this.state
+        const { history } = this.props
         return (
             <Block className={Styles.search_wrapper} vf>
+            <NavTopBar leftClick={()=>{history.goBack()}} title='商品搜索' />
                 <SearchBar placeholder='请输入商品名称查询'
                     showCancelButton={false} 
                     onChange={this.searchInputChange}

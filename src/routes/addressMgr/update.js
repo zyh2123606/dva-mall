@@ -6,6 +6,7 @@ import { connect } from 'dva'
 import AreaData from '../../components/areaData'
 import Service from '../../services/addressService'
 import { checkFormat } from './utils'
+import { NavTopBar } from '../../components'
 
 /**
  *添加收货地址
@@ -44,13 +45,15 @@ class Update extends Component{
         }
     }
     render(){
-        const {myAddress} = this.props
+        const {myAddress, history} = this.props
         this.editAddr = null
         if(myAddress.editIndex>=0 && myAddress.editFlag)
             this.editAddr = myAddress.data[myAddress.editIndex]
         const { getFieldProps } = this.props.form
         return (
             <Block bc='#fff' w='100%' h='100%'>
+                <NavTopBar title='编辑收货地址' leftClick={()=>{history.goBack()}} />
+                <Block h={45}/>
                 <List>
                     <InputItem 
                         placeholder='请输入姓名'

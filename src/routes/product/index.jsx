@@ -7,6 +7,7 @@ import Constant from '../../utils/constant'
 import {routerRedux} from 'dva/router';
 import {connect} from 'dva'
 import ImgErr from '../../assets/img/img_error.png'
+import { NavTopBar } from '../../components'
 /**
  *商品列表入口
  *
@@ -83,16 +84,21 @@ class DefaultPage extends Component{
     
     render(){
         const {firstTypeList,searchKeyword,parentTypeId}=this.state
+        const { history } = this.props
         return (
             <Block className={Styles.default_wrapper} vf>
-                <SearchBar placeholder='请输入商品名称查询'
+                {/* <Block>
+                    <NavTopBar leftClick={()=>{history.goBack()}} title='商品搜索' />
+                </Block> */}
+                <Block>
+                    <SearchBar placeholder='请输入商品名称查询'
                     showCancelButton={true} 
                     onChange={this.searchInputChange}
                     value={searchKeyword?searchKeyword:''}
                     onSubmit={this.cancelInput}
                     onCancel={this.cancelInput}
                     cancelText={<Button style={{marginTop: 6, borderRadius: 15}} type='primary' size='small' onSubmit={this.onSubmit}>搜索</Button>}/>
-    
+                </Block>
                 <Block wf style={{marginTop:'10px'}}>
                     <Block className={Styles.left_menu}>
                     {

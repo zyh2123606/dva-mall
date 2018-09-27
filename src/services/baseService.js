@@ -12,8 +12,7 @@ class BaseService extends HttpBase{
     }
     //获取用户收货列表
     getHomeData = () => {
-        return this.all([this.getBannerList(), this.getSpecialProducts(), 
-            this.getHotProducts(), this.getNewProducts(), this.getProductTypes(), 
+        return this.all([this.getSpecialProducts(), this.getHotProducts(), this.getNewProducts(),
             this.getTypesList(), this.getDeptInfo()])
     }
     //获取banner图
@@ -22,15 +21,15 @@ class BaseService extends HttpBase{
     }
     //特惠商品
     getSpecialProducts = () => {
-        return this.get('/commend/getGoodsList?reType=2&deptId=1')
+        return this.get('/commend/getGoodsList?reType=1&deptId=1')
     }
     //热门商品
     getHotProducts = () => {
-        return this.get('/commend/getGoodsList?reType=3&deptId=1')
+        return this.get('/commend/getGoodsList?reType=2&deptId=1')
     }
     //新品上架
     getNewProducts = () => {
-        return this.get('/commend/getGoodsList?reType=4&deptId=1')
+        return this.get('/commend/getGoodsList?reType=3&deptId=1')
     }
     //获取商品分类
     getProductTypes = () => {

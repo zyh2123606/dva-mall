@@ -9,8 +9,9 @@ import DeptService from '../../services/deptService'
 import OrderService from '../../services/orderService'
 import ShoppingCartService from '../../services/shoppingCartService'
 import CollectInfoList from  './CollectInfoList'
-import {routerRedux} from 'dva/router';
-import Constant from '../../utils/constant';
+import {routerRedux} from 'dva/router'
+import Constant from '../../utils/constant'
+import { NavTopBar } from '../../components'
 /**
  *订单确认
  *
@@ -226,7 +227,6 @@ class OrderSure extends Component{
     }
 
     renderGoodsArray=()=>{
-        console.log(this.state.goodsList)
         return (
             <Block>
                 {
@@ -305,20 +305,24 @@ class OrderSure extends Component{
     render(){
         const { getFieldProps } = this.props.form
         const { reciveWay, popVisible,collectMode } = this.state
+        const { history } = this.props
         return (
             <Block vf className={Styles.order_sure_wrapper}>
-                <List>
-                    <Picker
-                        data={reciveWay}
-                        cols={1}
-                        value={collectMode}
-                        onOk={this.seletedOrderSureWrapper}
-                        {...getFieldProps('recive',{
-                            initialValue:[reciveWay[0].value]
-                        })}>
-                        <Item arrow='horizontal' extra='请选择'>收货方式</Item>
-                    </Picker>
-                </List>
+                <NavTopBar leftClick={()=>{history.goBack()}} title='订单确认' />
+                <Block mt={45}>
+                    <List>
+                        <Picker
+                            data={reciveWay}
+                            cols={1}
+                            value={collectMode}
+                            onOk={this.seletedOrderSureWrapper}
+                            {...getFieldProps('recive',{
+                                initialValue:[reciveWay[0].value]
+                            })}>
+                            <Item arrow='horizontal' extra='请选择'>收货方式</Item>
+                        </Picker>
+                    </List>
+                </Block>
                 {this.renderGoodsArray()}
                 {this.renderCollectInfo()}
                 <Block m={15} mt={20}>
