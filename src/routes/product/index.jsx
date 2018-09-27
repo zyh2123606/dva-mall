@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
+import { SearchBar, Button, Toast } from 'antd-mobile'
 import ProductService from '../../services/productService'
 import Constant from '../../utils/constant'
 import {routerRedux} from 'dva/router';
@@ -16,6 +17,7 @@ class DefaultPage extends Component{
     state={
         firstTypeList:[],// 第一级分类集合
         secondTypeList:[],// 第二级分类集合
+        searchKeyword:''
     }
     async componentDidMount(){
         const {data,code} =await ProductService.getTypeList()
@@ -65,10 +67,28 @@ class DefaultPage extends Component{
             </dl>
         )
     }
+    searchInputChange=(val)=>{
+        this.setState({searchKeyword:val})
+    }
+    cancelInput=(val)=>{
+        this.setState({searchKeyword:val})
+    }
+    onSubmit=(val)=>{
+        this.setState({searchKeyword:val})
+    }
+
     render(){
-        const {firstTypeList}=this.state
+        const {firstTypeList,searchKeyword}=this.state
         return (
             <Block className={Styles.default_wrapper} wf>
+                <SearchBar placeholder='请输入商品名称查询'
+                    showCancelButton={false} 
+                    onChange={this.searchInputChange}
+                    value={searchKeyword?searchKeyword:''}
+                    onSubmit={this.cancelInput}
+                    onCancel={this.cancelInput}
+                    cancelText={<Button style={{marginTop: 6, borderRadius: 15}} type='primary' size='small' onSubmit={this.onSubmit}>搜索</Button>}/>
+    
                 <Block className={Styles.left_menu}>
                 {
                     firstTypeList.map((item,index)=>
