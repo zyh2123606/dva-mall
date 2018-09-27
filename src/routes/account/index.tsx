@@ -25,6 +25,9 @@ class Account extends Component{
         if(code !== '0000') return Toast.info(msg)
         this.setState({userInfo: data})
     }
+    goToTarget(target){
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/${target}`})
+    }
     render(){
         const { userInfo } = this.state
         return (
@@ -41,53 +44,53 @@ class Account extends Component{
                 <Block fs={16} p={15}>我的订单</Block>
                 <Block wf className={Styles.order_panel}>
                     <Block a='c' f={1} vf>
-                        <Link to='/my-order'>
+                        <Block onClick={this.goToTarget.bind('my-order')}>
                             <Block a='c' vf>
                                 <Block className={Styles.orangeColor} fs={22}>
                                     <i className={Styles.icon_order} />
                                 </Block>
                                 <Block>全部</Block>
                             </Block>
-                        </Link>
+                        </Block>
                     </Block>
                     <Block a='c' f={1} vf>
-                        <Link to='/my-order/wait-pay'>
+                        <Block onClick={this.goToTarget.bind('my-order/wait-pay')}>
                             <Block a='c' vf>
                                 <Block className={Styles.orangeColor} fs={22}>
                                     <i className={Styles.icon_wait_pay} />
                                 </Block>
                                 <Block>待付款</Block>
                             </Block>
-                        </Link>
+                        </Block>
                     </Block>
                     <Block a='c' f={1} vf>
-                        <Link to='/my-order/wait-recive'>
+                        <Block onClick={this.goToTarget.bind('my-order/wait-recive')}>
                             <Block a='c' vf>
                                 <Block className={Styles.orangeColor} fs={22}>
                                     <i className={Styles.icon_wait_recive} />
                                 </Block>
                                 <Block>待收货</Block>
                             </Block>
-                        </Link>
+                        </Block>
                     </Block>
                     <Block a='c' f={1} vf>
-                        <Link to='/my-order/complete'>
+                        <Block onClick={this.goToTarget.bind('my-order/complete')}>
                             <Block a='c' vf>
                                 <Block className={Styles.orangeColor} fs={28}>
                                     <i className={Styles.icon_complete} />
                                 </Block>
                                 <Block>已完成</Block>
                             </Block>
-                        </Link>
+                        </Block>
                     </Block>
                 </Block>
                 <Block className={Styles.act_menu} vf>
-                    <Link to='/address-mgr'>
+                    <Block onClick={this.goToTarget.bind('address-mgr')}>
                         <Block className={Styles.act_item} wf a='c'>
                             <Block f={1}>收货地址</Block>
                             <i className={Styles.arrow_right}></i>
                         </Block>
-                    </Link>
+                    </Block>
                     <Block className={Styles.act_item} wf a='c'>
                         <Block f={1}>联系客服</Block>
                         <i className={Styles.arrow_right}></i>

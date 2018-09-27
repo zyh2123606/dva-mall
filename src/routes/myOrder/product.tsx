@@ -23,7 +23,7 @@ class Product extends Component{
                 return (<Block onClick={this.gotoLogistDetail.bind(this, orderId)} className={Styles.prod_btn_normal}>查看物流</Block>)
                 break
             case 3 :
-                return (<Block className={Styles.prod_btn_ghost}>再次购买</Block>)
+                return (<Block onClick={this.goToProdDetail.bind(this, orderId, skuId)} className={Styles.prod_btn_ghost}>再次购买</Block>)
                 break
             default:
                 return null
