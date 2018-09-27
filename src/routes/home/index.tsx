@@ -9,7 +9,7 @@ import Swiper from 'react-id-swiper'
 import Service from '../../services/baseService'
 import Constant from '../../utils/constant'
 import ImgErr from '../../assets/img/img_error.png'
-import ContentLoader, { List, BulletList, Code } from 'react-content-loader'
+import ContentLoader from 'react-content-loader'
 
 /**
  *首页
@@ -25,7 +25,8 @@ class Home extends Component<IProps>{
         newList: [],
         productTypes: [],
         bannerList: [],
-        isRequest: false
+        isRequest: false,
+        deptInfo: {}
     }
     constructor(props:IProps){
         super(props)
@@ -33,6 +34,7 @@ class Home extends Component<IProps>{
     async componentDidMount(){
         const { params } = this.props.match
         Constant.userData = params
+        const memId = params.memId || ''
         const res = await Service.getHomeData()
         if(!res) return
         this.setState({
@@ -42,11 +44,13 @@ class Home extends Component<IProps>{
             newList: res[3].data || [],
             productTypes: res[4].data || [],
             typeList: res[5].data || [],
+            deptInfo: res[6].data || {},
             isRequest: true
         })
     }
     render(){
-        const { specialList, hotList, newList, productTypes, bannerList, typeList, isRequest } = this.state
+        const { specialList, hotList, newList, productTypes, bannerList, typeList, isRequest, deptInfo } = this.state
+        const { deptAddress, deptManager, deptName, deptTel } = deptInfo || {}
         return (
             isRequest?<Block className={Styles.container} bc='#fff'>
                 <Block vf p='0 15px'>
@@ -54,22 +58,22 @@ class Home extends Component<IProps>{
                     <Block a='c' wf pt={10}>
                         <img width={57} src={Logo} />
                         <Block f={1} j='c' vf className={Styles.logo_txt}>
-                            <Block fc='#FD8007'>云南联通沃店</Block>
+                            <Block fs={12} fc='#FD8007'>{deptName}</Block>
                             <Block>
                                 <span className={Styles.tag}>官方认证</span>
                             </Block>
                         </Block>
                         <Block className={Styles.head_pic}></Block>
-                        <Block fs={10} ml={5}>店长：刘可可</Block>
+                        <Block fs={10} ml={5}>店长：{deptManager}</Block>
                     </Block>
                     <Block wf fs={10} style={{lineHeight: 'normal'}} mt={7}>
                         <Block vf f={1}>
                             <Block>
-                                <Block className={Styles.addr_txt}>实体店地址：云南省昆明市滨江西路51号</Block>
+                                <Block className={Styles.addr_txt}>实体店地址：{deptAddress}</Block>
                             </Block>
                             <Block a='c' fs={10} wf mt={2}>
                                 <Block>联　系电话：</Block>
-                                <Block className={Styles.mobile}>18001297665</Block>
+                                <Block className={Styles.mobile}>{deptTel}</Block>
                             </Block>
                         </Block>
                         <Block j='c' a='c' wf className={Styles.sev_txt}>
