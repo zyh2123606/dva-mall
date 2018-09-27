@@ -6,7 +6,6 @@ import { connect } from 'dva'
 import AreaData from '../../components/areaData'
 import Service from '../../services/addressService'
 import { checkFormat } from './utils'
-import { NavTopBar } from '../../components'
 
 /**
  *添加收货地址
@@ -18,14 +17,17 @@ const Item = List.Item
 const CheckboxItem = Checkbox.CheckboxItem
 class Update extends Component{
     state = {
-            data: [],
-            cols: 1,
-            pickerValue: [],
-            asyncValue: [],
-            sValue: ['2013', '春'],
-            visible: false,
-            colorValue: ['#00FF00'],
+        data: [],
+        cols: 1,
+        pickerValue: [],
+        asyncValue: [],
+        sValue: ['2013', '春'],
+        visible: false,
+        colorValue: ['#00FF00'],
           
+    }
+    componentDidMount(){
+        document.title = '编辑收货地址'
     }
     submit=async(editAddr,e)=>{
         const submitVales = this.props.form.getFieldsValue()
@@ -45,15 +47,13 @@ class Update extends Component{
         }
     }
     render(){
-        const {myAddress, history} = this.props
+        const {myAddress} = this.props
         this.editAddr = null
         if(myAddress.editIndex>=0 && myAddress.editFlag)
             this.editAddr = myAddress.data[myAddress.editIndex]
         const { getFieldProps } = this.props.form
         return (
             <Block bc='#fff' w='100%' h='100%'>
-                <NavTopBar title='编辑收货地址' leftClick={()=>{history.goBack()}} />
-                <Block h={45}/>
                 <List>
                     <InputItem 
                         placeholder='请输入姓名'

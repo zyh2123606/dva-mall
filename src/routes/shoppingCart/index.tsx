@@ -21,12 +21,14 @@ class Cart extends Component<IPropos>{
     constructor(props: IPropos){
         super(props)
     }
+    componentWillMount(){
+        document.title = '购物车'
+    }
     state={
         goodsList:[],// 购物车集合
         memId:1,// 用户ID
         totalPrise:0,// 总金额
         selectedCartId:new Set(),// 选中的购物车商品
-
     }
     async componentDidMount(){
         const { params } = this.props.match
@@ -66,7 +68,6 @@ class Cart extends Component<IPropos>{
             amount:val
 
         })
-        console.log('goodsCountChange....',code,data)
         if (code!=Constant.responseOK){
             Toast.fail('添加数量失败', 1);
         }else{

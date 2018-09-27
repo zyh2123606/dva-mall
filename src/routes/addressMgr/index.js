@@ -7,7 +7,6 @@ import {Empty} from '../../components'
 import {Toast} from 'antd-mobile'
 import {Link} from 'react-router-dom'
 import {connect} from 'dva'
-import { NavTopBar } from '../../components'
 import Service from '../../services/addressService'
 
 /**
@@ -73,6 +72,7 @@ class AddressMgr extends Component {
     }
 
     async componentDidMount() {
+        document.title = '收货地址管理'
         const res = await Service.getMyAddress(1)
         const {data, code} = res
         const {dispatch, history} = this.props
@@ -113,11 +113,8 @@ class AddressMgr extends Component {
     }
     
     render() {
-        const { history } = this.props
         return (
             <Block vf className={Styles.container}>
-                <NavTopBar title='收货地址' leftClick={()=>{history.goBack()}} />
-                <Block h={45} />
                 <Block ml={15} mr={15} pb={15} mb={80}>
                     {this.props.myAddress ? this.props.myAddress.data.map((data, idx)=>(
                         <Block className={Styles.addr_panel} key = {idx} vf>

@@ -43,6 +43,7 @@ class OrderComplete extends Component{
 
     }
     async componentDidMount(){
+        document.title = '订单完成'
         await this.queryOrderInfo()
     }
     async queryOrderInfo(){
