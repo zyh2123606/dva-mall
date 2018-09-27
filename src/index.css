@@ -9,6 +9,6 @@ body{
     font-family:  "Microsoft YaHei", "Helvetica Neue", "Hiragino Sans GB", Helvetica, Arial, sans-serif;
 }
 a{text-decoration: none; color: #333; transition: all .35s linear;}
-a:active{color: #FF8E44;}
+a:active{color: #333333;}
 
 body,h1,h2,h3,h4,h5,h6,hr,p,blockquote,dl,dt,dd,ul,ol,li,pre,form,fieldset,legend,button,input,textarea,th,td,section,article{margin:0;padding:0}

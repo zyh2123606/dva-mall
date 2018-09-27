@@ -12,7 +12,7 @@ class BaseService extends HttpBase{
     //获取用户收货列表
     getHomeData = data => {
         return this.all([this.getBannerList(), this.getSpecialProducts(), 
-            this.getHotProducts(), this.getNewProducts(), this.getProductTypes()])
+            this.getHotProducts(), this.getNewProducts(), this.getProductTypes(), this.getTypesList()])
     }
     //获取banner图
     getBannerList = () => {
@@ -33,6 +33,9 @@ class BaseService extends HttpBase{
     //获取商品分类
     getProductTypes = () => {
         return this.get('/commend/getGoodsList?reType=5&deptId=1')
+    }
+    getTypesList = () => {
+        return this.get('/ad/getList?adType=5')
     }
 }
 
