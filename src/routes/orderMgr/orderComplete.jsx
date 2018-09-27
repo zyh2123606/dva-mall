@@ -50,7 +50,6 @@ class OrderComplete extends Component{
         const {match:{params:{orderId}}}=this.props
         const {data,code}= await OrderService.getOrderList(1,orderId)
         if(code===Constant.responseOK){
-            console.log(data)
             this.setState({
                 orderInfo:data[0]
             })

@@ -170,12 +170,12 @@ class OrderSure extends Component{
         if(code===Constant.responseOK){
             Toast.success('成功！',1)
             setTimeout(() => {
-                dispatch(routerRedux.push(`/success/${orderCode}`))
+                wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/success/${orderCode}`})
             }, 1000);
         }else{
             Toast.fail('提交订单失败！',1)
             setTimeout(() => {
-                dispatch(routerRedux.push(`/fail`))
+                wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/fail`})
             }, 1000);
         }
     }

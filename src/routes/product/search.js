@@ -54,6 +54,7 @@ class SearchProduct extends Component{
         }
     }
     componentDidMount() {
+        document.title='搜索'
         const { match:{params:{name}}} = this.props
         this.setState({searchKeyword:name})
         setTimeout(() => {
@@ -157,9 +158,10 @@ class SearchProduct extends Component{
     }
     // 跳转到商品详情页面
     toGoodsDetailPage(item){
-        this.props.dispatch(routerRedux.push({
-            pathname:`/order-detail/${item.typeId}`
-        }));
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${item.typeId}`})
+        // this.props.dispatch(routerRedux.push({
+        //     pathname:`/order-detail/${item.typeId}`
+        // }));
     }
     // 渲染搜索栏一级大类
     renderSkuSelectBar(){
@@ -232,10 +234,8 @@ class SearchProduct extends Component{
     }
     render(){
         const { popVisible,searchKeyword} = this.state
-        const { history } = this.props
         return (
             <Block className={Styles.search_wrapper} vf>
-            <NavTopBar leftClick={()=>{history.goBack()}} title='商品搜索' />
                 <SearchBar placeholder='请输入商品名称查询'
                     showCancelButton={false} 
                     onChange={this.searchInputChange}

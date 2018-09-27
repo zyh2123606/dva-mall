@@ -10,7 +10,7 @@ import {connect} from 'dva';
 import {routerRedux} from 'dva/router';
 import Constant from '../../utils/constant';
 import ImgErr from '../../assets/img/img_error.png'
-import { NavTopBar } from '../../components'
+
 
 class OrderDetail extends Component{
     state = {
@@ -122,9 +122,7 @@ class OrderDetail extends Component{
         // 添加购物车
         const {code,data} = await ShoppingCartService.save(params);
         if(code===Constant.responseOK){
-            dispatch(routerRedux.push({
-                pathname:`/order-sure/${data}`
-            }));
+            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${data}`})
         }else{
             Toast.fail('操作失败！',1)
         }
@@ -159,9 +157,8 @@ class OrderDetail extends Component{
         // TODO 处理跳转到购物车需要携带的sessionID和memId
         const sessionId=123
         const memId=123
-        dispatch(routerRedux.push({
-            pathname:`/cart/${sessionId}/${memId}`
-        }));
+        // const {sessionId,memId}=Constant.userData
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/cart/${sessionId}/${memId}`})
     }
     //联系客服
     connectService=()=>{
@@ -229,11 +226,9 @@ class OrderDetail extends Component{
     render(){
         const { pageData,defaultSkuPrice,shoppingCartCount} = this.state
         const { title,goodsPicList } = pageData || {}
-        const { history } = this.props
         const { getFieldProps } = this.props.form
         return (
             pageData?<Block bc='#fff' vf p={15} className={Styles.order_det_wrapper}>
-                <NavTopBar leftClick={()=>{history.goBack()}} title='商品详细' />
                 <Block vf className={Styles.pro_panel}>
                     <Block f={1} j='c' a='c'>
                         {/* <img style={{marginTop: 0, 

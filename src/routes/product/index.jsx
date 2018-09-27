@@ -7,7 +7,7 @@ import Constant from '../../utils/constant'
 import {routerRedux} from 'dva/router';
 import {connect} from 'dva'
 import ImgErr from '../../assets/img/img_error.png'
-import { NavTopBar } from '../../components'
+
 /**
  *商品列表入口
  *
@@ -22,6 +22,7 @@ class DefaultPage extends Component{
         parentTypeId:'',//当前选中父级typeId
     }
     async componentDidMount(){
+        document.title='商品分类'
         const { match:{params:{typeId}}} = this.props
         const {data,code} =await ProductService.getTypeList()
         // TODO 从路由中取TypeId，根据首页选中的typeId进行当前页面选中的tab以及tab下的品牌
@@ -49,7 +50,7 @@ class DefaultPage extends Component{
     }
     // 选中第二级菜单
     selectChildItem(item){
-        this.props.dispatch(routerRedux.push(`/search/${item.parentType}/${item.typeName}`))
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/search/${item.parentType}/${item.typeName}`})
     }
 
     searchInputChange=(val)=>{

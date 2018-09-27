@@ -3,6 +3,9 @@ import { MessagePage } from '../../components'
 import Block from 'fs-flex'
 
 class SuccessPage extends Component{
+    componentDidMount(){
+        document.title='支付成功'
+    }
     render(){
         const {match:{params:{orderId}}}  =this.props
         return <Block vf>

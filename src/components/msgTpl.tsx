@@ -10,18 +10,23 @@ interface Options{
 }
 //消息提示页面
 const MsgTpl = ({status, message, linkText, linkUrl}: Options) => {
+
+    function linkHandle(){
+        wx.miniProgram.navigateTo({url: linkUrl})
+    }
+
     return (
         <Block a='c' vf mt={50} fc={status === 'success'?'#7ED321':'#FF8E44'}>
             <Icon style={{width: 50, height: 50}} type={status === 'success'?'check-circle':'cross-circle-o'} />
             <Block fs={18} mt={10} fc='#333'>{message}</Block>
-            <Block j='c' mt={50}>
-                <Link to={linkUrl} style={{
+            <Block j='c' mt={50} onClick={linkHandle}>
+                <Block style={{
                     border: '#d2d2d2 solid 1px',
                     height: 30,
                     lineHeight: '30px',
                     padding: '0 15px',
                     borderRadius: 15
-                }}>{linkText}</Link>
+                }}>{linkText}</Block>
             </Block>
         </Block>
     )

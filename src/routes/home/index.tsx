@@ -49,6 +49,11 @@ class Home extends Component<IProps>{
     gotoProdDetail(typeId){
         wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}`})
     }
+    gotoGoodsTypePage(url){
+        if(url){
+            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#${url}`})
+        }
+    }
     render(){
         const { specialList, hotList, typeList, newList, isRequest, deptInfo } = this.state
         const { deptAddress, deptManager, deptName, deptTel } = deptInfo || {}
@@ -91,15 +96,13 @@ class Home extends Component<IProps>{
                 {/* start */}
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={4}>
-                        {typeList.map(({adPic, title}, idx) => (
-                            <Link to='/' key={idx}>
-                                <Block vf className={Styles.type_item}>
-                                    <Block f={1}>
-                                        <img className={Styles.type_img} src={Constant.imgBaseUrl+adPic} />
-                                    </Block>
-                                    <Block className={Styles.type_name_txt}>{title}</Block>
+                        {typeList.map(({adPic, title,adUrl}, idx) => (
+                            <Block vf className={Styles.type_item} onClick={this.gotoGoodsTypePage.bind(this,adUrl)}>
+                                <Block f={1}>
+                                    <img className={Styles.type_img} src={Constant.imgBaseUrl+adPic} />
                                 </Block>
-                            </Link>
+                                <Block className={Styles.type_name_txt}>{title}</Block>
+                            </Block>
                         ))}
                     </Swiper>
                 </section>
