@@ -10,6 +10,7 @@ import Service from '../../services/baseService'
 import Constant from '../../utils/constant'
 import ImgErr from '../../assets/img/img_error.png'
 import ContentLoader, { List, BulletList, Code } from 'react-content-loader'
+
 /**
  *首页
  *
@@ -30,6 +31,8 @@ class Home extends Component<IProps>{
         super(props)
     }
     async componentDidMount(){
+        const { params } = this.props.match
+        Constant.userData = params
         const res = await Service.getHomeData()
         if(!res) return
         this.setState({
@@ -41,12 +44,6 @@ class Home extends Component<IProps>{
             typeList: res[5].data || [],
             isRequest: true
         })
-        if(window.localStorage){
-            window.localStorage.setItem('data', JSON.stringify({name: 'zyh'}))
-            console.log(window.localStorage.getItem('data'))
-        }else{
-            console.log('不支持localStorage',window)
-        }
     }
     render(){
         const { specialList, hotList, newList, productTypes, bannerList, typeList, isRequest } = this.state
@@ -79,12 +76,12 @@ class Home extends Component<IProps>{
                             <Block className={Styles.sev_ico}></Block>
                             <Block ml={3}>服务承诺</Block>
                         </Block>
-                    </Block>
                     {/* top end */}
+                    </Block>
                     <Block mt={10} className={Styles.type_banner}>
                         <Block className={Styles.banner_inner}></Block>
-                    </Block>
                     <Block className={Styles.type_title}>商品类型</Block>
+                    </Block>
                 </Block>
                 {/* start */}
                 <section className={Styles.swiper_container}>

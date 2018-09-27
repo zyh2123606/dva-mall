@@ -4,6 +4,7 @@ const Constant = {
     imgBaseUrl:'https://iretail.bonc.com.cn/pic/',
     toMoney(num){
         return (num/100).toFixed(2);
-    }
+    },
+    userData: {}
 }
 export default Constant;
