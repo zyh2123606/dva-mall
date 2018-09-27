@@ -198,7 +198,7 @@ class OrderDetail extends Component{
                         <img style={{marginTop: 0, 
                             borderRadius: '5px 5px 0 0'}} 
                             className={Styles.prod_img} 
-                            src={Constant.imgBaseUrl+goodsHeadPicList[0].picPath} alt='商品logo'/>
+                            src={Constant.imgBaseUrl+goodsHeadPicList[0].picPath || ''} alt='商品logo'/>
                     </Block>
                     <Block p={20} vf>
                         <Block fs={16}>{title}</Block>

@@ -38,18 +38,16 @@ class Home extends Component<IProps>{
         const res = await Service.getHomeData()
         if(!res) return
         this.setState({
-            bannerList: res[0].data || [],
-            specialList: res[1].data || [],
-            hotList: res[2].data || [],
-            newList: res[3].data || [],
-            productTypes: res[4].data || [],
-            typeList: res[5].data || [],
-            deptInfo: res[6].data || {},
+            specialList: res[0].data || [],
+            hotList: res[1].data || [],
+            newList: res[2].data || [],
+            typeList: res[3].data || [],
+            deptInfo: res[4].data || {},
             isRequest: true
         })
     }
     render(){
-        const { specialList, hotList, newList, productTypes, bannerList, typeList, isRequest, deptInfo } = this.state
+        const { specialList, hotList, typeList, newList, isRequest, deptInfo } = this.state
         const { deptAddress, deptManager, deptName, deptTel } = deptInfo || {}
         return (
             isRequest?<Block className={Styles.container} bc='#fff'>
