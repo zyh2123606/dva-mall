@@ -26,7 +26,7 @@ class OrderDetail extends Component{
     }
     //dom挂在完成请求数据
     async componentDidMount(){
-        document.title='订单详情'
+        document.title='商品详情'
         const {match:{params:{pid}}}  =this.props
         const res = await Service.getDetailById(pid)
         const { data, code } = res

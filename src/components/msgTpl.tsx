@@ -12,7 +12,7 @@ interface Options{
 const MsgTpl = ({status, message, linkText, linkUrl}: Options) => {
 
     function linkHandle(){
-        wx.miniProgram.navigateTo({url: linkUrl})
+        wx.miniProgram.navigateTo({url:  `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#${linkUrl}`})
     }
 
     return (
