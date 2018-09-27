@@ -18,7 +18,7 @@ class Account extends Component{
     async componentDidMount(){
         const { params } = this.props.match
         Constant.userData = params
-        const memId = params.memId || ''
+        const memId = params.memId || 7
         const res = await Service.getUserInfo(memId)
         const { code, data, msg } = res
         if(code !== '0000') return Toast.info(msg)
