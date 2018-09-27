@@ -33,10 +33,11 @@ class Cart extends Component<IPropos>{
     async componentDidMount(){
         const { params } = this.props.match
         Constant.userData = params
-        this.queryShoppingCart()
+        const memId = params.memId || 7
+        this.queryShoppingCart(memId)
     }
-    async queryShoppingCart(){
-        const {data,code}=await ShoppingCartService.query({memId:this.state.memId})
+    async queryShoppingCart(memId:number){
+        const {data,code}=await ShoppingCartService.query({memId})
         if (code===Constant.responseOK){
             this.setState({
                 goodsList:data
