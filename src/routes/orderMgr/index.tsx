@@ -162,6 +162,7 @@ class OrderDetail extends Component{
     connectService=()=>{
         const token=''
         console.log('获取token')
+        wx.miniProgram.postMessage({ data: {msg: '联系客服，打开新网页？' }})
         // productService.connectService(token)
     }
     // 渲染商品属性部分
