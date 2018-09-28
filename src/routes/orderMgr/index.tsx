@@ -112,8 +112,9 @@ class OrderDetail extends Component{
     async sureBuy(){
         const { form,dispatch} = this.props
         const {color_id,num} = form.getFieldsValue()
-        const {memId,typeId,defaultSkuPrice,logoPath,colorName,title,skuid}=this.state
-        
+        const {typeId,defaultSkuPrice,logoPath,colorName,title,skuid}=this.state
+
+        const memId = Constant.userData.memId || 7
         const params={
             memId:memId,// TODO 用户ID
             skuId:skuid,// skuid
@@ -131,7 +132,9 @@ class OrderDetail extends Component{
     async addToShoppingCart(){
         const {form} = this.props
         const {num} = form.getFieldsValue()
-        const {memId,skuid}=this.state
+        console.log('addToShoppingCart>>>',Constant.userData)
+        const memId = Constant.userData.memId || 7
+        const {skuid}=this.state
         const params={
             memId:memId,// TODO 用户ID
             skuId:skuid,// skuid
@@ -146,7 +149,8 @@ class OrderDetail extends Component{
         }
     }
     async shoppingCart(){
-        const {data,code} = await ShoppingCartService.query({memId:this.state.memId})
+        const memId = Constant.userData.memId || 7
+        const {data,code} = await ShoppingCartService.query({memId:memId})
         if (code===Constant.responseOK){
             this.setState({shoppingCartCount:data.length})
         }
@@ -155,7 +159,8 @@ class OrderDetail extends Component{
     toShoppingCart=()=>{
         const {dispatch} =this.props;
         // TODO 处理跳转到购物车需要携带的sessionID和memId
-        const {sessionId,memId}=Constant.userData
+        const memId = Constant.userData.memId || 7
+        const sessionId = Constant.userData.sessionId || 7
         wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/cart/${sessionId}/${memId}`})
     }
     //联系客服

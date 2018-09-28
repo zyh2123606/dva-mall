@@ -21,7 +21,6 @@ const Item = List.Item
 class OrderSure extends Component{
     state = {
         typeId:1,
-        memId:1,
         orderDeptId:1,// 当前营业厅
         totalPrise:0,//总价格,
         shoppingcard:[],//购物车ID集合
@@ -50,7 +49,8 @@ class OrderSure extends Component{
         }else{
             shoppingcardId=[Number.parseInt(shoppingcardId)]
         }
-        const {data,code}=await ShoppingCartService.query({memId:1,cartIdList:shoppingcardId})
+        const memId = Constant.userData.memId || 7
+        const {data,code}=await ShoppingCartService.query({memId:memId,cartIdList:shoppingcardId})
         if (code===Constant.responseOK){
             let totalPrise=0
             if(!data || data.length===0){
@@ -73,7 +73,7 @@ class OrderSure extends Component{
     }
     // 查询用户收货的地址列表
     async queryCollectUserInfo(){
-        const {memId}=this.state
+        const memId = Constant.userData.memId || 7
         const {code,data}=await UserService.getAddressList(memId);
         if (code===Constant.responseOK){
             this.setState({collectUserInfo:data})
@@ -126,7 +126,8 @@ class OrderSure extends Component{
     //提交订单
     async orderSubmit () {
         const {dispatch,match:{params:{shoppingcardId}}} = this.props
-        const {memId,collectMode,selectedAdopt,collectAddress,shoppingcard}=this.state
+        const memId = Constant.userData.memId || 7
+        const {collectMode,selectedAdopt,collectAddress,shoppingcard}=this.state
         let params={
             cartIdList:shoppingcard,// 购物车ID集合
             memId:memId,// 用户ID
@@ -164,7 +165,7 @@ class OrderSure extends Component{
     }
     // 调用支付接口
     async pay(orderCode){
-        const {memId}=this.state
+        const memId = Constant.userData.memId || 7
         const {dispatch} = this.props
         const {code} = await OrderService.pay(orderCode,memId)
         if(code===Constant.responseOK){
