@@ -30,7 +30,7 @@ class SearchProduct extends Component{
     pageIndex = 1
     pageSize = 10
     pageCount = 1
-    skuNameFieldMapping={'brandName':'品牌','colour':'颜色','memory':'内存'}
+    skuNameFieldMapping={'brandName':'品牌','colour':'颜色','memory':'内存','priceDur':'价格'}
     menus = [
         {title: '综合',content:[]},
     ]
@@ -41,11 +41,13 @@ class SearchProduct extends Component{
         const selectColor=selectedSku.get('颜色')
         const selectBrand=selectedSku.get('品牌')
         const selectMemory=selectedSku.get('内存')
+        const price=selectedSku.get('价格')
         const {data,code}=await ProductService.searchGoods({
             keyword:searchKeyword?searchKeyword:null,//关键字
             colour:selectColor?selectColor:null,//颜色
             brandName:selectBrand?selectBrand:null,//品牌
             memorySize:selectMemory?selectMemory:null,//内存
+            priceDur:price?price:null,//价格区间
             sortList:[],
             typeId:parentType
         })
