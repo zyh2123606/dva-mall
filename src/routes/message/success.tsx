@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import { MessagePage } from '../../components'
 import Block from 'fs-flex'
+import {Button} from 'antd-mobile'
 
 class SuccessPage extends Component{
     componentDidMount(){
