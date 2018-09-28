@@ -26,8 +26,10 @@ class Home extends Component<IProps>{
         productTypes: [],
         bannerList: [],
         isRequest: false,
-        deptInfo: {}
+        deptInfo: {},
+        allBanner:[],
     }
+
     constructor(props:IProps){
         super(props)
     }
@@ -43,6 +45,7 @@ class Home extends Component<IProps>{
             newList: res[2].data || [],
             typeList: res[3].data || [],
             deptInfo: res[4].data || {},
+            allBanner: res[4].data || [],
             isRequest: true
         })
        Constant.setUserInfo(params.memId,params.sessionId)
@@ -57,6 +60,22 @@ class Home extends Component<IProps>{
         if(url){
             wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#${url}`})
         }
+    }
+
+    // 渲染各个分类的banner图片
+    renderBanner=(adType)=>{
+        const allBanner=this.state.allBanner
+        if (!allBanner || allBanner.length===0){
+            return null
+        }
+        const currentBanner=allBanner.filter(item=>item.adType===adType)
+        if (!currentBanner || currentBanner.length===0){
+            return <Block className={Styles.th_banner}></Block>
+        }
+        currentBanner=currentBanner[0]
+        return (
+
+        )
     }
     render(){
         const { specialList, hotList, typeList, newList, isRequest, deptInfo } = this.state
@@ -120,6 +139,9 @@ class Home extends Component<IProps>{
                         <Block f={1} className={Styles.type_title}>特惠专区</Block>
                         {/* <Link className={Styles.link_sty} to='/'>More</Link> */}
                     </Block>
+                    {/* {
+                        this.renderBanner(2)
+                    } */}
                     <Block className={Styles.th_banner}></Block>
                 </Block>
                 {/* start */}

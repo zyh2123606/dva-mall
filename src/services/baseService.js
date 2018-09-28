@@ -13,7 +13,7 @@ class BaseService extends HttpBase{
     //获取用户收货列表
     getHomeData = () => {
         return this.all([this.getSpecialProducts(), this.getHotProducts(), this.getNewProducts(),
-            this.getTypesList(), this.getDeptInfo()])
+            this.getTypesList(), this.getDeptInfo(),this.getAllBanne()])
     }
     //获取banner图
     getBannerList = () => {
@@ -45,6 +45,11 @@ class BaseService extends HttpBase{
     //获取门店信息
     getDeptInfo = () => {
         return this.get('/dept/getDeptInfo?id=1')
+    }
+
+    // 获取首页所有类别下的banner图片信息（地址、名称）
+    getAllBanne=()=>{
+        return this.get(`/ad/getList`)
     }
 }
 
