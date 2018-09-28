@@ -74,7 +74,7 @@ class AddressMgr extends Component {
 
     async componentDidMount() {
         document.title = '收货地址管理'
-        const res = await Service.getMyAddress(Constant.getUserInfo.memId)
+        const res = await Service.getMyAddress(Constant.getUserInfo().memId)
         const {data, code} = res
         const {dispatch, history} = this.props
         if (code==="0000") {

@@ -38,7 +38,7 @@ class Create extends Component{
             return
         }
         const {address,defaultFlag,pcc:[province,city,county],receiver,tel}=submitVales
-        const memId = Constant.getUserInfo.memId
+        const memId = Constant.getUserInfo().memId
         const temp={tel:tel,memId:memId,address:address,receiver:receiver,defaultFlag:defaultFlag?1:2,province:province,city:city,county:county}
         const res = await Service.updateAddress(temp)
         const{code,msg} = res
