@@ -46,6 +46,7 @@ class Home extends Component<IProps>{
             isRequest: true
         })
     }
+
     gotoProdDetail(typeId){
         wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}`})
     }

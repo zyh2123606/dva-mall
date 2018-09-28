@@ -1,11 +1,10 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-import { Stepper,Carousel } from 'antd-mobile'
+import { Stepper,Carousel,Badge,Toast } from 'antd-mobile'
 import Service from '../../services/productService'
 import ShoppingCartService from '../../services/shoppingCartService';// 购物车service
 import { createForm } from 'rc-form'
-import { Badge,Toast } from 'antd-mobile'
 import {connect} from 'dva';
 import {routerRedux} from 'dva/router';
 import Constant from '../../utils/constant';
@@ -110,10 +109,9 @@ class OrderDetail extends Component{
     }
     //立即购买
     async sureBuy(){
-        const { form,dispatch} = this.props
-        const {color_id,num} = form.getFieldsValue()
-        const {typeId,defaultSkuPrice,logoPath,colorName,title,skuid}=this.state
-
+        const { form} = this.props
+        const {num} = form.getFieldsValue()
+        const {skuid}=this.state
         const memId = Constant.userData.memId || 7
         const params={
             memId:memId,// TODO 用户ID
@@ -132,7 +130,7 @@ class OrderDetail extends Component{
     async addToShoppingCart(){
         const {form} = this.props
         const {num} = form.getFieldsValue()
-        console.log('addToShoppingCart>>>',Constant.userData)
+
         const memId = Constant.userData.memId || 7
         const {skuid}=this.state
         const params={
@@ -285,11 +283,11 @@ class OrderDetail extends Component{
                             </Block>
                             <Block fs={12}>客服</Block>
                         </Block>
-                        <Block a='c' j='c' w={60} vf>
+                        <Block a='c' j='c' w={60} vf onClick={this.toShoppingCart}>
                             <Block fs={24} fc='#999'>
                                 <Badge text={shoppingCartCount}><i className={Styles.icon_cart} /></Badge>
                             </Block>
-                            <Block fs={12} onClick={this.toShoppingCart}>购物车</Block>
+                            <Block fs={12} >购物车</Block>
                         </Block>
                         <Block wf f={1} ml={10} mr={10}>
                             <Block className={Styles.car_sty} f={1} onClick={this.addToShoppingCart.bind(this)}>加入购物车</Block>
