@@ -23,7 +23,11 @@ class Account extends Component{
         const res = await Service.getUserInfo(memId)
         const { code, data, msg } = res
         if(code !== '0000') return Toast.info(msg)
-        this.setState({userInfo: data})
+        const result = await Service.getHomeData()
+        this.setState({
+            userInfo: data,
+            deptInfo: result[4].data || {}
+            })
     }
     goToTarget(target){
         wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/${target}`})
@@ -96,7 +100,7 @@ class Account extends Component{
                         <i className={Styles.arrow_right}></i>
                     </Block>
                     <Block className={Styles.act_item} wf a='c'>
-                        <Block f={1}>联系客服经理</Block>
+                        <Block f={1}>客服经理电话:{this.state.deptInfo.deptTel}</Block>
                         <i className={Styles.arrow_right}></i>
                     </Block>
                     <Block className={Styles.act_item} wf a='c'>
