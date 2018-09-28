@@ -45,6 +45,9 @@ class Home extends Component<IProps>{
             deptInfo: res[4].data || {},
             isRequest: true
         })
+       Constant.setUserInfo(params.memId,params.sessionId)
+    //    localStorage.setItem('memId',params.memId)
+    //    localStorage.setItem('sessionId',params.sessionId)
     }
 
     gotoProdDetail(typeId){

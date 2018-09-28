@@ -32,9 +32,8 @@ class Cart extends Component<IPropos>{
     }
     async componentDidMount(){
         const { params } = this.props.match
-        Constant.userData = params
-        const memId = params.memId || 7
-        this.queryShoppingCart(memId)
+        Constant.setUserInfo(params.memId,params.sessionId)
+        this.queryShoppingCart(params.memId)
     }
     async queryShoppingCart(memId:number){
         const {data,code}=await ShoppingCartService.query({memId})
@@ -45,7 +44,6 @@ class Cart extends Component<IPropos>{
         }
     }
     delShopItem (record) {
-        const {memId,}=this.state
         alert('删除', '确定删除该商品?', [
             { text: '取消', onPress: () => console.log('cancel') },
             { text: '确定', onPress: () =>this.delted(record.cartId)
@@ -54,7 +52,7 @@ class Cart extends Component<IPropos>{
     }
 
     async delted(cartId){
-        const {memId,}=this.state
+        const {memId}=Constant.getUserInfo()
         const {code,data}= await ShoppingCartService.delete(cartId,memId)
         if(code===Constant.responseOK){
             this.queryShoppingCart()
@@ -62,9 +60,10 @@ class Cart extends Component<IPropos>{
     }
 
     async goodsCountChange(val,item){
+        const {memId}=Constant.getUserInfo()
         const {data,code}=await ShoppingCartService.save({
             id:item.cartId,
-            memId:this.state.memId,
+            memId:memId,
             skuId:item.skuId,
             amount:val
 

@@ -1,18 +1,14 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-<<<<<<< HEAD
-import { Stepper,Carousel,Badge,Toast } from 'antd-mobile'
-=======
-import { Stepper,Carousel, Badge, Toast } from 'antd-mobile'
->>>>>>> 73854da639096e314502cec6203faa148470183b
+import { Stepper,Carousel, Badge, Toast,Modal } from 'antd-mobile'
 import Service from '../../services/productService'
 import ShoppingCartService from '../../services/shoppingCartService';// 购物车service
 import { createForm } from 'rc-form'
 import {connect} from 'dva';
 import Constant from '../../utils/constant';
 import ImgErr from '../../assets/img/img_error.png'
-
+const alert = Modal.alert;
 
 class OrderDetail extends Component{
     state = {
@@ -115,7 +111,7 @@ class OrderDetail extends Component{
         const { form} = this.props
         const {num} = form.getFieldsValue()
         const {skuid}=this.state
-        const memId = Constant.userData.memId || 7
+        const {memId}=Constant.getUserInfo()
         const params={
             memId:memId,// TODO 用户ID
             skuId:skuid,// skuid
@@ -134,7 +130,7 @@ class OrderDetail extends Component{
         const {form} = this.props
         const {num} = form.getFieldsValue()
 
-        const memId = Constant.userData.memId || 7
+        const {memId}=Constant.getUserInfo()
         const {skuid}=this.state
         const params={
             memId:memId,// TODO 用户ID
@@ -150,7 +146,7 @@ class OrderDetail extends Component{
         }
     }
     async shoppingCart(){
-        const memId = Constant.userData.memId || 7
+        const {memId}=Constant.getUserInfo()
         const {data,code} = await ShoppingCartService.query({memId:memId})
         if (code===Constant.responseOK){
             this.setState({shoppingCartCount:data.length})
@@ -160,8 +156,9 @@ class OrderDetail extends Component{
     toShoppingCart=()=>{
         const {dispatch} =this.props;
         // TODO 处理跳转到购物车需要携带的sessionID和memId
-        const memId = Constant.userData.memId || 7
-        const sessionId = Constant.userData.sessionId || 7
+        const {memId,sessionId}=Constant.getUserInfo()
+        // const memId = Constant.userData.memId
+        // const sessionId = Constant.userData.sessionId
         wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/cart/${sessionId}/${memId}`})
     }
     //联系客服

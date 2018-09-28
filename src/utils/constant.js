@@ -5,6 +5,15 @@ const Constant = {
     toMoney(num){
         return (num/100).toFixed(2);
     },
+    setUserInfo(memId,sessinId){
+        localStorage.setItem('memId',memId)
+        localStorage.setItem('sessionId',sessinId)
+    },
+    getUserInfo(){
+        const memId=localStorage.getItem('memId')
+        const sessionId=localStorage.getItem('sessionId')
+        return {memId,sessionId}
+    }
     userData: {}
 }
 export default Constant;
