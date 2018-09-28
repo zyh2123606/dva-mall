@@ -58,6 +58,7 @@ class Home extends Component<IProps>{
         wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}`})
     }
     gotoGoodsPage(url){
+        console.log('gotoGoodsPage:',url)
         if(url){
             wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#${url}`})
         }
@@ -67,15 +68,15 @@ class Home extends Component<IProps>{
     renderBanner=(adType)=>{
         const allBanner=this.state.allBanner
         if (!allBanner || allBanner.length===0){
-            return <Block className={Styles.new_banner}></Block>
+            return <Block className={this.bannerStyle[adType]}></Block>
         }
         let currentBanner=allBanner.filter(item=>item.adType===adType)
         if (!currentBanner || currentBanner.length===0){
-            return <Block className={Styles.new_banner}></Block>
+            return <Block className={this.bannerStyle[adType]}></Block>
         }
         currentBanner=currentBanner[0]
         return (
-            <Block onClick={this.gotoGoodsPage(currentBanner.adUrl)}><img src={Constant.imgBaseUrl+currentBanner.adPic} alt='banner'/></Block>
+            <Block onClick={this.gotoGoodsPage.bind(this,currentBanner.adUrl)}><img style={{width:'100%',height:'150px'}} src={Constant.imgBaseUrl+currentBanner.adPic} alt='banner'/></Block>
         )
     }
     render(){
@@ -117,10 +118,10 @@ class Home extends Component<IProps>{
                     {/* top end */}
                     </Block>
                     <Block mt={10} className={Styles.type_banner}>
-                        <Block className={Styles.banner_inner}></Block>
-                        {/* {
+                        {/* <Block className={Styles.banner_inner}></Block> */}
+                        {
                             this.renderBanner(1)
-                        } */}
+                        }
                     </Block>
                     <Block className={Styles.type_title}>商品类型</Block>
                 </Block>
@@ -145,10 +146,10 @@ class Home extends Component<IProps>{
                         <Block f={1} className={Styles.type_title}>特惠专区</Block>
                         {/* <Link className={Styles.link_sty} to='/'>More</Link> */}
                     </Block>
-                    {/* {
+                    {
                         this.renderBanner(2)
-                    } */}
-                    <Block className={Styles.th_banner}></Block>
+                    }
+                    {/* <Block className={Styles.th_banner}></Block> */}
                 </Block>
                 {/* start */}
                 <section className={Styles.swiper_container}>
@@ -172,10 +173,10 @@ class Home extends Component<IProps>{
                         <Block f={1} className={Styles.type_title}>热门商品</Block>
                         {/* <Link className={Styles.link_sty} to='/'>More</Link> */}
                     </Block>
-                    <Block className={Styles.hot_banner}></Block>
-                    {/* {
+                    {/* <Block className={Styles.hot_banner}></Block> */}
+                    {
                         this.renderBanner(3)
-                    } */}
+                    }
                 </Block>
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={3}>
@@ -198,10 +199,10 @@ class Home extends Component<IProps>{
                         <Block f={1} className={Styles.type_title}>新品上架</Block>
                         {/* <Link className={Styles.link_sty} to='/'>More</Link> */}
                     </Block>
-                    <Block className={Styles.new_banner}></Block>
-                    {/* {
+                    {/* <Block className={Styles.new_banner}></Block> */}
+                    {
                         this.renderBanner(4)
-                    } */}
+                    }
                 </Block>
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={3}>
