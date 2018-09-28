@@ -39,6 +39,11 @@ class WaitPay extends Component{
         this.pageIndex++
         this.setState({refreshing: true})
     }
+    deleteOrderInState=(index)=>{
+        let tempData = this.state.data
+        tempData.splice(index,1)
+        this.setState({data:tempData})
+    }
     render(){
         const { refreshing, data } = this.state
         return (
@@ -51,7 +56,7 @@ class WaitPay extends Component{
                 {data?
                     data instanceof Array && data.length?
                     this.state.data.map(({orderCode,status,goodsList,id},idx)=>(
-                        <Order key={idx} orderCode={orderCode} status = {status} orderId={id} goodsList={goodsList}/>
+                        <Order key={idx} orderCode={orderCode} status = {status} goodsList={goodsList} orderId={id} orderIndex={idx} delFunc={this.deleteOrderInState}/>
                     )):<Empty />
                 :null}
             </PullToRefresh>
