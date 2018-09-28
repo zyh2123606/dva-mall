@@ -13,6 +13,7 @@ import Constant from '../../utils/constant'
  */
 class Order extends Component{
     deleteOrder=async()=>{
+        const alert = Modal.alert
         alert('确认',`确认删除订单号为: ${this.props.orderId} 的订单么？`,[{text:'取消',onPress:()=>console.log('cancel')},
             {text:'确认',onPress:()=>{
                 (async(memId,orderId)=>{
