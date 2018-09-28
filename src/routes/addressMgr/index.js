@@ -8,6 +8,7 @@ import {Toast} from 'antd-mobile'
 import {Link} from 'react-router-dom'
 import {connect} from 'dva'
 import Service from '../../services/addressService'
+import Constant from '../../utils/constant'
 
 /**
  *收货地址管理
@@ -53,8 +54,8 @@ class AddressMgr extends Component {
         alert('确认',`确认删除地址: ${pcc} ${item.address}么？`,[{text:'取消',onPress:()=>console.log('cancel')},
             {text:'确认',onPress:()=>{
                 (async(item,index)=>{
-                    const {id} = item 
-                    const res = await Service.deleteAddress({addrId:id,memId:1})
+                    const {id,memId} = item 
+                    const res = await Service.deleteAddress({addrId:id,memId:memId})
                     const {code,msg} = res
                     if(code==="0000"){
                         Toast.info("删除成功！")
@@ -73,7 +74,7 @@ class AddressMgr extends Component {
 
     async componentDidMount() {
         document.title = '收货地址管理'
-        const res = await Service.getMyAddress(1)
+        const res = await Service.getMyAddress(Constant.userData.memId)
         const {data, code} = res
         const {dispatch, history} = this.props
         if (code==="0000") {

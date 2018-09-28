@@ -35,7 +35,7 @@ class Update extends Component{
             return
         }
         const {address,defaultFlag,pcc:[province,city,county],receiver,tel}=submitVales
-        const temp={id:this.editAddr.id,tel:tel,memId:1,address:address,receiver:receiver,defaultFlag:defaultFlag?1:2,province:province,city:city,county:county}
+        const temp={id:this.editAddr.id,tel:tel,memId:this.editAddr.memId,address:address,receiver:receiver,defaultFlag:defaultFlag?1:2,province:province,city:city,county:county}
         const res = await Service.updateAddress(temp)
         const{code,msg} = res
         if(code==="0000"){

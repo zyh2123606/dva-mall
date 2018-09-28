@@ -7,6 +7,7 @@ import AreaData from '../../components/areaData'
 import Service from '../../services/addressService'
 import { checkFormat } from './utils'
 import { NavTopBar } from '../../components'
+import Constant from '../../utils/constant'
 
 /**
  *添加收货地址
@@ -37,7 +38,8 @@ class Create extends Component{
             return
         }
         const {address,defaultFlag,pcc:[province,city,county],receiver,tel}=submitVales
-        const temp={tel:tel,memId:1,address:address,receiver:receiver,defaultFlag:defaultFlag?1:2,province:province,city:city,county:county}
+        const memId = Constant.userData.memId
+        const temp={tel:tel,memId:memId,address:address,receiver:receiver,defaultFlag:defaultFlag?1:2,province:province,city:city,county:county}
         const res = await Service.updateAddress(temp)
         const{code,msg} = res
         if(code==="0000"){
