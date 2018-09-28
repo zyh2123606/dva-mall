@@ -58,7 +58,6 @@ class Create extends Component{
         const { getFieldProps } = this.props.form
         return (
             <Block bc='#fff' w='100%' h='100%'>
-                <NavTopBar title='添加收货地址' leftClick={()=>{history.goBack()}} />
                 <Block h={45}/>
                 <List>
                     <InputItem 
