@@ -96,15 +96,7 @@ class Account extends Component{
                         </Block>
                     </Block>
                     <Block className={Styles.act_item} wf a='c'>
-                        <Block f={1}>联系客服</Block>
-                        <i className={Styles.arrow_right}></i>
-                    </Block>
-                    <Block className={Styles.act_item} wf a='c'>
                         <Block f={1}>客服经理电话:{this.state.deptInfo.deptTel}</Block>
-                        <i className={Styles.arrow_right}></i>
-                    </Block>
-                    <Block className={Styles.act_item} wf a='c'>
-                        <Block f={1}>退出登录</Block>
                         <i className={Styles.arrow_right}></i>
                     </Block>
                 </Block>
