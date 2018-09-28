@@ -4,6 +4,7 @@ import Order from './order'
 import { PullToRefresh, Empty } from '../../components'
 import { Toast } from 'antd-mobile'
 import Service from '../../services/orderService'
+import Constant from '../../utils/constant'
 
 /**
  *待收货
@@ -17,8 +18,8 @@ class WaitRecive extends Component{
     pageSize = 10
     pageCount = 1
     async componentDidMount(){
-        const currentmemid=1
-        const statuswaitrecive = 2//0获取全部状态
+        const currentmemid=Constant.getUserInfo().memId
+        const statuswaitrecive = 2//2获取待收货订单
         const res = await Service.getMyOrder(currentmemid,statuswaitrecive)
         const { data, code } = res
         if(code==="0000")

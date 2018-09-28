@@ -4,6 +4,7 @@ import Order from './order'
 import { PullToRefresh, Empty } from '../../components'
 import { Toast } from 'antd-mobile'
 import Service from '../../services/orderService'
+import Constant from '../../utils/constant'
 
 /**
  *待付款
@@ -17,8 +18,8 @@ class WaitPay extends Component{
     pageSize = 10
     pageCount = 1
     async componentDidMount(){
-        const currentmemid=1
-        const statuswaitpay = 1//0获取全部状态
+        const currentmemid=Constant.getUserInfo().memId
+        const statuswaitpay = 1//1获取待付款订单
         const res = await Service.getMyOrder(currentmemid,statuswaitpay)
         const { data, code } = res
         if(code==="0000")
