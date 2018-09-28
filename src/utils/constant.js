@@ -13,7 +13,7 @@ const Constant = {
         const memId=localStorage.getItem('memId')
         const sessionId=localStorage.getItem('sessionId')
         return {memId,sessionId}
-    }
+    },
     userData: {}
 }
 export default Constant;
