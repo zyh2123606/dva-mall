@@ -44,7 +44,7 @@ class Account extends Component{
                 <Block fs={16} p={15}>我的订单</Block>
                 <Block wf className={Styles.order_panel}>
                     <Block a='c' f={1} vf>
-                        <Block onClick={this.goToTarget.bind('my-order')}>
+                        <Block onClick={this.goToTarget.bind(this, 'my-order')}>
                             <Block a='c' vf>
                                 <Block className={Styles.orangeColor} fs={22}>
                                     <i className={Styles.icon_order} />
@@ -54,7 +54,7 @@ class Account extends Component{
                         </Block>
                     </Block>
                     <Block a='c' f={1} vf>
-                        <Block onClick={this.goToTarget.bind('my-order/wait-pay')}>
+                        <Block onClick={this.goToTarget.bind(this, 'my-order/wait-pay')}>
                             <Block a='c' vf>
                                 <Block className={Styles.orangeColor} fs={22}>
                                     <i className={Styles.icon_wait_pay} />
@@ -64,7 +64,7 @@ class Account extends Component{
                         </Block>
                     </Block>
                     <Block a='c' f={1} vf>
-                        <Block onClick={this.goToTarget.bind('my-order/wait-recive')}>
+                        <Block onClick={this.goToTarget.bind(this, 'my-order/wait-recive')}>
                             <Block a='c' vf>
                                 <Block className={Styles.orangeColor} fs={22}>
                                     <i className={Styles.icon_wait_recive} />
@@ -74,7 +74,7 @@ class Account extends Component{
                         </Block>
                     </Block>
                     <Block a='c' f={1} vf>
-                        <Block onClick={this.goToTarget.bind('my-order/complete')}>
+                        <Block onClick={this.goToTarget.bind(this, 'my-order/complete')}>
                             <Block a='c' vf>
                                 <Block className={Styles.orangeColor} fs={28}>
                                     <i className={Styles.icon_complete} />
@@ -85,7 +85,7 @@ class Account extends Component{
                     </Block>
                 </Block>
                 <Block className={Styles.act_menu} vf>
-                    <Block onClick={this.goToTarget.bind('address-mgr')}>
+                    <Block onClick={this.goToTarget.bind(this, 'address-mgr')}>
                         <Block className={Styles.act_item} wf a='c'>
                             <Block f={1}>收货地址</Block>
                             <i className={Styles.arrow_right}></i>

@@ -1,12 +1,15 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
+<<<<<<< HEAD
 import { Stepper,Carousel,Badge,Toast } from 'antd-mobile'
+=======
+import { Stepper,Carousel, Badge, Toast } from 'antd-mobile'
+>>>>>>> 73854da639096e314502cec6203faa148470183b
 import Service from '../../services/productService'
 import ShoppingCartService from '../../services/shoppingCartService';// 购物车service
 import { createForm } from 'rc-form'
 import {connect} from 'dva';
-import {routerRedux} from 'dva/router';
 import Constant from '../../utils/constant';
 import ImgErr from '../../assets/img/img_error.png'
 
@@ -210,11 +213,15 @@ class OrderDetail extends Component{
 
     renderHeaderImges=()=>{
         const {headerImg} =this.state
-        return <Carousel autoplay={false} infinite>
+        return <Carousel 
+            autoplay={false} 
+            infinite 
+            dotStyle={{background: '#D2D2D2', marginTop: 10}}
+            dotActiveStyle={{background: '#FF8E44'}}
+            style={{touchAction: 'none'}}>
             {
                 headerImg.map((item,index)=><img 
                     key={'header-img-'+index}
-                    swipeSpeed={20}
                     src={Constant.imgBaseUrl+item.picPath}
                     alt={item.picName}
                     style={{marginTop: 0, borderRadius: '5px 5px 0 0'}} 
@@ -241,7 +248,7 @@ class OrderDetail extends Component{
                                 this.renderHeaderImges()
                             }
                     </Block>
-                    <Block p={20} vf>
+                    <Block p={20} vf mt={10}>
                         <Block fs={16}>{title}</Block>
                         <Block className={Styles.money_color} fs={20} mt={10}>￥{defaultSkuPrice}</Block>
                     </Block>
