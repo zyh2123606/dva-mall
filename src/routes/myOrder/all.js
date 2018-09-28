@@ -4,6 +4,7 @@ import Order from './order'
 import { PullToRefresh, Empty } from '../../components'
 import { Toast } from 'antd-mobile'
 import Service from '../../services/orderService'
+import Constant from '../../utils/constant'
 
 /**
  *全部
@@ -17,7 +18,7 @@ class All extends Component{
     pageSize = 10
     pageCount = 1
     async componentDidMount(){
-        const currentmemid=1
+        const currentmemid=Constant.getUserInfo().memId
         const statusall = 0//0获取全部状态
         const res = await Service.getMyOrder(currentmemid,statusall)
         const { data, code } = res
@@ -38,6 +39,9 @@ class All extends Component{
         this.pageIndex++
         this.setState({refreshing: true})
     }
+    deleteOrderInState=(index)=>{
+        this.state.data.splice(index,1)
+    }
     render(){
         const { refreshing, data } = this.state
         return (
@@ -50,7 +54,7 @@ class All extends Component{
                 {data?
                     data instanceof Array && data.length?
                     this.state.data.map(({orderCode,status,goodsList, id},idx)=>(
-                        <Order key={idx} orderCode={orderCode} status = {status} goodsList={goodsList} orderId={id}/>
+                        <Order key={idx} orderCode={orderCode} status = {status} goodsList={goodsList} orderId={id} orderIndex={idx} delFunc={this.deleteOrderInState}/>
                     )):<Empty />
                 :null}
             </PullToRefresh>
