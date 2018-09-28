@@ -30,6 +30,9 @@ class Home extends Component<IProps>{
         allBanner:[],
     }
 
+
+    bannerStyle={1:Styles.banner_inner,2:Styles.th_banner,3:Styles.hot_banner,4:Styles.new_banner}
+
     constructor(props:IProps){
         super(props)
     }
@@ -45,7 +48,7 @@ class Home extends Component<IProps>{
             newList: res[2].data || [],
             typeList: res[3].data || [],
             deptInfo: res[4].data || {},
-            allBanner: res[4].data || [],
+            allBanner: res[5].data || [],
             isRequest: true
         })
        Constant.setUserInfo(params.memId,params.sessionId)
@@ -66,15 +69,15 @@ class Home extends Component<IProps>{
     renderBanner=(adType)=>{
         const allBanner=this.state.allBanner
         if (!allBanner || allBanner.length===0){
-            return null
+            return <Block className={Styles.new_banner}></Block>
         }
-        const currentBanner=allBanner.filter(item=>item.adType===adType)
+        let currentBanner=allBanner.filter(item=>item.adType===adType)
         if (!currentBanner || currentBanner.length===0){
-            return <Block className={Styles.th_banner}></Block>
+            return <Block className={Styles.new_banner}></Block>
         }
         currentBanner=currentBanner[0]
         return (
-
+            <Block onClick={this.gotoGoodsPage(currentBanner.adUrl)}><img src={Constant.imgBaseUrl+currentBanner.adPic} alt='banner'/></Block>
         )
     }
     render(){
@@ -115,6 +118,9 @@ class Home extends Component<IProps>{
                     </Block>
                     <Block mt={10} className={Styles.type_banner}>
                         <Block className={Styles.banner_inner}></Block>
+                        {/* {
+                            this.renderBanner(1)
+                        } */}
                     </Block>
                     <Block className={Styles.type_title}>商品类型</Block>
                 </Block>
@@ -167,6 +173,9 @@ class Home extends Component<IProps>{
                         {/* <Link className={Styles.link_sty} to='/'>More</Link> */}
                     </Block>
                     <Block className={Styles.hot_banner}></Block>
+                    {/* {
+                        this.renderBanner(3)
+                    } */}
                 </Block>
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={3}>
@@ -190,6 +199,9 @@ class Home extends Component<IProps>{
                         {/* <Link className={Styles.link_sty} to='/'>More</Link> */}
                     </Block>
                     <Block className={Styles.new_banner}></Block>
+                    {/* {
+                        this.renderBanner(4)
+                    } */}
                 </Block>
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={3}>
