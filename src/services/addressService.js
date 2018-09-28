@@ -11,7 +11,7 @@ class AddressService extends HttpBase{
         })
     }
     getMyAddress= (data=undefined) => {
-        return this.get(`/mem/addr/getList?memId=1`, data)
+        return this.get(`/mem/addr/getList?`, data)
     }
     updateAddress=(data=undefined)=>{
         return this.postJson('/mem/addr/update',data)
