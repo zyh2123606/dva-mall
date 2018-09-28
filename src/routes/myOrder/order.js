@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { Toast } from 'antd-mobile'
+import { Toast,Modal} from 'antd-mobile'
 import Block from 'fs-flex'
 import Styles from './index.less'
 import Product from './product'
@@ -13,16 +13,19 @@ import Constant from '../../utils/constant'
  */
 class Order extends Component{
     deleteOrder=async()=>{
-        const memId = Constant.getUserInfo().memId
-        const orderId = this.props.orderId
-        const res = await Service.deleteOrder(memId,orderId)
-        const{code,msg} = res
-        if(code==="0000"){
-            this.props.delFunc(this.props.orderIndex)
-            Toast.info("删除成功!")
-        }else{
-            Toast.Info(msg)
-        }
+        alert('确认',`确认删除订单号为: ${this.props.orderId} 的订单么？`,[{text:'取消',onPress:()=>console.log('cancel')},
+            {text:'确认',onPress:()=>{
+                (async(memId,orderId)=>{
+                    const res = await Service.deleteOrder(memId,orderId)
+                    const{code,msg} = res
+                    if(code==="0000"){
+                        this.props.delFunc(this.props.orderIndex)
+                        Toast.info("删除成功!")
+                    }else{
+                        Toast.Info(msg)
+                    }
+                })(Constant.getUserInfo().memId,this.props.orderId)
+            }},])
 
     }
     render(){
