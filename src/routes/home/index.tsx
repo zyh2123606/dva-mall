@@ -78,8 +78,10 @@ class Home extends Component<IProps>{
                                 <Block className={Styles.addr_txt}>实体店地址：{deptAddress}</Block>
                             </Block>
                             <Block a='c' fs={10} wf mt={2}>
-                                <Block>联　系电话：</Block>
-                                <Block className={Styles.mobile}>{deptTel}</Block>
+                                <Block>联系　电话：</Block>
+                                <Block className={Styles.mobile}>
+                                    <a style={{color: '#fd8007'}} href={`tel:${deptTel}`}>{deptTel}</a>
+                                </Block>
                             </Block>
                         </Block>
                         <Block j='c' a='c' wf className={Styles.sev_txt}>
