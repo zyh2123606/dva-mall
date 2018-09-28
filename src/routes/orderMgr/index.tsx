@@ -206,7 +206,12 @@ class OrderDetail extends Component{
 
     renderHeaderImges=()=>{
         const {headerImg} =this.state
-        return <Carousel autoplay={false} infinite style={{touchAction: 'none'}}>
+        return <Carousel 
+            autoplay={false} 
+            infinite 
+            dotStyle={{background: '#D2D2D2', marginTop: 10}}
+            dotActiveStyle={{background: '#FF8E44'}}
+            style={{touchAction: 'none'}}>
             {
                 headerImg.map((item,index)=><img 
                     key={'header-img-'+index}
@@ -236,7 +241,7 @@ class OrderDetail extends Component{
                                 this.renderHeaderImges()
                             }
                     </Block>
-                    <Block p={20} vf>
+                    <Block p={20} vf mt={10}>
                         <Block fs={16}>{title}</Block>
                         <Block className={Styles.money_color} fs={20} mt={10}>￥{defaultSkuPrice}</Block>
                     </Block>
