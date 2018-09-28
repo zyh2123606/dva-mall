@@ -53,7 +53,7 @@ class Home extends Component<IProps>{
     gotoProdDetail(typeId){
         wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}`})
     }
-    gotoGoodsTypePage(url){
+    gotoGoodsPage(url){
         if(url){
             wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#${url}`})
         }
@@ -103,7 +103,7 @@ class Home extends Component<IProps>{
                 <section className={Styles.swiper_container}>
                     <Swiper slidesPerView={4}>
                         {typeList.map(({adPic, title,adUrl}, idx) => (
-                            <Block key={idx} onClick={this.gotoGoodsTypePage.bind(this, adUrl)}>
+                            <Block key={idx} onClick={this.gotoGoodsPage.bind(this, adUrl)}>
                                 <Block vf className={Styles.type_item}>
                                     <Block f={1}>
                                         <img className={Styles.type_img} src={Constant.imgBaseUrl+adPic} />
