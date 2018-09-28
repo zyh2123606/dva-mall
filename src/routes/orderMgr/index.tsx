@@ -1,13 +1,11 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-import { Stepper,Carousel } from 'antd-mobile'
+import { Stepper,Carousel, Badge, Toast } from 'antd-mobile'
 import Service from '../../services/productService'
 import ShoppingCartService from '../../services/shoppingCartService';// 购物车service
 import { createForm } from 'rc-form'
-import { Badge,Toast } from 'antd-mobile'
 import {connect} from 'dva';
-import {routerRedux} from 'dva/router';
 import Constant from '../../utils/constant';
 import ImgErr from '../../assets/img/img_error.png'
 
@@ -208,11 +206,10 @@ class OrderDetail extends Component{
 
     renderHeaderImges=()=>{
         const {headerImg} =this.state
-        return <Carousel autoplay={false} infinite>
+        return <Carousel autoplay={false} infinite style={{touchAction: 'none'}}>
             {
                 headerImg.map((item,index)=><img 
                     key={'header-img-'+index}
-                    swipeSpeed={20}
                     src={Constant.imgBaseUrl+item.picPath}
                     alt={item.picName}
                     style={{marginTop: 0, borderRadius: '5px 5px 0 0'}} 
