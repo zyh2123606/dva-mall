@@ -40,7 +40,8 @@ class All extends Component{
         this.setState({refreshing: true})
     }
     deleteOrderInState=(index)=>{
-        this.state.data.splice(index,1)
+        let tempData = this.state.data.splice(index,1)
+        this.setState({data:tempData})
     }
     render(){
         const { refreshing, data } = this.state
