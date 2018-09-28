@@ -39,6 +39,9 @@ class All extends Component{
         this.pageIndex++
         this.setState({refreshing: true})
     }
+    deleteOrderInState=(index)=>{
+        this.state.data.splice(index,1)
+    }
     render(){
         const { refreshing, data } = this.state
         return (
@@ -51,7 +54,7 @@ class All extends Component{
                 {data?
                     data instanceof Array && data.length?
                     this.state.data.map(({orderCode,status,goodsList, id},idx)=>(
-                        <Order key={idx} orderCode={orderCode} status = {status} goodsList={goodsList} orderId={id}/>
+                        <Order key={idx} orderCode={orderCode} status = {status} goodsList={goodsList} orderId={id} orderIndex={idx} delFunc={this.deleteOrderInState}/>
                     )):<Empty />
                 :null}
             </PullToRefresh>

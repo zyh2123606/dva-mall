@@ -41,6 +41,10 @@ class OrderService extends HttpBase{
     getLogisticsDetail = orderId => {
         return this.get(`/order/getLogisticsList?orderId=${orderId}`)
     }
+    //删除订单接口
+    deleteOrder = ( memId,orderId ) => {
+        return this.get(`/order/delete/${memId}/${orderId}`)
+    }
 }
 
 export default new OrderService()
