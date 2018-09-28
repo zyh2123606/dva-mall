@@ -8,6 +8,7 @@ import { createForm } from 'rc-form'
 import {connect} from 'dva';
 import Constant from '../../utils/constant';
 import ImgErr from '../../assets/img/img_error.png'
+import cookie from 'react-cookies'
 const alert = Modal.alert;
 
 class OrderDetail extends Component{
@@ -164,8 +165,11 @@ class OrderDetail extends Component{
     //联系客服
     connectService=()=>{
         const token=''
-        console.log('获取token')
-        wx.miniProgram.postMessage({ data: {msg: '联系客服，打开新网页？' }})
+        const {memId,sessionId} =Constant.getUserInfo()
+        alert('Delete', `userInfo: memId:${memId} sessionId:${sessionId}`, [
+            { text: 'Cancel', onPress: () => console.log('cancel'), style: 'default' },
+            { text: 'OK', onPress: () => console.log('ok') },
+          ]);
         // productService.connectService(token)
     }
     // 渲染商品属性部分
@@ -281,7 +285,7 @@ class OrderDetail extends Component{
                 </Block>
                 <Block vf fs={16} className={Styles.footer_bar}>
                     <Block wf className={Styles.footer_content}>
-                        <Block a='c' j='c' w={60} vf>
+                        <Block a='c' j='c' w={60} vf onClick={this.connectService}>
                             <Block fs={22} fc='#999'>
                                 <i className={Styles.icon_server} />
                             </Block>
@@ -304,4 +308,4 @@ class OrderDetail extends Component{
     }
 }
 
-export default connect(state=>state)(createForm()(OrderDetail))
+export default connect()(createForm()(OrderDetail))

@@ -1,16 +1,8 @@
 import { routerRedux } from 'dva/router'
 import {Toast} from 'antd-mobile'
 export default {
+    state:{},
     namespace: 'base',
-    state: {
-        memId:null,
-        sessionId:null
-    },
-    reducers: {
-        setUserInfo(state, {payload:{memId,sessionId}}) {
-            return { memId: memId,sessionId:sessionId};
-        },
-      },
     subscriptions: { 
         setup({ dispatch, history }) {
             history.listen(location => {

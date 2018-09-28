@@ -55,7 +55,7 @@ class Cart extends Component<IPropos>{
         const {memId}=Constant.getUserInfo()
         const {code,data}= await ShoppingCartService.delete(cartId,memId)
         if(code===Constant.responseOK){
-            this.queryShoppingCart()
+            this.queryShoppingCart(memId)
         }
     }
 
@@ -71,7 +71,7 @@ class Cart extends Component<IPropos>{
         if (code!=Constant.responseOK){
             Toast.fail('添加数量失败', 1);
         }else{
-            this.queryShoppingCart()
+            this.queryShoppingCart(memId)
             this.planTotalPrise()//重新计算一次金额
         }
     }
@@ -101,6 +101,9 @@ class Cart extends Component<IPropos>{
                 })
             }
         });
+        if (selectedCartId.size===0){
+            totalPrise=0
+        }
         this.setState({
             totalPrise:totalPrise
         })

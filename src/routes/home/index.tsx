@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Block from 'fs-flex'
 import { connect } from 'dva'
-import { Button } from 'antd-mobile'
+import { Button ,Modal} from 'antd-mobile'
 import { Link } from 'react-router-dom'
 import Styles from './index.less'
 import Logo from '../../assets/img/logo.png'
@@ -10,6 +10,8 @@ import Service from '../../services/baseService'
 import Constant from '../../utils/constant'
 import ImgErr from '../../assets/img/img_error.png'
 import ContentLoader from 'react-content-loader'
+import cookie from 'react-cookies'
+const alert = Modal.alert;
 
 /**
  *首页
@@ -51,9 +53,17 @@ class Home extends Component<IProps>{
             allBanner: res[5].data || [],
             isRequest: true
         })
+        this.props.dispatch({
+            type:'userInfo/setUserInfo',
+            payload:{
+                memId:params.memId,
+                sessionId:params.sessionId,
+            }
+        })
+        cookie.save('userInfo', {memId:params.memId,sessionId:params.sessionId}, { path: '/' })
        Constant.setUserInfo(params.memId,params.sessionId)
     }
-
+    
     gotoProdDetail(typeId){
         wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}`})
     }
@@ -161,7 +171,7 @@ class Home extends Component<IProps>{
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
                                     </Block>
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
-                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
+                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{Constant.toMoney(minPrice)}</Block>
                                 </Block>
                             </Block>
                         ))}
@@ -187,7 +197,7 @@ class Home extends Component<IProps>{
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
                                     </Block>
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
-                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
+                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{Constant.toMoney(minPrice)}</Block>
                                 </Block>
                             </Block>
                         ))}
@@ -213,7 +223,7 @@ class Home extends Component<IProps>{
                                         <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
                                     </Block>
                                     <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
-                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{minPrice}</Block>
+                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{Constant.toMoney(minPrice)}</Block>
                                 </Block>
                             </Block>
                         ))}
@@ -235,8 +245,16 @@ class Home extends Component<IProps>{
                     </ContentLoader>
                 </Block>
             </Block>
+            
         )
     }
 }
 
-export default connect((state:any) => state)(Home)
+function mapStateToProps(state){
+    const {memId,sessionId} =state.userInfo
+    return {memId,sessionId}
+}
+
+export default connect(mapStateToProps)(Home)
+
+// export default connect((state:any) => state)(Home)

@@ -348,10 +348,6 @@ class OrderSure extends Component{
     }
 }
 
-function mapStateToProps(state){
-    const {typeId,colorId,goodsNum,defaultSkuPrice,logoPath,colorName,title,skuid}=state.orderDetail
-    return {typeId,colorId,goodsNum,defaultSkuPrice,logoPath,colorName,title,skuid}
-}
 
 const mainForm = createForm()(OrderSure)
-export default connect(mapStateToProps)(mainForm)
+export default connect()(mainForm)
