@@ -52,8 +52,6 @@ class Home extends Component<IProps>{
             isRequest: true
         })
        Constant.setUserInfo(params.memId,params.sessionId)
-    //    localStorage.setItem('memId',params.memId)
-    //    localStorage.setItem('sessionId',params.sessionId)
     }
 
     gotoProdDetail(typeId){
@@ -82,7 +80,7 @@ class Home extends Component<IProps>{
     }
     render(){
         const { specialList, hotList, typeList, newList, isRequest, deptInfo } = this.state
-        const { deptAddress, deptManager, deptName, deptTel } = deptInfo || {}
+        const { deptAddress, deptManager, deptName, deptManagerAvatar, deptTel } = deptInfo || {}
         return (
             isRequest?<Block className={Styles.container} bc='#fff'>
                 <Block vf p='0 15px'>
@@ -95,7 +93,9 @@ class Home extends Component<IProps>{
                                 <span className={Styles.tag}>官方认证</span>
                             </Block>
                         </Block>
-                        <Block className={Styles.head_pic}></Block>
+                        <Block className={Styles.head_pic}>
+                            <img src={Constant.imgBaseUrl+deptManagerAvatar}/>
+                        </Block>
                         <Block fs={10} ml={5}>店长：{deptManager}</Block>
                     </Block>
                     <Block wf fs={10} style={{lineHeight: 'normal'}} mt={7}>
