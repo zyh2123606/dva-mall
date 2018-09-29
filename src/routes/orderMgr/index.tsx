@@ -13,7 +13,6 @@ const alert = Modal.alert;
 
 class OrderDetail extends Component{
     state = {
-        memId:1,
         pageData: null, 
         cur_tag:null,
         defaultSkuPrice:0,
@@ -26,8 +25,9 @@ class OrderDetail extends Component{
     //dom挂在完成请求数据
     async componentDidMount(){
         document.title='商品详情'
-        const {match:{params:{pid}}}  =this.props
-        const res = await Service.getDetailById(pid)
+        const {match:{params:{pid,sessionId,memId}}}  =this.props
+        const services=new Service(sessionId,memId)
+        const res = await services.getDetailById(pid)
         const { data, code } = res
         if(code===Constant.responseOK && data){
             let colorsAttrs=new Map()
@@ -65,11 +65,12 @@ class OrderDetail extends Component{
             const { onChange } = getFieldProps('color_id')
             onChange(attrValId)
         })
-        this.queryPriceByGoodsColor(attrValId)
+        this.queryPriceByGoodsColor()
     }
     // 点击颜色，查询该颜色属性对应的商品信息
     async queryPriceByGoodsColor() {
         const {typeId,cur_tag,pageData:{goodsTypeAttrList}}=this.state
+        const {match:{params:{sessionId,memId}}}  =this.props
         let attrList=[]
         cur_tag.forEach((value,key)=>{
             goodsTypeAttrList.map(attrItem=>{
@@ -80,7 +81,8 @@ class OrderDetail extends Component{
             })
             
         })
-        const {data,code} = await Service.queryPriceByGoodsColor({typeId:typeId,attrList:attrList})
+        const services=new Service(sessionId,memId)
+        const {data,code} = await services.queryPriceByGoodsColor({typeId:typeId,attrList:attrList})
         if(code===Constant.responseOK){
             if(data.goodsHeadPicList && data.goodsHeadPicList.length>0){
                 let picList=[]
@@ -105,11 +107,11 @@ class OrderDetail extends Component{
     }
     // 金额转换
     toMoney(num){
-        return (num/100).toFixed(2);
+        return Constant.toMoney(num)
     }
     //立即购买
     async sureBuy(){
-        const { form} = this.props
+        const {form,match:{params:{sessionId,memId}}}  =this.props
         const {num} = form.getFieldsValue()
         const {skuid}=this.state
         const {memId}=Constant.getUserInfo()
@@ -121,25 +123,25 @@ class OrderDetail extends Component{
         // 添加购物车
         const {code,data} = await ShoppingCartService.save(params);
         if(code===Constant.responseOK){
-            // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${data}`})
-            this.props.history.push(`/order-sure/${data}`)
+            // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${data}/${sessionId}/${memId}`})
+            this.props.history.push(`/order-sure/${data}/${sessionId}/${memId}`)
         }else{
             Toast.fail('操作失败！',1)
         }
     }
     // 添加到购物车
     async addToShoppingCart(){
-        const {form} = this.props
+        const {form,match:{params:{sessionId,memId}}}  =this.props
         const {num} = form.getFieldsValue()
 
-        const {memId}=Constant.getUserInfo()
         const {skuid}=this.state
         const params={
-            memId:memId,// TODO 用户ID
+            memId:memId,// 用户ID
             skuId:skuid,// skuid
             amount:num// 数量
         }
-        const {code} = await ShoppingCartService.save(params);
+        const shoppingCartService = new ShoppingCartService(sessionId,memId)
+        const {code} = await shoppingCartService.save(params);
         if (code===Constant.responseOK){
             this.setState((preState) => ({
                 shoppingCartCount: preState.shoppingCartCount + 1
@@ -148,29 +150,25 @@ class OrderDetail extends Component{
         }
     }
     async shoppingCart(){
-        const {memId}=Constant.getUserInfo()
-        const {data,code} = await ShoppingCartService.query({memId:memId})
+        const {match:{params:{sessionId,memId}}}  =this.props
+        const shoppingCartService = new ShoppingCartService(sessionId,memId)
+        const {data,code} = await shoppingCartService.query()
         if (code===Constant.responseOK){
             this.setState({shoppingCartCount:data.length})
         }
     }
     // 查看购物车
     toShoppingCart=()=>{
-        const {dispatch} =this.props;
+        const {match:{params:{sessionId,memId}}}  =this.props
         // TODO 处理跳转到购物车需要携带的sessionID和memId
-        const {memId,sessionId}=Constant.getUserInfo()
-        // const memId = Constant.userData.memId
-        // const sessionId = Constant.userData.sessionId
-        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/cart/${sessionId}/${memId}`})
+
+        // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/cart/${sessionId}/${memId}`})
+        this.props.history.push(`/cart/${sessionId}/${memId}`)
     }
     //联系客服
     connectService=()=>{
         const token=''
-        const {memId,sessionId} =Constant.getUserInfo()
-        alert('Delete', `userInfo: memId:${memId} sessionId:${sessionId}`, [
-            { text: 'Cancel', onPress: () => console.log('cancel'), style: 'default' },
-            { text: 'OK', onPress: () => console.log('ok') },
-          ]);
+        const {match:{params:{sessionId,memId}}}  =this.props
         // productService.connectService(token)
     }
     // 渲染商品属性部分

@@ -4,10 +4,10 @@ import {routerRedux} from 'dva/router';
 import Constant from '../../utils/constant';
 import {connect} from 'dva';
 function OrderSuccess({match,dispatch}){
-    const {params:{orderId,flag,shoppingcardId}}=match
+    const {params:{orderId,flag,shoppingcardId,sessionId,memId}}=match
     function showOrderDetail(){
         if(flag===Constant.responseOK){
-            dispatch(routerRedux.push(`/order-complete/${orderId}/${shoppingcardId}`))
+            dispatch(routerRedux.push(`/order-complete/${orderId}/${shoppingcardId}/${sessionId}/${memId}`))
         }else if(flag===Constant.responseError){
             console.log('重新支付')
         } 

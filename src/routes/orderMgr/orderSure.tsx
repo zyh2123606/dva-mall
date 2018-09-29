@@ -9,7 +9,6 @@ import DeptService from '../../services/deptService'
 import OrderService from '../../services/orderService'
 import ShoppingCartService from '../../services/shoppingCartService'
 import CollectInfoList from  './CollectInfoList'
-import {routerRedux} from 'dva/router'
 import Constant from '../../utils/constant'
 /**
  *订单确认
@@ -43,14 +42,15 @@ class OrderSure extends Component{
         }, 1000);
     }
     async queryGoodsdAndSkuInfo(){
-        let { history,match:{params:{shoppingcardId}},dispatch} = this.props
+        let { history,match:{params:{shoppingcardId,sessionId,memId}},dispatch} = this.props
         if (shoppingcardId.length>1){
             shoppingcardId=shoppingcardId.split(',')
         }else{
             shoppingcardId=[Number.parseInt(shoppingcardId)]
         }
-        const memId=localStorage.getItem('memId')
-        const {data,code}=await ShoppingCartService.query({memId:memId,cartIdList:shoppingcardId})
+
+        const shoppingCartService = new ShoppingCartService(sessionId,memId)
+        const {data,code}=await shoppingCartService.query({cartIdList:shoppingcardId})
         if (code===Constant.responseOK){
             let totalPrise=0
             if(!data || data.length===0){
@@ -61,7 +61,6 @@ class OrderSure extends Component{
             data.map(item=>{
                 totalPrise+=(item.salePrice*item.amount)
             })
-            console.log('queryGoodsdAndSkuInfo:',data)
             this.setState({
                 totalPrise:totalPrise,
                 goodsList:data
@@ -73,8 +72,8 @@ class OrderSure extends Component{
     }
     // 查询用户收货的地址列表
     async queryCollectUserInfo(){
-        const memId=localStorage.getItem('memId')
-        const {code,data}=await UserService.getAddressList(memId);
+        const { match:{params:{sessionId,memId}}} = this.props
+        const {code,data}=await new UserService(sessionId,memId).getAddressList();
         if (code===Constant.responseOK){
             this.setState({collectUserInfo:data})
         }
@@ -83,7 +82,8 @@ class OrderSure extends Component{
     async queryAdoptDeptList(){
         const {goodsList,orderDeptId} = this.state
         // 因为有多个商品的情况，所以默认去第一个商品的skuID
-        const {code,data}=await DeptService.getAdoptDeptList(goodsList[0].skuId,orderDeptId)
+        const { match:{params:{sessionId,memId}}} = this.props
+        const {code,data}=await new DeptService(sessionId,memId).getAdoptDeptList(goodsList[0].skuId,orderDeptId)
         if (code===Constant.responseOK && data){
             console.log('data',data)
             this.setState({adoptDeptList:data})
@@ -125,8 +125,7 @@ class OrderSure extends Component{
     }
     //提交订单
     async orderSubmit () {
-        const {dispatch,match:{params:{shoppingcardId}}} = this.props
-        const memId=localStorage.getItem('memId')
+        const {match:{params:{sessionId,memId}}} = this.props
         const {collectMode,selectedAdopt,collectAddress,shoppingcard}=this.state
         let params={
             cartIdList:shoppingcard,// 购物车ID集合
@@ -158,32 +157,33 @@ class OrderSure extends Component{
             params.adoptDeptId=selectedAdopt.deptId//自提门店ID
         }
 
-        const {data,code}= await OrderService.addOrder({...params})
+        const {data,code}= await new OrderService(sessionId,memId).addOrder({...params})
         if (code===Constant.responseOK){
             this.pay(data)
         }
     }
     // 调用支付接口
     async pay(orderCode){
-        const memId=localStorage.getItem('memId')
-        const {dispatch} = this.props
-        const {code} = await OrderService.pay(orderCode,memId)
+        const {match:{params:{sessionId,memId}}} = this.props
+        const {code} = await new OrderService(sessionId,memId).pay(orderCode)
         if(code===Constant.responseOK){
             Toast.success('成功！',1)
             setTimeout(() => {
-                wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/success/${orderCode}`})
+                // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/success/${orderCode}/${sessionId}/${memId}`})
+                this.props.history.push(`/success/${orderCode}/${sessionId}/${memId}`)
             }, 1000);
         }else{
             Toast.fail('提交订单失败！',1)
             setTimeout(() => {
-                wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/fail`})
+                // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/fail/${sessionId}/${memId}`})
+                this.props.history.push(`/fail/${sessionId}/${memId}`)
             }, 1000);
         }
     }
 
     // 金额转换
     toMoney(num){
-        return num.toFixed(2);
+        return Constant.toMoney(num);
     }
     // 确认选中自提地址
     confirmAdopt=()=>{
