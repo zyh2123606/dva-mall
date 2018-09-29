@@ -12,7 +12,8 @@ import Constant from '../../utils/constant'
  */
 class Product extends Component{
     gotoLogistDetail(orderId:number){
-        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-info/${orderId}`})
+        const { sessionId, memId } = this.props.auth || {}
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-info/${orderId}/${sessionId}/${memId}`})
     }
     createButByStatus(status:number, orderId:number, skuId:number){
         switch (status){
@@ -31,7 +32,8 @@ class Product extends Component{
         return (<Block onClick={this.goToProdDetail.bind(this, orderId, skuId)} className={Styles.prod_btn_ghost}>再次购买</Block>)
     }
     goToProdDetail(skuId:number){
-        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${skuId}`})
+        const { sessionId, memId } = this.props.auth || {}
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${skuId}/${sessionId}/${memId}`})
     }
     render(){
         const { status, orderId } = this.props

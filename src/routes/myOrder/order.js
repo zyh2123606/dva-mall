@@ -31,7 +31,7 @@ class Order extends Component{
 
     }
     render(){
-        const { status, orderId } = this.props
+        const { status, orderId, auth } = this.props
         return (
             <Block vf className={Styles.prod_panel} p={15}>
                 <Block pb={15} wf>
@@ -44,6 +44,7 @@ class Order extends Component{
                         key = {idx}
                         data={item}
                         orderId={orderId}
+                        auth={auth}
                   />
                   )):null}
             </Block>
