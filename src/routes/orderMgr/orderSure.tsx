@@ -172,14 +172,14 @@ class OrderSure extends Component{
         if(code===Constant.responseOK){
             Toast.success('成功！',1)
             setTimeout(() => {
-                // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/success/${orderCode}/${sessionId}/${memId}`})
-                this.props.history.push(`/success/${orderCode}/${sessionId}/${memId}`)
+                wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/success/${orderCode}/${sessionId}/${memId}`})
+                // this.props.history.push(`/success/${orderCode}/${sessionId}/${memId}`)
             }, 1000);
         }else{
             Toast.fail('提交订单失败！',1)
             setTimeout(() => {
-                // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/fail/${sessionId}/${memId}`})
-                this.props.history.push(`/fanpmil/${sessionId}/${memId}`)
+                wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/fail/${sessionId}/${memId}`})
+                // this.props.history.push(`/fanpmil/${sessionId}/${memId}`)
             }, 1000);
         }
     }

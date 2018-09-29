@@ -68,12 +68,12 @@ class Cart extends Component<IPropos>{
 
         })
         if (code!=Constant.responseOK){
-            Toast.fail('添加数量失败', 1);
+            Toast.fail('修改数量失败', 1);
         }else{
             this.queryShoppingCart()
             setTimeout(() => {
                 this.planTotalPrise()//重新计算一次金额
-            }, 300);
+            }, 200);
         }
     }
     // 取消选中购物车
@@ -91,23 +91,25 @@ class Cart extends Component<IPropos>{
         this.planTotalPrise()
     }
     // 计算已选中的商品总金额
-    async planTotalPrise(){
-        const {selectedCartId,goodsList}=this.state
-        let totalPrise=0;
-        selectedCartId.forEach(element => {
-            const selectd= goodsList.filter((item,index)=>index===element)
-            if(selectd && selectd.length>0){
-                selectd.map((sItem)=>{
-                    totalPrise+= sItem.totalMoney
-                })
+    planTotalPrise(){
+        setTimeout(() => {
+            const {selectedCartId,goodsList}=this.state
+            let totalPrise=0;
+            selectedCartId.forEach(element => {
+                const selectd= goodsList.filter((item,index)=>index===element)
+                if(selectd && selectd.length>0){
+                    selectd.map((sItem)=>{
+                        totalPrise+= sItem.totalMoney
+                    })
+                }
+            });
+            if (selectedCartId.size===0){
+                totalPrise=0
             }
-        });
-        if (selectedCartId.size===0){
-            totalPrise=0
-        }
-        this.setState({
-            totalPrise:totalPrise
-        })
+            this.setState({
+                totalPrise:totalPrise
+            })
+        }, 300);
     }
     //选中全部购物车
     async selelctAll(e){
@@ -149,8 +151,8 @@ class Cart extends Component<IPropos>{
         })
         if(shoppinCartIdStr.length>0){
             // console.log(`shoppinCartIdStr:${shoppinCartIdStr}`)
-            // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${shoppinCartIdStr}/${sessionId}/${memId}`})
-            this.props.history.push(`/order-sure/${shoppinCartIdStr}/${sessionId}/${memId}`)
+            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${shoppinCartIdStr}/${sessionId}/${memId}`})
+            // this.props.history.push(`/order-sure/${shoppinCartIdStr}/${sessionId}/${memId}`)
         }
     }
     renderCartItem=()=>{

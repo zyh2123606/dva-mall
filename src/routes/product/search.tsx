@@ -34,12 +34,12 @@ class SearchProduct extends Component{
     ]
     async queryGoods(){
         const {searchKeyword,selectedSku}=this.state
-        const {parentType}=this.props.match.params
+        const {parentType,sessionId,memId}=this.props.match.params
         const selectColor=selectedSku.get('颜色')
         const selectBrand=selectedSku.get('品牌')
         const selectMemory=selectedSku.get('内存')
         const price=selectedSku.get('价格')
-        const {data,code}=await ProductService.searchGoods({
+        const {data,code}=await new ProductService(sessionId,memId).searchGoods({
             keyword:searchKeyword?searchKeyword:null,//关键字
             colour:selectColor?selectColor:null,//颜色
             brandName:selectBrand?selectBrand:null,//品牌
@@ -56,12 +56,12 @@ class SearchProduct extends Component{
         document.title='搜索'
         const { match:{params:{name}}} = this.props
         this.setState({searchKeyword:name})
+        this.queryFilterItem()
         setTimeout(() => {
-            this.aqueryFilterItem()
             this.queryGoods()
         }, 200);
     }
-    async aqueryFilterItem(){
+    async queryFilterItem(){
         let {selectedSku}=this.state
         const { match:{params:{parentType,name,sessionId,memId}}} = this.props
         const productService=new ProductService({sessionId,memId})
@@ -118,7 +118,7 @@ class SearchProduct extends Component{
                 curMenu,
                 popVisible: true,
                 selectedSku:selectedSku,
-                currentAllowSk:currentAllowSk
+                currentAllowSk:currentAllowSk,
             })
         }else{
             this.setState({
@@ -126,7 +126,9 @@ class SearchProduct extends Component{
                 selectedSku:selectedSku,
                 currentAllowSk:currentAllowSk
             })
-            this.queryGoods()
+            setTimeout(() => {
+                this.queryGoods()
+            }, 200);
         }
         
     }
