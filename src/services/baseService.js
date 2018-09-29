@@ -46,6 +46,10 @@ class BaseService extends HttpBase{
     getAllBanne=() => {
         return this.get(`/ad/getList`)
     }
+	//获取用户信息
+    getUserInfo = () => {
+        return this.get(`/mem/info/${this.MEMID}`)
+    }
 }
 
 export default BaseService

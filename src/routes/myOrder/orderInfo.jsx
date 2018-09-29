@@ -16,8 +16,10 @@ class OrderInfo extends Component{
     state = {logisticsData: null}
     async componentDidMount(){
         document.title = '物流详情'
-        const { params } = this.props.match
-        const res = await Service.getLogisticsDetail(params.orderId || '')
+        const { params } = this.props
+        this.AUTH = params
+        const MyOrderSev = new Service(params)
+        const res = await MyOrderSev.getLogisticsDetail()
         const { code, data, msg } = res
         if(code !== '0000') return Toast.info(msg, 1)
         this.setState({logisticsData: data})

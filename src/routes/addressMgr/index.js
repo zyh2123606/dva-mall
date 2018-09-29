@@ -33,7 +33,9 @@ class AddressMgr extends Component {
         const addr = newState.data[index]
         const {id,tel,memId,address,receiver,defaultFlag,province,city,county}=addr
         const temp ={id:id,tel:tel,memId:memId,address:address,receiver:receiver,defaultFlag:defaultFlag,province:province,city:city,county:county}
-        const res = await Service.updateAddress(temp)
+        const {params} = this.props.match
+        const baseSer = new Service(params)
+        const res = await baseSer.updateAddress(temp)
         const{code,msg} = res
         if(code==="0000"){
             Toast.info("保存成功!")
@@ -55,7 +57,9 @@ class AddressMgr extends Component {
             {text:'确认',onPress:()=>{
                 (async(item,index)=>{
                     const {id,memId} = item 
-                    const res = await Service.deleteAddress({addrId:id,memId:memId})
+                    const {params} = this.props.match
+                    const baseSer = new Service(params)
+                    const res = await baseSer.deleteAddress({addrId:id,memId:memId})
                     const {code,msg} = res
                     if(code==="0000"){
                         Toast.info("删除成功！")
@@ -74,7 +78,9 @@ class AddressMgr extends Component {
 
     async componentDidMount() {
         document.title = '收货地址管理'
-        const res = await Service.getMyAddress({memId: Constant.getUserInfo().memId })
+        const {params} = this.props.match
+        const baseSer = new Service(params)
+        const res = await Service.getMyAddress()
         const {data, code} = res
         const {dispatch, history} = this.props
         if (code==="0000") {

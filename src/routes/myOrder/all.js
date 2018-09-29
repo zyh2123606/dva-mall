@@ -1,10 +1,8 @@
 import { Component } from 'react'
-import Block from 'fs-flex'
 import Order from './order'
 import { PullToRefresh, Empty } from '../../components'
 import { Toast } from 'antd-mobile'
 import Service from '../../services/orderService'
-import Constant from '../../utils/constant'
 
 /**
  *全部
@@ -18,9 +16,11 @@ class All extends Component{
     pageSize = 10
     pageCount = 1
     async componentDidMount(){
-        const currentmemid=Constant.getUserInfo().memId
+        const { params } = this.props
+        this.AUTH = params
         const statusall = 0//0获取全部状态
-        const res = await Service.getMyOrder(currentmemid,statusall)
+        const MyOrderSev = new Service(params)
+        const res = await MyOrderSev.getMyOrder(statusall)
         const { data, code } = res
         if(code==="0000")
             this.setState({ data: data})
@@ -56,7 +56,7 @@ class All extends Component{
                 {data?
                     data instanceof Array && data.length?
                     this.state.data.map(({orderCode,status,goodsList, id},idx)=>(
-                        <Order key={idx} orderCode={orderCode} status = {status} goodsList={goodsList} orderId={id} orderIndex={idx} delFunc={this.deleteOrderInState}/>
+                        <Order key={idx} auth={this.AUTH} orderCode={orderCode} status = {status} goodsList={goodsList} orderId={id} orderIndex={idx} delFunc={this.deleteOrderInState}/>
                     )):<Empty />
                 :null}
             </PullToRefresh>
