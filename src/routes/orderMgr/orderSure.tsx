@@ -118,7 +118,6 @@ class OrderSure extends Component{
     seletedAdoptDept=(val)=>{
         const {adoptDeptList}=this.state
         const seleted=adoptDeptList.filter(item=>item.value===val[0])
-        console.log('....',seleted)
         if (seleted){
             this.setState({
                 saleNum:seleted[0].saleNum
