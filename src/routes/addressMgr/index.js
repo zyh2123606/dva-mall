@@ -121,8 +121,8 @@ class AddressMgr extends Component {
     render() {
         return (
             <Block vf className={Styles.container}>
-                {this.props.myAddress?<Block ml={15} mr={15} pb={15} mb={80}>
-                    {this.props.myAddress.length?this.props.myAddress.data.map((data, idx)=>(
+                {this.props.myAddress.data?<Block ml={15} mr={15} pb={15} mb={80}>
+                    {this.props.myAddress.data.length?this.props.myAddress.data.map((data, idx)=>(
                         <Block className={Styles.addr_panel} key = {idx} vf>
                             <Block vf ml={15} mr={15}>
                                 <Block wf mt={10}>
