@@ -65,14 +65,15 @@ class Home extends Component<IProps>{
     }
     
     gotoProdDetail(typeId){
-        // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}`})
-        this.props.history.push(`/order-detail/${typeId}`)
+        const {memId,sessionId}=this.props.match.params
+        // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}/${sessionId}/${memId}`})
+        this.props.history.push(`/order-detail/${typeId}/${sessionId}/${memId}`)
     }
     gotoGoodsPage(url){
-        console.log('gotoGoodsPage:',url)
+        const {memId,sessionId}=this.props.match.params
         if(url){
-            //wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#${url}`})
-            this.props.history.push(url)
+            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#${url}/${sessionId}/${memId}`})
+            // this.props.history.push(`${url}/${sessionId}/${memId}`)
         }
     }
 

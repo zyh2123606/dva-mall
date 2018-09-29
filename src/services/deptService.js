@@ -1,13 +1,13 @@
 import HttpBase from '../utils/httpBase'
 import { Toast } from 'antd-mobile'
-import Constant from '../utils/constant'
 
 class DeptService extends HttpBase{
-    constructor(){
+    constructor({sessionId,memId}){
         super('/api')
+        this.MEMID=memId
         //添加拦截器设置请求头
         this.$http.interceptors.request.use(config => {
-            config.headers.common['CSESSIONID'] = Constant.userData.sessionId
+            config.headers.common['CSESSIONID']=sessionId
             Toast.loading('正在请求', 15)
             return config
         })
@@ -28,4 +28,4 @@ class DeptService extends HttpBase{
 
 }
 
-export default new DeptService()
+export default DeptService;

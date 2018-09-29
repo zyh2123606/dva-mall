@@ -3,15 +3,15 @@
  */
 import HttpBase from '../utils/httpBase'
 import { Toast } from 'antd-mobile'
-import Constant from '../utils/constant'
 
 
  class ShoppingCartService extends HttpBase{
-    constructor(){
+    constructor({sessionId,memId}){
         super('/api')
+        this.MEMID=memId
         //添加拦截器设置请求头
         this.$http.interceptors.request.use(config => {
-            config.headers.common['CSESSIONID'] = Constant.userData.sessionId
+            config.headers.common['CSESSIONID']=sessionId
             Toast.loading('正在请求', 15)
             return config
         })
@@ -27,8 +27,8 @@ import Constant from '../utils/constant'
     }
 
     //删除购物车
-    delete=(cartId,memId)=>{
-        return this.get(`cart/delete?cartId=${cartId}&memId=${memId}`) 
+    delete=(cartId)=>{
+        return this.get(`cart/delete?cartId=${cartId}&memId=${this.MEMID}`) 
     }
  }
- export default new ShoppingCartService();
+ export default ShoppingCartService;
