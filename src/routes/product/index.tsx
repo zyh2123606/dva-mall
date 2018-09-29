@@ -56,8 +56,8 @@ class DefaultPage extends Component{
     // 选中第二级菜单
     selectChildItem(item){
         const { match:{params:{sessionId,memId}}} = this.props
-        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/search/${item.parentType}/${item.typeName}/${sessionId}/${memId}`})
-        // this.props.history.push(`/search/${item.parentType}/${item.typeName}/${sessionId}/${memId}`)
+        // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/search/${item.parentType}/${item.typeName}/${sessionId}/${memId}`})
+        this.props.history.push(`/search/${item.parentType}/${item.typeName}/${sessionId}/${memId}`)
     }
 
     searchInputChange=(val)=>{

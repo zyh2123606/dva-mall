@@ -71,7 +71,9 @@ class Cart extends Component<IPropos>{
             Toast.fail('添加数量失败', 1);
         }else{
             this.queryShoppingCart()
-            this.planTotalPrise()//重新计算一次金额
+            setTimeout(() => {
+                this.planTotalPrise()//重新计算一次金额
+            }, 300);
         }
     }
     // 取消选中购物车
@@ -146,9 +148,9 @@ class Cart extends Component<IPropos>{
             index++
         })
         if(shoppinCartIdStr.length>0){
-            console.log(`shoppinCartIdStr:${shoppinCartIdStr}`)
-            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${shoppinCartIdStr}/${sessionId}/${memId}`})
-            // this.props.history.push(`/order-sure/${shoppinCartIdStr}/${sessionId}/${memId}`)
+            // console.log(`shoppinCartIdStr:${shoppinCartIdStr}`)
+            // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${shoppinCartIdStr}/${sessionId}/${memId}`})
+            this.props.history.push(`/order-sure/${shoppinCartIdStr}/${sessionId}/${memId}`)
         }
     }
     renderCartItem=()=>{
