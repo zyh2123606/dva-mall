@@ -26,7 +26,7 @@ class OrderDetail extends Component{
     async componentDidMount(){
         document.title='商品详情'
         const {match:{params:{pid,sessionId,memId}}}  =this.props
-        const services=new Service(sessionId,memId)
+        const services=new Service({sessionId,memId})
         const res = await services.getDetailById(pid)
         const { data, code } = res
         if(code===Constant.responseOK && data){
@@ -120,9 +120,10 @@ class OrderDetail extends Component{
             amount:num// 数量
         }
         // 添加购物车
-        const {code,data} = await new ShoppingCartService(sessionId,memId).save(params);
+        const {code,data} = await new ShoppingCartService({sessionId,memId}).save(params);
         if(code===Constant.responseOK){
-            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${data}/${sessionId}/${memId}`})
+            console.log(data)
+            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${data+','}/${sessionId}/${memId}`})
             // this.props.history.push(`/order-sure/${data}/${sessionId}/${memId}`)
         }else{
             Toast.fail('操作失败！',1)
@@ -139,7 +140,7 @@ class OrderDetail extends Component{
             skuId:skuid,// skuid
             amount:num// 数量
         }
-        const shoppingCartService = new ShoppingCartService(sessionId,memId)
+        const shoppingCartService = new ShoppingCartService({sessionId,memId})
         const {code} = await shoppingCartService.save(params);
         if (code===Constant.responseOK){
             this.setState((preState) => ({
@@ -150,7 +151,7 @@ class OrderDetail extends Component{
     }
     async shoppingCart(){
         const {match:{params:{sessionId,memId}}}  =this.props
-        const shoppingCartService = new ShoppingCartService(sessionId,memId)
+        const shoppingCartService = new ShoppingCartService({sessionId,memId})
         const {data,code} = await shoppingCartService.query()
         if (code===Constant.responseOK){
             this.setState({shoppingCartCount:data.length})

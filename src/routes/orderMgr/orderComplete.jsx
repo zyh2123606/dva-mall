@@ -48,7 +48,7 @@ class OrderComplete extends Component{
     }
     async queryOrderInfo(){
         const {match:{params:{orderId,sessionId,memId}}}=this.props
-        const {data,code}= await new OrderService(sessionId,memId).getOrderList(orderId)
+        const {data,code}= await new OrderService({sessionId,memId}).getOrderList(orderId)
         if(code===Constant.responseOK){
             this.setState({
                 orderInfo:data[0]

@@ -64,7 +64,7 @@ class SearchProduct extends Component{
     async aqueryFilterItem(){
         let {selectedSku}=this.state
         const { match:{params:{parentType,name,sessionId,memId}}} = this.props
-        const productService=new ProductService(sessionId,memId)
+        const productService=new ProductService({sessionId,memId})
         const {data,code} = await productService.queryFilterItem(parentType)
        
         if(code!==Constatn.responseOK || !data){
@@ -159,8 +159,8 @@ class SearchProduct extends Component{
     // 跳转到商品详情页面 
     toGoodsDetailPage(item){
         const { match:{params:{sessionId,memId}}} = this.props
-        // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${item.typeId}/${sessionId}/${memId}`})
-        this.props.history.push(`/order-detail/${item.typeId}/${sessionId}/${memId}`)
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${item.typeId}/${sessionId}/${memId}`})
+        // this.props.history.push(`/order-detail/${item.typeId}/${sessionId}/${memId}`)
     }
     // 渲染搜索栏一级大类
     renderSkuSelectBar(){

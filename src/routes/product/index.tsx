@@ -24,7 +24,7 @@ class DefaultPage extends Component{
     async componentDidMount(){
         document.title='商品分类'
         const { match:{params:{typeId,sessionId,memId}}} = this.props
-        const productService=new ProductService(sessionId,memId)
+        const productService=new ProductService({sessionId,memId})
         const {data,code} =await productService.getTypeList()
         // TODO 从路由中取TypeId，根据首页选中的typeId进行当前页面选中的tab以及tab下的品牌
         if(code === Constant.responseOK){
@@ -42,7 +42,7 @@ class DefaultPage extends Component{
         this.setState({parentTypeId:parentId})
 
         const { match:{params:{sessionId,memId}}} = this.props
-        const productService=new ProductService(sessionId,memId)
+        const productService=new ProductService({sessionId,memId})
         const {data,code} =await productService.getTypeList(parentId)
 
         if(code === Constant.responseOK){
@@ -56,8 +56,8 @@ class DefaultPage extends Component{
     // 选中第二级菜单
     selectChildItem(item){
         const { match:{params:{sessionId,memId}}} = this.props
-        // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/search/${item.parentType}/${item.typeName}/${sessionId}/${memId}`})
-        this.props.history.push(`/search/${item.parentType}/${item.typeName}/${sessionId}/${memId}`)
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/search/${item.parentType}/${item.typeName}/${sessionId}/${memId}`})
+        // this.props.history.push(`/search/${item.parentType}/${item.typeName}/${sessionId}/${memId}`)
     }
 
     searchInputChange=(val)=>{

@@ -49,8 +49,8 @@ class OrderSure extends Component{
             shoppingcardId=[Number.parseInt(shoppingcardId)]
         }
 
-        const shoppingCartService = new ShoppingCartService(sessionId,memId)
-        const {data,code}=await shoppingCartService.query({cartIdList:shoppingcardId})
+        const shoppingCartService = new ShoppingCartService({sessionId,memId})
+        const {data,code}=await shoppingCartService.query(shoppingcardId)
         if (code===Constant.responseOK){
             let totalPrise=0
             if(!data || data.length===0){
@@ -72,8 +72,8 @@ class OrderSure extends Component{
     }
     // 查询用户收货的地址列表
     async queryCollectUserInfo(){
-        const { match:{params:{sessionId,memId}}} = this.props
-        const {code,data}=await new UserService(sessionId,memId).getAddressList();
+        const {match:{params:{sessionId,memId}}} = this.props
+        const {code,data}=await new UserService({sessionId,memId}).getAddressList();
         if (code===Constant.responseOK){
             this.setState({collectUserInfo:data})
         }
@@ -84,7 +84,7 @@ class OrderSure extends Component{
         // 因为有多个商品的情况，所以默认去第一个商品的skuID
         const { match:{params:{sessionId,memId}}} = this.props
         if(goodsList&& goodsList.length>0){
-            const {code,data}=await new DeptService(sessionId,memId).getAdoptDeptList(goodsList[0].skuId,orderDeptId)
+            const {code,data}=await new DeptService({sessionId,memId}).getAdoptDeptList(goodsList[0].skuId,orderDeptId)
             if (code===Constant.responseOK && data){
                 console.log('data',data)
                 this.setState({adoptDeptList:data})
@@ -159,7 +159,7 @@ class OrderSure extends Component{
             params.adoptDeptId=selectedAdopt.deptId//自提门店ID
         }
 
-        const {data,code}= await new OrderService(sessionId,memId).addOrder({...params})
+        const {data,code}= await new OrderService({sessionId,memId}).addOrder({...params})
         if (code===Constant.responseOK){
             this.pay(data)
         }
@@ -167,7 +167,7 @@ class OrderSure extends Component{
     // 调用支付接口
     async pay(orderCode){
         const {match:{params:{sessionId,memId}}} = this.props
-        const {code} = await new OrderService(sessionId,memId).pay(orderCode)
+        const {code} = await new OrderService({sessionId,memId}).pay(orderCode)
         if(code===Constant.responseOK){
             Toast.success('成功！',1)
             setTimeout(() => {

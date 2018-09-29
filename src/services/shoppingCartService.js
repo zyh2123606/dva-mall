@@ -7,6 +7,7 @@ import { Toast } from 'antd-mobile'
 
  class ShoppingCartService extends HttpBase{
     constructor({sessionId,memId}){
+        console.log(`sessionId  memId:${memId}`)
         super('/api')
         this.MEMID=memId
         //添加拦截器设置请求头
@@ -22,7 +23,8 @@ import { Toast } from 'antd-mobile'
     }
 
     //查询当前用户购物车商品数量（分页数据怎么传有待考量）
-    query=(cartIdList)=>{
+    query=(cartIdList=undefined)=>{
+        console.log(`sessionId  memId:${this.MEMID}`)
         return this.postJson('cart/getMyCartList',{memId:this.MEMID,cartIdList:cartIdList}) 
     }
 

@@ -35,7 +35,7 @@ class Cart extends Component<IPropos>{
     }
     async queryShoppingCart(){
         const { match:{params:{sessionId,memId}}} = this.props
-        const {data,code}=await new ShoppingCartService(sessionId,memId).query()
+        const {data,code}=await new ShoppingCartService({sessionId,memId}).query()
         if (code===Constant.responseOK){
             this.setState({
                 goodsList:data
@@ -52,7 +52,7 @@ class Cart extends Component<IPropos>{
 
     async delted(cartId){
         const { match:{params:{sessionId,memId}}} = this.props
-        const {code,data}= await new ShoppingCartService(sessionId,memId).delete(cartId)
+        const {code,data}= await new ShoppingCartService({sessionId,memId}).delete(cartId)
         if(code===Constant.responseOK){
             this.queryShoppingCart()
         }
@@ -60,7 +60,7 @@ class Cart extends Component<IPropos>{
 
     async goodsCountChange(val,item){
         const { match:{params:{sessionId,memId}}} = this.props
-        const {data,code}=await new ShoppingCartService(sessionId,memId).save({
+        const {data,code}=await new ShoppingCartService({sessionId,memId}).save({
             id:item.cartId,
             memId:memId,
             skuId:item.skuId,
