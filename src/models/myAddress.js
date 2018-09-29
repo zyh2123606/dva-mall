@@ -4,7 +4,7 @@ export default {
     state: {
         editIndex:0,
         edityFlag:false,
-        data:[]
+        data:null
     },
     reducers:{
         initState(state,{payload}){

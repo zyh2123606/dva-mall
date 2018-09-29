@@ -59,7 +59,6 @@ class Create extends Component{
         const { getFieldProps } = this.props.form
         return (
             <Block bc='#fff' w='100%' h='100%'>
-                <Block h={45}/>
                 <List>
                     <InputItem 
                         placeholder='请输入姓名'
