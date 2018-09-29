@@ -122,7 +122,6 @@ class OrderDetail extends Component{
         // 添加购物车
         const {code,data} = await new ShoppingCartService({sessionId,memId}).save(params);
         if(code===Constant.responseOK){
-            console.log(data)
             wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${data+','}/${sessionId}/${memId}`})
             // this.props.history.push(`/order-sure/${data}/${sessionId}/${memId}`)
         }else{

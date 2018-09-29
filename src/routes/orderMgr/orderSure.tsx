@@ -10,6 +10,7 @@ import OrderService from '../../services/orderService'
 import ShoppingCartService from '../../services/shoppingCartService'
 import CollectInfoList from  './CollectInfoList'
 import Constant from '../../utils/constant'
+const alert = Modal.alert;
 /**
  *订单确认
  *
@@ -48,7 +49,6 @@ class OrderSure extends Component{
         }else{
             shoppingcardId=[Number.parseInt(shoppingcardId)]
         }
-
         const shoppingCartService = new ShoppingCartService({sessionId,memId})
         const {data,code}=await shoppingCartService.query(shoppingcardId)
         if (code===Constant.responseOK){
@@ -86,7 +86,6 @@ class OrderSure extends Component{
         if(goodsList&& goodsList.length>0){
             const {code,data}=await new DeptService({sessionId,memId}).getAdoptDeptList(goodsList[0].skuId,orderDeptId)
             if (code===Constant.responseOK && data){
-                console.log('data',data)
                 this.setState({adoptDeptList:data})
             }
         }
@@ -128,6 +127,8 @@ class OrderSure extends Component{
     async orderSubmit () {
         const {match:{params:{sessionId,memId}}} = this.props
         const {collectMode,selectedAdopt,collectAddress,shoppingcard}=this.state
+        
+        
         let params={
             cartIdList:shoppingcard,// 购物车ID集合
             memId:memId,// 用户ID
@@ -137,6 +138,7 @@ class OrderSure extends Component{
             adoptDeptId:0,//自提门店ID
             addrId:0,//收货地址Id
         }
+        console.log('selectedAdopt.....',selectedAdopt)
         if (collectMode===2){
             if(Object.getOwnPropertyNames(collectAddress).length===0){
                 Toast.fail('请选择收货方式!', 1);
@@ -177,7 +179,7 @@ class OrderSure extends Component{
             Toast.fail('提交订单失败！',1)
             setTimeout(() => {
                 wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/fail/${sessionId}/${memId}`})
-                // this.props.history.push(`/fail/${sessionId}/${memId}`)
+                // this.props.history.push(`/fanpmil/${sessionId}/${memId}`)
             }, 1000);
         }
     }
@@ -190,10 +192,11 @@ class OrderSure extends Component{
     confirmAdopt=()=>{
         const {selectAdoptIndex,adoptDeptList}=this.state
         const selected=adoptDeptList.filter((item,i)=>i===selectAdoptIndex)
+        console.log('确认选中自提地址:',selected[0])
         this.setState({
             popVisible: false,
             selectedAdopt:{
-                deptId:selected[0].deptId,
+                deptId:selected[0].id,
                 deptName:selected[0].deptName,
                 saleNum:selected[0].saleNum
             }
