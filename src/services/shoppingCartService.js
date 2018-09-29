@@ -22,8 +22,8 @@ import { Toast } from 'antd-mobile'
     }
 
     //查询当前用户购物车商品数量（分页数据怎么传有待考量）
-    query=({memId,cartIdList})=>{
-        return this.postJson('cart/getMyCartList',{memId:memId,cartIdList:cartIdList}) 
+    query=(cartIdList)=>{
+        return this.postJson('cart/getMyCartList',{memId:this.MEMID,cartIdList:cartIdList}) 
     }
 
     //删除购物车

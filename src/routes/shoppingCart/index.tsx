@@ -31,12 +31,11 @@ class Cart extends Component<IPropos>{
         selectedCartId:new Set(),// 选中的购物车商品
     }
     async componentDidMount(){
-        const { params } = this.props.match
-        Constant.setUserInfo(params.memId,params.sessionId)
-        this.queryShoppingCart(params.memId)
+        this.queryShoppingCart()
     }
-    async queryShoppingCart(memId:number){
-        const {data,code}=await ShoppingCartService.query({memId})
+    async queryShoppingCart(){
+        const { match:{params:{sessionId,memId}}} = this.props
+        const {data,code}=await new ShoppingCartService(sessionId,memId).query()
         if (code===Constant.responseOK){
             this.setState({
                 goodsList:data
@@ -52,16 +51,16 @@ class Cart extends Component<IPropos>{
     }
 
     async delted(cartId){
-        const {memId}=Constant.getUserInfo()
-        const {code,data}= await ShoppingCartService.delete(cartId,memId)
+        const { match:{params:{sessionId,memId}}} = this.props
+        const {code,data}= await new ShoppingCartService(sessionId,memId).delete(cartId)
         if(code===Constant.responseOK){
-            this.queryShoppingCart(memId)
+            this.queryShoppingCart()
         }
     }
 
     async goodsCountChange(val,item){
-        const {memId}=Constant.getUserInfo()
-        const {data,code}=await ShoppingCartService.save({
+        const { match:{params:{sessionId,memId}}} = this.props
+        const {data,code}=await new ShoppingCartService(sessionId,memId).save({
             id:item.cartId,
             memId:memId,
             skuId:item.skuId,
@@ -71,7 +70,7 @@ class Cart extends Component<IPropos>{
         if (code!=Constant.responseOK){
             Toast.fail('添加数量失败', 1);
         }else{
-            this.queryShoppingCart(memId)
+            this.queryShoppingCart()
             this.planTotalPrise()//重新计算一次金额
         }
     }
@@ -126,8 +125,8 @@ class Cart extends Component<IPropos>{
         })
     }
     settlement=()=>{
+        const { match:{params:{sessionId,memId}}} = this.props
         const {selectedCartId,goodsList}=this.state
-        const {dispatch} =this.props;
         if(selectedCartId.size<1){
             Toast.fail('未选中任何商品！',1)
             return
@@ -148,7 +147,8 @@ class Cart extends Component<IPropos>{
         })
         if(shoppinCartIdStr.length>0){
             console.log(`shoppinCartIdStr:${shoppinCartIdStr}`)
-            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${shoppinCartIdStr}`})
+            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${shoppinCartIdStr}/${sessionId}/${memId}`})
+            // this.props.history.push(`/order-sure/${shoppinCartIdStr}/${sessionId}/${memId}`)
         }
     }
     renderCartItem=()=>{

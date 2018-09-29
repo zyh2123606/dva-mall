@@ -54,7 +54,9 @@ class Home extends Component<IProps>{
     }
     
     gotoProdDetail(typeId){
-        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}`})
+        const {memId,sessionId}=this.props.match.params
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}/${sessionId}/${memId}`})
+        // this.props.history.push(`/order-detail/${typeId}/${sessionId}/${memId}`)
     }
     gotoGoodsPage(url){
         const {memId,sessionId}=this.props.match.params
