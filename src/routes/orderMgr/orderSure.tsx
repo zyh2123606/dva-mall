@@ -42,7 +42,7 @@ class OrderSure extends Component{
         }, 1000);
     }
     async queryGoodsdAndSkuInfo(){
-        let { history,match:{params:{shoppingcardId,sessionId,memId}},dispatch} = this.props
+        let { history,match:{params:{shoppingcardId,sessionId,memId}}} = this.props
         if (shoppingcardId.length>1){
             shoppingcardId=shoppingcardId.split(',')
         }else{
@@ -83,10 +83,12 @@ class OrderSure extends Component{
         const {goodsList,orderDeptId} = this.state
         // 因为有多个商品的情况，所以默认去第一个商品的skuID
         const { match:{params:{sessionId,memId}}} = this.props
-        const {code,data}=await new DeptService(sessionId,memId).getAdoptDeptList(goodsList[0].skuId,orderDeptId)
-        if (code===Constant.responseOK && data){
-            console.log('data',data)
-            this.setState({adoptDeptList:data})
+        if(goodsList&& goodsList.length>0){
+            const {code,data}=await new DeptService(sessionId,memId).getAdoptDeptList(goodsList[0].skuId,orderDeptId)
+            if (code===Constant.responseOK && data){
+                console.log('data',data)
+                this.setState({adoptDeptList:data})
+            }
         }
     }
 
@@ -169,14 +171,14 @@ class OrderSure extends Component{
         if(code===Constant.responseOK){
             Toast.success('成功！',1)
             setTimeout(() => {
-                // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/success/${orderCode}/${sessionId}/${memId}`})
-                this.props.history.push(`/success/${orderCode}/${sessionId}/${memId}`)
+                wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/success/${orderCode}/${sessionId}/${memId}`})
+                // this.props.history.push(`/success/${orderCode}/${sessionId}/${memId}`)
             }, 1000);
         }else{
             Toast.fail('提交订单失败！',1)
             setTimeout(() => {
-                // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/fail/${sessionId}/${memId}`})
-                this.props.history.push(`/fail/${sessionId}/${memId}`)
+                wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/fail/${sessionId}/${memId}`})
+                // this.props.history.push(`/fail/${sessionId}/${memId}`)
             }, 1000);
         }
     }

@@ -114,17 +114,16 @@ class OrderDetail extends Component{
         const {form,match:{params:{sessionId,memId}}}  =this.props
         const {num} = form.getFieldsValue()
         const {skuid}=this.state
-        const {memId}=Constant.getUserInfo()
         const params={
             memId:memId,// TODO 用户ID
             skuId:skuid,// skuid
             amount:num// 数量
         }
         // 添加购物车
-        const {code,data} = await ShoppingCartService.save(params);
+        const {code,data} = await new ShoppingCartService(sessionId,memId).save(params);
         if(code===Constant.responseOK){
-            // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${data}/${sessionId}/${memId}`})
-            this.props.history.push(`/order-sure/${data}/${sessionId}/${memId}`)
+            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${data}/${sessionId}/${memId}`})
+            // this.props.history.push(`/order-sure/${data}/${sessionId}/${memId}`)
         }else{
             Toast.fail('操作失败！',1)
         }
@@ -162,8 +161,8 @@ class OrderDetail extends Component{
         const {match:{params:{sessionId,memId}}}  =this.props
         // TODO 处理跳转到购物车需要携带的sessionID和memId
 
-        // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/cart/${sessionId}/${memId}`})
-        this.props.history.push(`/cart/${sessionId}/${memId}`)
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/cart/${sessionId}/${memId}`})
+        // this.props.history.push(`/cart/${sessionId}/${memId}`)
     }
     //联系客服
     connectService=()=>{

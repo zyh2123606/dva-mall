@@ -63,8 +63,6 @@ class SearchProduct extends Component{
     }
     async aqueryFilterItem(){
         let {selectedSku}=this.state
-        let { match:{params:{parentType,name}}} = this.props
-
         const { match:{params:{parentType,name,sessionId,memId}}} = this.props
         const productService=new ProductService(sessionId,memId)
         const {data,code} = await productService.queryFilterItem(parentType)

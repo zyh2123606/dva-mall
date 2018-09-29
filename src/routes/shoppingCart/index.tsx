@@ -147,8 +147,8 @@ class Cart extends Component<IPropos>{
         })
         if(shoppinCartIdStr.length>0){
             console.log(`shoppinCartIdStr:${shoppinCartIdStr}`)
-            // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${shoppinCartIdStr}/${sessionId}/${memId}`})
-            this.props.history.push(`/order-sure/${shoppinCartIdStr}/${sessionId}/${memId}`)
+            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${shoppinCartIdStr}/${sessionId}/${memId}`})
+            // this.props.history.push(`/order-sure/${shoppinCartIdStr}/${sessionId}/${memId}`)
         }
     }
     renderCartItem=()=>{
