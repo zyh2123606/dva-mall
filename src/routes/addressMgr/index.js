@@ -48,7 +48,7 @@ class AddressMgr extends Component {
         const {dispatch, history} = this.props
         const payload = {editIndex:index,editFlag:true}
         dispatch({type: "myAddress/editAddress", payload})
-        history.push('/update-address')
+        history.push(`/update-address/${this.props.match.params.sessionId}/${this.props.match.params.memId}`)
     }
     deleteAddress=(item,index,e)=>{
         const alert = Modal.alert
@@ -145,7 +145,7 @@ class AddressMgr extends Component {
                     )):<Empty/>}
                 </Block>
                 <Block mt={10} pb={20} pt={20} pl={15} pr={15} className={Styles.footer}>
-                    <Link className={Styles.link_btn} to='/add-address'>添加新地址</Link>
+                    <Link className={Styles.link_btn} to={ /add-address/`${this.props.match.params.sessionId}/${this.props.match.params.memId}`}>添加新地址</Link>
                 </Block>
             </Block>
         )
