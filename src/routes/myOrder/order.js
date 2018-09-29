@@ -4,7 +4,6 @@ import Block from 'fs-flex'
 import Styles from './index.less'
 import Product from './product'
 import Service from '../../services/orderService'
-import Constant from '../../utils/constant'
 /**
  *商品
  *
@@ -13,7 +12,7 @@ import Constant from '../../utils/constant'
  */
 class Order extends Component{
     deleteOrder=async()=>{
-        const {auth} = this.props
+        const {auth} = this.props.match
         const myOrderSev = new Service(auth)
         const alert = Modal.alert
         alert('确认',`确认删除订单号为: ${this.props.orderCode} 的订单么？`,[{text:'取消',onPress:()=>console.log('cancel')},
@@ -27,7 +26,7 @@ class Order extends Component{
                     }else{
                         Toast.Info(msg)
                     }
-                })(Constant.getUserInfo().memId,this.props.orderId)
+                })(this.props.orderId)
             }},])
 
     }

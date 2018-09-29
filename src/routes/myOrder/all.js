@@ -3,6 +3,7 @@ import Order from './order'
 import { PullToRefresh, Empty } from '../../components'
 import { Toast } from 'antd-mobile'
 import Service from '../../services/orderService'
+import qs from 'qs'
 
 /**
  *全部
@@ -16,10 +17,10 @@ class All extends Component{
     pageSize = 10
     pageCount = 1
     async componentDidMount(){
-        const { params } = this.props
-        this.AUTH = params
+        const { search } = this.props.location
+        this.AUTH = qs.parse(search.split('?')[1])
         const statusall = 0//0获取全部状态
-        const MyOrderSev = new Service(params)
+        const MyOrderSev = new Service(this.AUTH)
         const res = await MyOrderSev.getMyOrder(statusall)
         const { data, code } = res
         if(code==="0000")

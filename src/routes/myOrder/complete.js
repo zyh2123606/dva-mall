@@ -4,6 +4,7 @@ import Order from './order'
 import { PullToRefresh, Empty } from '../../components'
 import { Toast } from 'antd-mobile'
 import Service from '../../services/orderService'
+import qs from 'qs'
 
 /**
  *已完成
@@ -17,9 +18,9 @@ class Complete extends Component{
     pageSize = 10
     pageCount = 1
     async componentDidMount(){
-        const { params } = this.props
-        this.AUTH = params
-        const MyOrderSev = new Service(params)
+        const { search } = this.props.location
+        this.AUTH = qs.parse(search.split('?')[1])
+        const MyOrderSev = new Service(this.AUTH)
         const statuscomplete = 3//3获取完成的订单
         const res = await MyOrderSev.getMyOrder(statuscomplete)
         const { data, code } = res

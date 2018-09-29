@@ -4,6 +4,7 @@ import Order from './order'
 import { PullToRefresh, Empty } from '../../components'
 import { Toast } from 'antd-mobile'
 import Service from '../../services/orderService'
+import qs from 'qs'
 
 /**
  *待付款
@@ -17,9 +18,9 @@ class WaitPay extends Component{
     pageSize = 10
     pageCount = 1
     async componentDidMount(){
-        const { params } = this.props
-        this.AUTH = params
-        const MyOrderSev = new Service(params)
+        const { search } = this.props.location
+        this.AUTH = qs.parse(search.split('?')[1])
+        const MyOrderSev = new Service(this.AUTH)
         const statuswaitpay = 1//1获取待付款订单
         const res = await MyOrderSev.getMyOrder(statuswaitpay)
         const { data, code } = res

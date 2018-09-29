@@ -13,24 +13,22 @@ import { Toast } from 'antd-mobile'
  * @extends {Component}
  */
 class Account extends Component{
-    state = {userInfo: null, deptInfo: {}}
+    state = {userInfo: null, deptInfo: {}, auth: {}}
     async componentDidMount(){
         document.title = '我的'
         const { params } = this.props.match
-        this.AUTH = params
         const accountSev = new Service(params)
         const usRes = await accountSev.getUserInfo()
         if(usRes.code !== '0000') return Toast.info(usRes.msg)
         const depRes = await accountSev.getDeptInfo()
         if(depRes.code != '0000') return Toast.info(depRes.msg)
-        this.setState({userInfo: usRes.data, deptInfo: depRes.data})
+        this.setState({userInfo: usRes.data || {}, deptInfo: depRes.data, auth: params})
     }
     goToTarget(target){
-        const {sessionId, memId} = this.AUTH
-        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/${target}/sessionId/memId`})
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/${target}`})
     }
     render(){
-        const { userInfo } = this.state
+        const { userInfo, auth } = this.state
         return (
             userInfo?<Block bc='#fff' className={Styles.container} vf>
                 <Block className={Styles.header} vf>
@@ -45,7 +43,7 @@ class Account extends Component{
                 <Block fs={16} p={15}>我的订单</Block>
                 <Block wf className={Styles.order_panel}>
                     <Block a='c' f={1} vf>
-                        <Block onClick={this.goToTarget.bind(this, 'my-order')}>
+                        <Block onClick={this.goToTarget.bind(this, `my-order?sessionId=${auth.sessionId}&memId=${auth.memId}`)}>
                             <Block a='c' vf>
                                 <Block className={Styles.orangeColor} fs={22}>
                                     <i className={Styles.icon_order} />
@@ -55,7 +53,7 @@ class Account extends Component{
                         </Block>
                     </Block>
                     <Block a='c' f={1} vf>
-                        <Block onClick={this.goToTarget.bind(this, 'my-order/wait-pay')}>
+                        <Block onClick={this.goToTarget.bind(this, `my-order/wait-pay?sessionId=${auth.sessionId}&memId=${auth.memId}`)}>
                             <Block a='c' vf>
                                 <Block className={Styles.orangeColor} fs={22}>
                                     <i className={Styles.icon_wait_pay} />
@@ -65,7 +63,7 @@ class Account extends Component{
                         </Block>
                     </Block>
                     <Block a='c' f={1} vf>
-                        <Block onClick={this.goToTarget.bind(this, 'my-order/wait-recive')}>
+                        <Block onClick={this.goToTarget.bind(this, `my-order/wait-recive?sessionId=${auth.sessionId}&memId=${auth.memId}`)}>
                             <Block a='c' vf>
                                 <Block className={Styles.orangeColor} fs={22}>
                                     <i className={Styles.icon_wait_recive} />
@@ -75,7 +73,7 @@ class Account extends Component{
                         </Block>
                     </Block>
                     <Block a='c' f={1} vf>
-                        <Block onClick={this.goToTarget.bind(this, 'my-order/complete')}>
+                        <Block onClick={this.goToTarget.bind(this, `my-order/complete?sessionId=${auth.sessionId}&memId=${auth.memId}`)}>
                             <Block a='c' vf>
                                 <Block className={Styles.orangeColor} fs={28}>
                                     <i className={Styles.icon_complete} />
@@ -86,7 +84,7 @@ class Account extends Component{
                     </Block>
                 </Block>
                 <Block className={Styles.act_menu} vf>
-                    <Block onClick={this.goToTarget.bind(this, 'address-mgr')}>
+                    <Block onClick={this.goToTarget.bind(this, `address-mgr/${auth.sessionId}/${auth.memId}`)}>
                         <Block className={Styles.act_item} wf a='c'>
                             <Block f={1}>收货地址</Block>
                             <i className={Styles.arrow_right}></i>
