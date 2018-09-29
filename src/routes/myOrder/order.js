@@ -13,11 +13,13 @@ import Constant from '../../utils/constant'
  */
 class Order extends Component{
     deleteOrder=async()=>{
+        const {auth} = this.props
+        const myOrderSev = new Service(auth)
         const alert = Modal.alert
         alert('确认',`确认删除订单号为: ${this.props.orderCode} 的订单么？`,[{text:'取消',onPress:()=>console.log('cancel')},
             {text:'确认',onPress:()=>{
                 (async(memId,orderId)=>{
-                    const res = await Service.deleteOrder(memId,orderId)
+                    const res = await myOrderSev.deleteOrder(orderId)
                     const{code,msg} = res
                     if(code==="0000"){
                         this.props.delFunc(this.props.orderIndex)

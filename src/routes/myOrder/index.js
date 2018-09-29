@@ -18,9 +18,9 @@ class MyOrder extends Component{
     }
     tabs = [
         {target: '', title: '全部'},
-        {target: '/wait-pay', title: '待付款'},
-        {target: '/wait-recive', title: '待收货'},
-        {target: '/complete', title: '已完成'}
+        {target: '/wait-pay/:sessionId/:memId', title: '待付款'},
+        {target: '/wait-recive/:sessionId/:memId', title: '待收货'},
+        {target: '/complete/:sessionId/:memId', title: '已完成'}
     ]
     //tab切换
     tabHandleChange = tab => {
@@ -49,10 +49,10 @@ class MyOrder extends Component{
                     }}>
                         <Tabs 
                             swipeable={false} activeTab={currentTab} onTabClick={this.tabHandleChange} tabs={this.tabs}>
-                            <Route component={myOrderAllPage} />
-                            <Route path={`${url}/wait-pay`} component={myOrderWaitPayPage} />
-                            <Route path={`${url}/wait-recive`} component={myOrderWaitRecivePage} />
-                            <Route path={`${url}/complete`} component={myOrderCompletePage} />
+                            <myOrderAllPage />
+                            <Route path={`${url}/wait-pay/:sessionId/:memId`} component={myOrderWaitPayPage} />
+                            <Route path={`${url}/wait-recive/:sessionId/:memId`} component={myOrderWaitRecivePage} />
+                            <Route path={`${url}/complete/:sessionId/:memId`} component={myOrderCompletePage} />
                         </Tabs>
                     </section>
                 </Block>

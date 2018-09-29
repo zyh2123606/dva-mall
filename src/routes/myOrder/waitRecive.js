@@ -4,7 +4,6 @@ import Order from './order'
 import { PullToRefresh, Empty } from '../../components'
 import { Toast } from 'antd-mobile'
 import Service from '../../services/orderService'
-import Constant from '../../utils/constant'
 
 /**
  *待收货
@@ -18,9 +17,11 @@ class WaitRecive extends Component{
     pageSize = 10
     pageCount = 1
     async componentDidMount(){
-        const currentmemid=Constant.getUserInfo().memId
+        const { params } = this.props
+        this.AUTH = params
+        const MyOrderSev = new Service(params)
         const statuswaitrecive = 2//2获取待收货订单
-        const res = await Service.getMyOrder(currentmemid,statuswaitrecive)
+        const res = await MyOrderSev.getMyOrder(statuswaitrecive)
         const { data, code } = res
         if(code==="0000")
             this.setState({ data: data})
@@ -56,7 +57,7 @@ class WaitRecive extends Component{
                 {data?
                     data instanceof Array && data.length?
                     this.state.data.map(({orderCode,status,goodsList,id},idx)=>(
-                        <Order key={idx} orderCode={orderCode} status = {status} goodsList={goodsList} orderId={id} orderIndex={idx} delFunc={this.deleteOrderInState}/>
+                        <Order auth={this.AUTH} key={idx} orderCode={orderCode} status = {status} goodsList={goodsList} orderId={id} orderIndex={idx} delFunc={this.deleteOrderInState}/>
                     )):<Empty />
                 :null}
             </PullToRefresh>

@@ -3,7 +3,6 @@ import Block from 'fs-flex'
 import Styles from './index.less'
 import { Link } from 'react-router-dom'
 import { Facebook } from 'react-content-loader'
-import Constant from '../../utils/constant'
 import Service from '../../services/baseService'
 import { Toast } from 'antd-mobile'
 
@@ -14,23 +13,21 @@ import { Toast } from 'antd-mobile'
  * @extends {Component}
  */
 class Account extends Component{
-    state = {userInfo: null}
+    state = {userInfo: null, deptInfo: {}}
     async componentDidMount(){
         document.title = '我的'
         const { params } = this.props.match
-        Constant.userData = params
-        const memId = params.memId || 7
-        const res = await Service.getUserInfo(memId)
-        const { code, data, msg } = res
-        if(code !== '0000') return Toast.info(msg)
-        const result = await Service.getHomeData()
-        this.setState({
-            userInfo: data,
-            deptInfo: result[4].data || {}
-            })
+        this.AUTH = params
+        const accountSev = new Service(params)
+        const usRes = await accountSev.getUserInfo()
+        if(usRes.code !== '0000') return Toast.info(usRes.msg)
+        const depRes = await accountSev.getDeptInfo()
+        if(depRes.code != '0000') return Toast.info(depRes.msg)
+        this.setState({userInfo: usRes.data, deptInfo: depRes.data})
     }
     goToTarget(target){
-        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/${target}`})
+        const {sessionId, memId} = this.AUTH
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/${target}/sessionId/memId`})
     }
     render(){
         const { userInfo } = this.state
