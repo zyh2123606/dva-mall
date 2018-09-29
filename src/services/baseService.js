@@ -1,12 +1,12 @@
 import HttpBase from '../utils/httpBase'
-import Constant from '../utils/constant'
 
 class BaseService extends HttpBase{
-    constructor(){
+    constructor({sessionId, memId}){
         super('/api')
+        this.MEMID = memId
         //添加拦截器设置请求头
         this.$http.interceptors.request.use(config => {
-            config.headers.common['CSESSIONID'] = Constant.userData.sessionId
+            config.headers.common['CSESSIONID'] = sessionId
             return config
         })
     }
@@ -38,19 +38,14 @@ class BaseService extends HttpBase{
     getTypesList = () => {
         return this.get('/ad/getList?adType=5')
     }
-    //获取用户信息
-    getUserInfo = memId => {
-        return this.get(`/mem/info/${memId}`)
-    }
     //获取门店信息
     getDeptInfo = () => {
         return this.get('/dept/getDeptInfo?id=1')
     }
-
     // 获取首页所有类别下的banner图片信息（地址、名称）
-    getAllBanne=()=>{
+    getAllBanne=() => {
         return this.get(`/ad/getList`)
     }
 }
 
-export default new BaseService()
+export default BaseService
