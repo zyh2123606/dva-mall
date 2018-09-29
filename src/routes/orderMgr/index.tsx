@@ -8,7 +8,7 @@ import { createForm } from 'rc-form'
 import {connect} from 'dva';
 import Constant from '../../utils/constant';
 import ImgErr from '../../assets/img/img_error.png'
-import cookie from 'react-cookies'
+
 const alert = Modal.alert;
 
 class OrderDetail extends Component{
@@ -27,6 +27,10 @@ class OrderDetail extends Component{
         document.title='商品详情'
         const {match:{params:{pid,sessionId,memId}}}  =this.props
         const services=new Service({sessionId,memId})
+        // alert('info', `info-session:${sessionId} info-id:${memId}  info-type:${pid}`, [
+        //     { text: 'Cancel', onPress: () => console.log('cancel'), style: 'default' },
+        //     { text: 'OK', onPress: () => console.log('ok') },
+        //   ]);
         const res = await services.getDetailById(pid)
         const { data, code } = res
         if(code===Constant.responseOK && data){

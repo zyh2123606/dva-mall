@@ -10,8 +10,7 @@ import Service from '../../services/baseService'
 import Constant from '../../utils/constant'
 import ImgErr from '../../assets/img/img_error.png'
 import ContentLoader from 'react-content-loader'
-import Service from 'services/baseService';
-
+const alert = Modal.alert;
 /**
  *首页
  *
@@ -55,6 +54,10 @@ class Home extends Component<IProps>{
     
     gotoProdDetail(typeId){
         const {memId,sessionId}=this.props.match.params
+        // alert('info', `info-session:${sessionId} info-id:${memId}  info-type:${typeId}`, [
+        //     { text: 'Cancel', onPress: () => console.log('cancel'), style: 'default' },
+        //     { text: 'OK', onPress: () => console.log('ok') },
+        //   ]);
         wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}/${sessionId}/${memId}`})
         // this.props.history.push(`/order-detail/${typeId}/${sessionId}/${memId}`)
     }
@@ -242,11 +245,4 @@ class Home extends Component<IProps>{
     }
 }
 
-function mapStateToProps(state){
-    const {memId,sessionId} =state.userInfo
-    return {memId,sessionId}
-}
-
-export default connect(mapStateToProps)(Home)
-
-// export default connect((state:any) => state)(Home)
+export default connect((state:any) => state)(Home)
