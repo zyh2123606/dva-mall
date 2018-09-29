@@ -8,7 +8,6 @@ import {Toast} from 'antd-mobile'
 import {Link} from 'react-router-dom'
 import {connect} from 'dva'
 import Service from '../../services/addressService'
-import Constant from '../../utils/constant'
 
 /**
  *收货地址管理
@@ -80,7 +79,7 @@ class AddressMgr extends Component {
         document.title = '收货地址管理'
         const {params} = this.props.match
         const baseSer = new Service(params)
-        const res = await Service.getMyAddress()
+        const res = await baseSer.getMyAddress()
         const {data, code} = res
         const {dispatch, history} = this.props
         if (code==="0000") {
@@ -122,8 +121,8 @@ class AddressMgr extends Component {
     render() {
         return (
             <Block vf className={Styles.container}>
-                <Block ml={15} mr={15} pb={15} mb={80}>
-                    {this.props.myAddress ? this.props.myAddress.data.map((data, idx)=>(
+                {this.props.myAddress?<Block ml={15} mr={15} pb={15} mb={80}>
+                    {this.props.myAddress.length?this.props.myAddress.data.map((data, idx)=>(
                         <Block className={Styles.addr_panel} key = {idx} vf>
                             <Block vf ml={15} mr={15}>
                                 <Block wf mt={10}>
@@ -143,9 +142,9 @@ class AddressMgr extends Component {
                             </Block>
                         </Block>
                     )):<Empty/>}
-                </Block>
+                </Block>:null}
                 <Block mt={10} pb={20} pt={20} pl={15} pr={15} className={Styles.footer}>
-                    <Link className={Styles.link_btn} to={ /add-address/`${this.props.match.params.sessionId}/${this.props.match.params.memId}`}>添加新地址</Link>
+                    <Link className={Styles.link_btn} to={ `/add-address/${this.props.match.params.sessionId}/${this.props.match.params.memId}`}>添加新地址</Link>
                 </Block>
             </Block>
         )

@@ -12,12 +12,12 @@ import Service from '../../services/orderService'
  */
 class Order extends Component{
     deleteOrder=async()=>{
-        const {auth} = this.props.match
+        const {auth} = this.props
         const myOrderSev = new Service(auth)
         const alert = Modal.alert
         alert('确认',`确认删除订单号为: ${this.props.orderCode} 的订单么？`,[{text:'取消',onPress:()=>console.log('cancel')},
             {text:'确认',onPress:()=>{
-                (async(memId,orderId)=>{
+                (async(orderId)=>{
                     const res = await myOrderSev.deleteOrder(orderId)
                     const{code,msg} = res
                     if(code==="0000"){
@@ -31,7 +31,7 @@ class Order extends Component{
 
     }
     render(){
-        const { status, orderId } = this.props
+        const { status, orderId, auth } = this.props
         return (
             <Block vf className={Styles.prod_panel} p={15}>
                 <Block pb={15} wf>
@@ -44,6 +44,8 @@ class Order extends Component{
                         key = {idx}
                         data={item}
                         orderId={orderId}
+                        auth={auth}
+                        {...this.props}
                   />
                   )):null}
             </Block>
