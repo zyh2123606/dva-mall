@@ -4,6 +4,7 @@ import { Route } from 'react-router-dom'
 import { Tabs } from 'antd-mobile'
 import Styles from './index.less'
 import { myOrderAllPage, myOrderWaitPayPage, myOrderWaitRecivePage, myOrderCompletePage } from '../../lazyRoutes'
+import qs from 'qs'
 
 /**
  *我的订单
@@ -18,22 +19,23 @@ class MyOrder extends Component{
     }
     tabs = [
         {target: '', title: '全部'},
-        {target: '/wait-pay/:sessionId/:memId', title: '待付款'},
-        {target: '/wait-recive/:sessionId/:memId', title: '待收货'},
-        {target: '/complete/:sessionId/:memId', title: '已完成'}
+        {target: '/wait-pay', title: '待付款'},
+        {target: '/wait-recive', title: '待收货'},
+        {target: '/complete', title: '已完成'}
     ]
     //tab切换
     tabHandleChange = tab => {
         const { target } = tab
         if(this.state.currentTab === target) return
         this.setState({currentTab: target}, () => {
-            const { history, match: { url } } = this.props
-            history.replace(url+target)
+            const { history, match:{url}, location:{search} } = this.props
+            const { sessionId, memId } = qs.parse(search.split('?')[1])
+            history.replace(`${url}${target}?sessionId=${sessionId}&memId=${memId}`)
         })
     }
     render(){
-        const { match: { url } } = this.props
         const { currentTab } = this.state
+        const { url } = this.props.match
         return (
             <Block className={Styles.container} vf>
                 <Block f={1} style={{position: 'relative'}}>
@@ -49,10 +51,10 @@ class MyOrder extends Component{
                     }}>
                         <Tabs 
                             swipeable={false} activeTab={currentTab} onTabClick={this.tabHandleChange} tabs={this.tabs}>
-                            <myOrderAllPage />
-                            <Route path={`${url}/wait-pay/:sessionId/:memId`} component={myOrderWaitPayPage} />
-                            <Route path={`${url}/wait-recive/:sessionId/:memId`} component={myOrderWaitRecivePage} />
-                            <Route path={`${url}/complete/:sessionId/:memId`} component={myOrderCompletePage} />
+                            <Route component={myOrderAllPage} />
+                            <Route path={`${url}/wait-pay`} component={myOrderWaitPayPage} />
+                            <Route path={`${url}/wait-recive`} component={myOrderWaitRecivePage} />
+                            <Route path={`${url}/complete`} component={myOrderCompletePage} />
                         </Tabs>
                     </section>
                 </Block>

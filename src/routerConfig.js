@@ -8,9 +8,9 @@ import {homePage, orderDetailPage, myOrderPage, orderSurePage, accountPage, addr
 const RouteConfig = [
     {path: '/home/:sessionId/:memId', component: homePage, exact: true},
     {path: '/order-detail/:pid/:sessionId/:memId', component: orderDetailPage, exact: true},
-    {path: '/my-order/:sessionId/:memId', component: myOrderPage, exact: false},
+    {path: '/my-order', component: myOrderPage, exact: false},
     {path: '/order-sure/:shoppingcardId/:sessionId/:memId', component: orderSurePage, exact: true},
-    {path: '/account/:sessionId/:memId', component: accountPage, exact: false},
+    {path: '/account/:sessionId/:memId', component: accountPage, exact: true},
     {path: '/address-mgr/:sessionId/:memId', component: addressMgrPage, exact: true},
     {path: '/add-address/:sessionId/:memId', component: addAddressPage, exact: true},
     {path: '/update-address/:sessionId/:memId', component: updateAddressPage, exact: true},
