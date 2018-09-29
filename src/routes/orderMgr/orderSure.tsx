@@ -55,8 +55,7 @@ class OrderSure extends Component{
             let totalPrise=0
             if(!data || data.length===0){
                 // TODO 这里应该跳转到购物车？个人中心？
-                console.log('queryGoodsdAndSkuInfo data:',data)
-                history.goBack()
+                wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/cart/${sessionId}/${memId}`})
             }
             data.map(item=>{
                 totalPrise+=(item.salePrice*item.amount)
@@ -152,7 +151,6 @@ class OrderSure extends Component{
                 Toast.fail('请选择自提营业厅!', 1);
                 return
             }
-
             if(selectedAdopt.saleNum===0){
                 Toast.fail('当前门店该商品库存为0，请选择其他门店!', 1);
                 return
@@ -299,7 +297,7 @@ class OrderSure extends Component{
                         <Block mt={5} wf>
                             <Block f={1}>{item.deptAddress}</Block>
                             <Block ml={10} wf a='c'>
-                                <Block className={Styles.pos_icon}></Block>{item.sharePrice}km
+                                <Block className={Styles.pos_icon}></Block>{item.distance}km
                             </Block>
                         </Block>
                     </Block>
