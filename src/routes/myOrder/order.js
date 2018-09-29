@@ -45,6 +45,7 @@ class Order extends Component{
                         data={item}
                         orderId={orderId}
                         auth={auth}
+                        {...this.props}
                   />
                   )):null}
             </Block>

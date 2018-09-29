@@ -16,10 +16,10 @@ class OrderInfo extends Component{
     state = {logisticsData: null}
     async componentDidMount(){
         document.title = '物流详情'
-        const { params } = this.props
+        const { params } = this.props.match
         this.AUTH = params
         const MyOrderSev = new Service(params)
-        const res = await MyOrderSev.getLogisticsDetail()
+        const res = await MyOrderSev.getLogisticsDetail(params.orderId)
         const { code, data, msg } = res
         if(code !== '0000') return Toast.info(msg, 1)
         this.setState({logisticsData: data})
@@ -43,7 +43,7 @@ class OrderInfo extends Component{
                         <Block>2018.05.06 09:00:00</Block>
                     </Block>
                     <Block className={Styles.info_title}>物流详情</Block>
-                    <Block mt={15}>
+                    {logisticsData.length?<Block mt={15}>
                         <Steps current={logisticsData.length}>
                             {logisticsData.map(({createTime, logisticsInfo}, idx) => (
                                     <Step key={idx} status='Finished' 
@@ -53,6 +53,7 @@ class OrderInfo extends Component{
                             }
                         </Steps>
                     </Block>
+                    :<Block fc='#999' mt={10}>暂无物流信息</Block>}
                 </Block>
             </Block>:null
         )
