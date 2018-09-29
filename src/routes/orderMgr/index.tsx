@@ -121,7 +121,8 @@ class OrderDetail extends Component{
         // 添加购物车
         const {code,data} = await ShoppingCartService.save(params);
         if(code===Constant.responseOK){
-            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${data}`})
+            // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${data}`})
+            this.props.history.push(`/order-sure/${data}`)
         }else{
             Toast.fail('操作失败！',1)
         }
