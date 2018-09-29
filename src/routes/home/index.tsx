@@ -10,8 +10,7 @@ import Service from '../../services/baseService'
 import Constant from '../../utils/constant'
 import ImgErr from '../../assets/img/img_error.png'
 import ContentLoader from 'react-content-loader'
-import cookie from 'react-cookies'
-const alert = Modal.alert;
+import Service from 'services/baseService';
 
 /**
  *首页
@@ -40,9 +39,8 @@ class Home extends Component<IProps>{
     }
     async componentDidMount(){
         const { params } = this.props.match
-        Constant.userData = params
-        const memId = params.memId || ''
-        const res = await Service.getHomeData()
+        const BaseSev = new Service(params)
+        const res = await BaseSev.getHomeData()
         if(!res) return
         this.setState({
             specialList: res[0].data || [],
@@ -53,21 +51,10 @@ class Home extends Component<IProps>{
             allBanner: res[5].data || [],
             isRequest: true
         })
-        this.props.dispatch({
-            type:'userInfo/setUserInfo',
-            payload:{
-                memId:params.memId,
-                sessionId:params.sessionId,
-            }
-        })
-        cookie.save('userInfo', {memId:params.memId,sessionId:params.sessionId}, { path: '/' })
-       Constant.setUserInfo(params.memId,params.sessionId)
     }
     
     gotoProdDetail(typeId){
-        const {memId,sessionId}=this.props.match.params
-        // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}/${sessionId}/${memId}`})
-        this.props.history.push(`/order-detail/${typeId}/${sessionId}/${memId}`)
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}`})
     }
     gotoGoodsPage(url){
         const {memId,sessionId}=this.props.match.params
