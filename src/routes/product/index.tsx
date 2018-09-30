@@ -83,19 +83,15 @@ class DefaultPage extends Component{
     renderSecondType=()=>{
         const {secondTypeList}=this.state
         return (
-            <dl className={Styles.prod_panel}>
+            <Block className={Styles.prod_panel}>
                 {
                     secondTypeList.map((item,index)=>{
-                        let itemClass=Styles.prod_item
-                        if(index===2){
-                            itemClass=Styles.prod_item_r_f
-                        } else if((index+1)%3===0){
-                            itemClass=Styles.prod_item_r
-                        }
-                        return <dd key={'child-type-'+index} className={itemClass} onClick={this.selectChildItem.bind(this,item)}><img style={{height:'87px'}} src={item.logoPath?Constant.imgBaseUrl+item.logoPath:ImgErr} alt={item.title}/></dd>
+                        return <Block a='c' j='c' key={'child-type-'+index} className={Styles.type_prod_item} onClick={this.selectChildItem.bind(this,item)}>
+                            <img src={item.logoPath?Constant.imgBaseUrl+item.logoPath:ImgErr} alt={item.title}/>
+                        </Block>
                     })
                 }
-            </dl>
+            </Block>
         )
     }
     

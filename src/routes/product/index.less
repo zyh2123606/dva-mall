@@ -19,30 +19,25 @@
         }
     }
     .prod_panel{
-        background: #fff;
         .boxShadow();
         border-radius: @borderRadius;
-        .box(){
-            float: left;
-            width: 33.33333333333333%;
+        padding: 5px 5px 1px 3px;
+        line-height: normal;
+        background: #fff;
+        .type_prod_item{
+            background: #F4F7FB;
+            @value: 6px;
+            width: calc(~"33.33333333333333% - @{value}"); 
+            width: -webkit-calc(~"33.33333333333333% - @{value}");
             height: 87px;
+            display: inline-block;
+            margin-left: 2px;
+            padding: 2px;
+            position: relative;
+            overflow: hidden;
+            border-radius: @borderRadius;
+            img{ border: none; width: 100%; border-radius: @borderRadius; height: 100%; display: block; }
         }
-        .prod_item{
-            .box();
-            .thin-xr-line();
-            .thin-ty-line();
-        };
-        .prod_item_f{
-            .box();
-            .thin-xr-line();
-        };
-        .prod_item_r{
-            .box();
-            .thin-ty-line();
-        };
-        .prod_item_r_f{
-            .box();
-        };
     }
 }
 /**商品搜索**/
