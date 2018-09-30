@@ -28,7 +28,7 @@ class SearchProduct extends Component{
     pageIndex = 1
     pageSize = 10
     pageCount = 1
-    skuNameFieldMapping={'brandName':'品牌','colour':'颜色','memory':'内存','priceDur':'价格'}
+    skuNameFieldMapping={'brandName':'品牌','colour':'颜色','memory':'内存','priceDur':'价格','saleNum':'销量'}
     menus = [
         {title: '综合',content:[]},
     ]
@@ -39,13 +39,22 @@ class SearchProduct extends Component{
         const selectBrand=selectedSku.get('品牌')
         const selectMemory=selectedSku.get('内存')
         const price=selectedSku.get('价格')
+        const saleNum=selectedSku.get('销量')
+        let sortList=[]
+        if (saleNum){
+            if(saleNum==='销量升序'){
+                sortList.push('+saleNum')
+            }else if(saleNum==='销量降序'){
+                sortList.push('-saleNum')
+            }
+        }
         const {data,code}=await new ProductService(sessionId,memId).searchGoods({
             keyword:searchKeyword && searchKeyword!=='all'?searchKeyword:null,//关键字
             colour:selectColor?selectColor:null,//颜色
             brandName:selectBrand?selectBrand:null,//品牌
             memorySize:selectMemory?selectMemory:null,//内存
             priceDur:price?price:null,//价格区间
-            sortList:[],
+            sortList:sortList,
             typeId:parentType
         })
         if (code === Constant.responseOK){
@@ -74,12 +83,13 @@ class SearchProduct extends Component{
         }
         let filterConditions=[{title: '综合',content:[]}]
         for (let key of Object.keys(data)){
-            const name=this.skuNameFieldMapping[key]
+            const skuName=this.skuNameFieldMapping[key]
             filterConditions.push({
-                title:name,
+                title:skuName,
                 content:data[key]
             })
         }
+        filterConditions.push({title: '销量',content:['销量升序','销量降序']})
         // 页面打开时，设置默认选中品牌
         filterConditions.map(({title,content},index)=>{
             content.map(item=>{
@@ -154,11 +164,13 @@ class SearchProduct extends Component{
     selectSkuItem(title,itemName){
         let selectedSku=this.state.selectedSku
         selectedSku.set(title,itemName)
-        this.queryGoods()
         this.setState({
             selectedSku:selectedSku,
             popVisible:false
         })
+        setTimeout(() => {
+            this.queryGoods()
+        }, 200);
     }
     // 跳转到商品详情页面 
     toGoodsDetailPage(item){

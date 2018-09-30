@@ -2,8 +2,8 @@ import React from 'react';
 import Block from 'fs-flex'
 import Styles from './index.less'
 import {Modal, Picker,Toast } from 'antd-mobile'
-import UserService from 'services/userSeervice'
-import Constant from 'utils/constant'
+import UserService from '../../services/userSeervice'
+import Constant from '../../utils/constant'
 class  CollectInfoList extends React.Component{
     state={
         popVisible:false,
