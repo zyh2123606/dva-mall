@@ -16,7 +16,7 @@ const RouteConfig = [
     {path: '/update-address/:sessionId/:memId', component: updateAddressPage, exact: true},
     {path: '/order-info/:orderId/:sessionId/:memId', component: orderInfoPage, exact: true},
     {path: '/product/:typeId/:sessionId/:memId', component: productPage, exact: true},
-    {path: '/search/:parentType/:name/:sessionId/:memId', component: searchPage, exact: true},
+    {path: '/search/:parentType/:sessionId/:memId', component: searchPage, exact: true},
     {path: '/order-complete/:orderId/:sessionId/:memId', component: orderCompletePage, exact: true},
     {path: '/cart/:sessionId/:memId', component: cartPage, exact: true},
     {path: '/success/:orderId/:sessionId/:memId', component: successPage, exact: true},

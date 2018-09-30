@@ -12,6 +12,7 @@
         }
         .menu_item_select{
             background-color: @bodyColor;
+            color: @orange;
             width: 90px;
             height: 50px;
             .thin-by-line();
@@ -30,9 +31,10 @@
             .box();
             .thin-xr-line();
             .thin-ty-line();
-            &:nth-child(1)::before, &:nth-child(2)::before, &:nth-child(3)::before{
-                display: none;
-            }
+        };
+        .prod_item_f{
+            .box();
+            .thin-xr-line();
         };
         .prod_item_r{
             .box();
@@ -40,7 +42,7 @@
         };
         .prod_item_r_f{
             .box();
-        }
+        };
     }
 }
 /**商品搜索**/
