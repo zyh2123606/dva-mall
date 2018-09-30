@@ -77,6 +77,9 @@ class  CollectInfoList extends React.Component{
                 this.setState({data:data})
             }else{
                 Toast.info('无收货地址，即将跳转到添加地址页面!')
+                this.setState({
+                    popVisible:false,
+                })
                 setTimeout(() => {
                     wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/add-address/${sessionId}/${memId}`})
                     // this.props.history.push(`/add-address/${sessionId}/${memId}`)
@@ -86,8 +89,8 @@ class  CollectInfoList extends React.Component{
     }
 
     onOk=()=>{
-        const {index}=this.state
-        const {selectedOk,data}=this.props
+        const {index,data}=this.state
+        const {selectedOk}=this.props
         const item=data.filter((d,idx)=>idx===index)
         const selected={id:item[0].id,address:item[0].address,receiver:item[0].receiver,tel:item[0].tel}
         this.setState({
