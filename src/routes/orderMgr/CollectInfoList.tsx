@@ -1,7 +1,9 @@
 import React from 'react';
 import Block from 'fs-flex'
 import Styles from './index.less'
-import {Modal, Picker } from 'antd-mobile'
+import {Modal, Picker,Toast } from 'antd-mobile'
+import UserService from 'services/userSeervice'
+import Constant from 'utils/constant'
 class  CollectInfoList extends React.Component{
     state={
         popVisible:false,
@@ -64,7 +66,25 @@ class  CollectInfoList extends React.Component{
         this.setState({
             popVisible:true,
         })
+        this.queryCollectInfo()
     }
+
+    queryCollectInfo=async()=>{
+        const {sessionId,memId} = this.props
+        const {code,data}=await new UserService({sessionId,memId}).getAddressList();
+        if (code===Constant.responseOK){
+            if(data && data.length>0){
+                this.setState({data:data})
+            }else{
+                Toast.info('无收货地址，即将跳转到添加地址页面!')
+                setTimeout(() => {
+                    wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/add-address/${sessionId}/${memId}`})
+                    // this.props.history.push(`/add-address/${sessionId}/${memId}`)
+                }, 1000);
+            }
+        }
+    }
+
     onOk=()=>{
         const {index}=this.state
         const {selectedOk,data}=this.props
@@ -101,24 +121,22 @@ class  CollectInfoList extends React.Component{
         return this.renderItem(this.state.selectedItem)
     }
     renderContent=()=>{
-        const {index}=this.state
-        const {data}=this.props
+        const {index,data}=this.state
         return <Block className={Styles.pop_content} f={1}>
             {
-                data.map((item,i)=>(
+                data && data.length>0?data.map((item,i)=>(
                     <Block key={'adopt-'+i} bc={index===i?'#FFF9F2':null} vf className={Styles.pop_item} onClick={this.selectItem.bind(this,i)}>
                         {
                             this.renderItem(item)
                         }
                     </Block>
-                ))
+                )):null
             }
         </Block>
     }
 
     render(){
-        const {popVisible,selectedItem}=this.state
-        const {data}=this.props
+        const {popVisible,selectedItem,data}=this.state
         return (
             <Block>
                 <Block onClick={this.openCollectInfo}>

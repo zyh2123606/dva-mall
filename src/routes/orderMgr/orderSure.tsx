@@ -27,7 +27,6 @@ class OrderSure extends Component{
         goodsList:[],// 购物车商品集合
         collectMode:2,//收货方式，shsm:送货上门，yytzt:营业厅自提
         reciveWay: [{label: '送货上门', value: 2},{label: '营业厅自提', value: 3}],
-        collectUserInfo:[],//用户收货地址列表
         adoptDeptList:[],//自提营业厅列表
         collectAddress:{},//收货地址
         popVisible: false,
@@ -37,7 +36,6 @@ class OrderSure extends Component{
     async componentDidMount(){
         document.title='订单确认'
         this.queryGoodsdAndSkuInfo()
-        this.queryCollectUserInfo()
         setTimeout(() => {
             this.queryAdoptDeptList()
         }, 1000);
@@ -68,14 +66,6 @@ class OrderSure extends Component{
         this.setState({
             shoppingcard:shoppingcardId
         })
-    }
-    // 查询用户收货的地址列表
-    async queryCollectUserInfo(){
-        const {match:{params:{sessionId,memId}}} = this.props
-        const {code,data}=await new UserService({sessionId,memId}).getAddressList();
-        if (code===Constant.responseOK){
-            this.setState({collectUserInfo:data})
-        }
     }
     // 查询周边自提营业厅
     async queryAdoptDeptList(){
@@ -255,7 +245,8 @@ class OrderSure extends Component{
     }
 
     renderCollectInfo(){
-        const {selectedAdopt,collectMode,totalPrise,collectUserInfo}=this.state
+        const {selectedAdopt,collectMode,totalPrise}=this.state
+        const {match:{params:{sessionId,memId}},history} = this.props
         return (
                 <List renderHeader='收货信息'>
                 {
@@ -275,7 +266,9 @@ class OrderSure extends Component{
                     <Item arrow='horizontal' multipleLine wrap>
                         {/* 选择收货地址 */}
                         <CollectInfoList 
-                        data={collectUserInfo} 
+                        memId={memId}
+                        history={history}
+                        sessionId={sessionId}
                         selectedOk={this.selectedCollectInfo}/>
                     </Item>
                 }

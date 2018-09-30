@@ -287,12 +287,12 @@ class OrderDetail extends Component{
                 </Block>
                 <Block vf fs={16} className={Styles.footer_bar}>
                     <Block wf className={Styles.footer_content}>
-                        <Block a='c' j='c' w={60} vf onClick={this.connectService}>
+                        {/* <Block a='c' j='c' w={60} vf onClick={this.connectService}>
                             <Block fs={22} fc='#999'>
                                 <i className={Styles.icon_server} />
                             </Block>
                             <Block fs={12}>客服</Block>
-                        </Block>
+                        </Block> */}
                         <Block a='c' j='c' w={60} vf onClick={this.toShoppingCart}>
                             <Block fs={24} fc='#999'>
                                 <Badge text={shoppingCartCount}><i className={Styles.icon_cart} /></Badge>
