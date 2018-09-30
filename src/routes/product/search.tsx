@@ -7,6 +7,7 @@ import ProductService from '../../services/productService'
 import Constatn from '../../utils/constant'
 import Constant from '../../utils/constant';
 import {connect} from 'dva';
+import qs from 'qs'
 /**
  *商品搜索页
  *
@@ -63,7 +64,8 @@ class SearchProduct extends Component{
     }
     componentDidMount() {
         document.title='搜索'
-        const { match:{params:{name}}} = this.props
+        const { name } = this.getKeyWords()
+        
         if(name!=='all'){
             this.setState({searchKeyword:name})
         }
@@ -72,9 +74,15 @@ class SearchProduct extends Component{
             this.queryGoods()
         }, 200);
     }
+    getKeyWords=()=>{
+        const { location} = this.props
+        return qs.parse(location.search.split('?')[1])
+    }
     async queryFilterItem(){
         let {selectedSku}=this.state
-        const { match:{params:{parentType,name,sessionId,memId}}} = this.props
+        const { match:{params:{parentType,sessionId,memId}}, location} = this.props
+        const { name } = this.getKeyWords()
+        console.log(`url name: ${name}`)
         const productService=new ProductService({sessionId,memId})
         const {data,code} = await productService.queryFilterItem(parentType)
        

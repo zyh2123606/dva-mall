@@ -54,8 +54,8 @@ class DefaultPage extends Component{
     // 选中第二级菜单
     selectChildItem(item){
         const { match:{params:{sessionId,memId}}} = this.props
-        // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/search/${item.parentType}/${item.typeName}/${sessionId}/${memId}`})
-        this.props.history.push(`/search/${item.parentType}/${item.typeName}/${sessionId}/${memId}`)
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/search/${item.parentType}/${sessionId}/${memId}?name=${item.typeName}`})
+        // this.props.history.push(`/search/${item.parentType}/${sessionId}/${memId}?name=${item.typeName}`)
     }
 
     searchInputChange=(val)=>{
@@ -77,19 +77,15 @@ class DefaultPage extends Component{
     renderSecondType=()=>{
         const {secondTypeList}=this.state
         return (
-            <dl className={Styles.prod_panel}>
+            <Block className={Styles.prod_panel}>
                 {
                     secondTypeList.map((item,index)=>{
-                        let itemClass=Styles.prod_item
-                        if(index===2){
-                            itemClass=Styles.prod_item_r_f
-                        } else if((index+1)%3===0){
-                            itemClass=Styles.prod_item_r
-                        }
-                        return <dd key={'child-type-'+index} className={itemClass} onClick={this.selectChildItem.bind(this,item)}><img style={{height:'87px'}} src={item.logoPath?Constant.imgBaseUrl+item.logoPath:ImgErr} alt={item.title}/></dd>
+                        return <Block a='c' j='c' key={'child-type-'+index} className={Styles.type_prod_item} onClick={this.selectChildItem.bind(this,item)}>
+                            <img src={item.logoPath?Constant.imgBaseUrl+item.logoPath:ImgErr} alt={item.title}/>
+                        </Block>
                     })
                 }
-            </dl>
+            </Block>
         )
     }
     
