@@ -62,9 +62,10 @@ class SearchProduct extends Component{
             this.setState({goods:data})
         }
     }
-    componentDidMount() {
+    async componentDidMount() {
         document.title='搜索'
-        const { name } = this.getKeyWords()
+        const { location} = this.props
+        const { name } = qs.parse(location.search.split('?')[1])
         
         if(name!=='all'){
             this.setState({searchKeyword:name})
@@ -72,7 +73,7 @@ class SearchProduct extends Component{
         this.queryFilterItem()
         setTimeout(() => {
             this.queryGoods()
-        }, 200);
+        }, 500);
     }
     getKeyWords=()=>{
         const { location} = this.props
@@ -81,7 +82,7 @@ class SearchProduct extends Component{
     async queryFilterItem(){
         let {selectedSku}=this.state
         const { match:{params:{parentType,sessionId,memId}}, location} = this.props
-        const { name } = this.getKeyWords()
+        const { name } = qs.parse(location.search.split('?')[1])
         console.log(`url name: ${name}`)
         const productService=new ProductService({sessionId,memId})
         const {data,code} = await productService.queryFilterItem(parentType)
