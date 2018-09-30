@@ -24,7 +24,6 @@ import { Toast } from 'antd-mobile'
 
     //查询当前用户购物车商品数量（分页数据怎么传有待考量）
     query=(cartIdList=undefined)=>{
-        console.log(`sessionId  memId:${this.MEMID}`)
         return this.postJson('cart/getMyCartList',{memId:this.MEMID,cartIdList:cartIdList}) 
     }
 

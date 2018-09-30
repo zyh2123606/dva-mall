@@ -19,7 +19,13 @@ class DefaultPage extends Component{
         firstTypeList:[],// 第一级分类集合
         secondTypeList:[],// 第二级分类集合
         searchKeyword:'',//搜索值
-        parentTypeId:'',//当前选中父级typeId
+        parentTypeId:0,//当前选中父级typeId
+    }
+    componentWillMount(){
+        const { match:{params:{typeId}}} = this.props
+        if(typeId){
+            this.setState({parentTypeId:typeId})
+        }
     }
     async componentDidMount(){
         document.title='商品分类'
@@ -39,14 +45,12 @@ class DefaultPage extends Component{
         }
     }
     async querychildTypeList(parentId){
-        this.setState({parentTypeId:parentId})
-
         const { match:{params:{sessionId,memId}}} = this.props
         const productService=new ProductService({sessionId,memId})
         const {data,code} =await productService.getTypeList(parentId)
 
         if(code === Constant.responseOK){
-            this.setState({secondTypeList:data})
+            this.setState({secondTypeList:data,parentTypeId:parentId})
         }
     }
     // 点击选中第一级菜单
@@ -64,12 +68,17 @@ class DefaultPage extends Component{
         this.setState({searchKeyword:val})
     }
     cancelInput=(val)=>{
+        if(!val){
+            val='all'
+        }
         this.selectChildItem({parentType:this.state.parentTypeId,typeName:val})
     }
     onSubmit=(val)=>{
+        if(!val){
+            val='all'
+        }
         this.selectChildItem({parentType:this.state.parentTypeId,typeName:val})
     }
-
 
     renderSecondType=()=>{
         const {secondTypeList}=this.state

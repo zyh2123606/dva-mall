@@ -40,7 +40,7 @@ class SearchProduct extends Component{
         const selectMemory=selectedSku.get('内存')
         const price=selectedSku.get('价格')
         const {data,code}=await new ProductService(sessionId,memId).searchGoods({
-            keyword:searchKeyword?searchKeyword:null,//关键字
+            keyword:searchKeyword && searchKeyword!=='all'?searchKeyword:null,//关键字
             colour:selectColor?selectColor:null,//颜色
             brandName:selectBrand?selectBrand:null,//品牌
             memorySize:selectMemory?selectMemory:null,//内存
@@ -55,7 +55,9 @@ class SearchProduct extends Component{
     componentDidMount() {
         document.title='搜索'
         const { match:{params:{name}}} = this.props
-        this.setState({searchKeyword:name})
+        if(name!=='all'){
+            this.setState({searchKeyword:name})
+        }
         this.queryFilterItem()
         setTimeout(() => {
             this.queryGoods()
@@ -87,7 +89,7 @@ class SearchProduct extends Component{
             })
         })
         this.setState({
-            searchKeyword:name,
+            searchKeyword:name==='all'?'':name,
             filterConditions,
             selectedSku:selectedSku
         })
