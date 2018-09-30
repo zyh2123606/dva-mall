@@ -47,7 +47,7 @@ class Product extends Component{
                     <Block f={1} ml={10} vf>
                         <Block>{goodsName}</Block>
                         <Block mt={5} wf>
-                            <Block f={1}>实付：<span className={Styles.orangeColor}>￥ {price}</span></Block>
+                            <Block f={1}>实付：<span className={Styles.orangeColor}>￥ {price?price/100:0.00}</span></Block>
                             <Block>×{amount}</Block>
                         </Block>
                         <Block mt={15} j='e'>
