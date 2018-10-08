@@ -44,11 +44,9 @@ class MyOrder extends Component{
     tabHandleChange = tab => {
         const { sub } = tab
         if(this.state.currentTab === sub) return
-        this.setState({currentTab: sub}, () => {
-            const { history, match:{url}, location:{search} } = this.props
-            const { sessionId, memId } = qs.parse(search.split('?')[1])
-            history.replace(`${url}${sub}?sessionId=${sessionId}&memId=${memId}`)
-        })
+        const { history, match:{url}, location:{search} } = this.props
+        const { sessionId, memId } = qs.parse(search.split('?')[1])
+        history.push(`${url}${sub}?sessionId=${sessionId}&memId=${memId}`)
     }
     render(){
         const { currentTab, tabIndex } = this.state
@@ -69,7 +67,7 @@ class MyOrder extends Component{
                         <Tabs 
                             swipeable={false} initialPage={currentTab} page={tabIndex} onTabClick={this.tabHandleChange} tabs={this.tabs}>
                             <Switch>
-                                <Route path={`${url}`} exact component={myOrderAllPage} />
+                                <Route path={`${url}/`} exact component={myOrderAllPage} />
                                 <Route path={`${url}/wait-pay`} exact component={myOrderWaitPayPage} />
                                 <Route path={`${url}/wait-recive`} exact component={myOrderWaitRecivePage} />
                                 <Route path={`${url}/complete`} exact component={myOrderCompletePage} />
