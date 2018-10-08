@@ -25,13 +25,19 @@ class OrderDetail extends Component{
     //dom挂在完成请求数据
     async componentDidMount(){
         document.title='商品详情'
-        const {match:{params:{pid,sessionId,memId}}}  =this.props
+        const {match:{params:{pid,sessionId,memId}},location}  =this.props
         const services=new Service({sessionId,memId})
+        const { id } = qs.parse(location.search.split('?')[1])
         // alert('info', `info-session:${sessionId} info-id:${memId}  info-type:${pid}`, [
         //     { text: 'Cancel', onPress: () => console.log('cancel'), style: 'default' },
         //     { text: 'OK', onPress: () => console.log('ok') },
         //   ]);
-        const res = await services.getDetailById(pid)
+        const res={}
+        if(id){
+            res = await services.getDetailById(null,id)
+        }else{
+            res=await services.getDetailById(pid,null)
+        }
         const { data, code } = res
         if(code===Constant.responseOK && data){
             let colorsAttrs=new Map()

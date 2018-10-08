@@ -12,8 +12,11 @@ class ProductService extends HttpBase{
             return config
         })
     }
-    getDetailById = (data=undefined) => {
-        return this.get(`/goods/getGoodsInfo?typeId=${data}`)
+    getDetailById = (typeId=undefined,id=undefined) => {
+        if(typeId){
+            return this.get(`/goods/getGoodsInfo?typeId=${typeId}`)
+        }
+        return this.get(`/goods/getGoodsInfo?id=${id}`)
     }
 
     queryPriceByGoodsColor=(data)=>{
