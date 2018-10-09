@@ -28,6 +28,7 @@ class OrderDetail extends Component{
     async componentDidMount(){
         document.title='商品详情'
         const {match:{params:{pid,sessionId,memId}},location}  =this.props
+
         const services=new Service({sessionId,memId})
         const { cloudShelfId } = qs.parse(location.search.split('?')[1])
         let res={}

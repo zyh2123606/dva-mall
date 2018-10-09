@@ -5,6 +5,7 @@ import { Button ,Modal} from 'antd-mobile'
 import { Link } from 'react-router-dom'
 import Styles from './index.less'
 import Logo from '../../assets/img/logo.png'
+import GxLogo from '../../assets/img/gxLogo.png'
 import Swiper from 'react-id-swiper'
 import Service from '../../services/baseService'
 import Constant from '../../utils/constant'
@@ -92,7 +93,8 @@ class Home extends Component<IProps>{
                 <Block vf p='0 15px'>
                     {/* top start */}
                     <Block a='c' wf pt={10}>
-                        <img width={57} src={Logo} />
+                        {/* <img width={57} src={Logo} /> */}
+                        <img width={57} src={GxLogo} />
                         <Block f={1} j='c' vf className={Styles.logo_txt}>
                             <Block fs={12} fc='#FD8007'>{deptName}</Block>
                             <Block>
