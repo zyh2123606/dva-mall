@@ -245,10 +245,22 @@ class OrderSure extends Component{
     }
 
     renderCollectInfo(){
-        const {selectedAdopt,collectMode,totalPrise}=this.state
-        const {match:{params:{sessionId,memId}},history} = this.props
+        const {selectedAdopt,reciveWay,collectMode,totalPrise}=this.state
+        const {match:{params:{sessionId,memId}},history,form:{getFieldProps}} = this.props
         return (
-                <List renderHeader='收货信息'>
+            <Block>
+
+                    <List renderHeader='收货信息'>
+                        <Picker
+                                data={reciveWay}
+                                cols={1}
+                                value={collectMode}
+                                onOk={this.seletedOrderSureWrapper}
+                                {...getFieldProps('recive',{
+                                    initialValue:[reciveWay[0].value]
+                                })}>
+                                <Item arrow='horizontal' extra='请选择'>收货方式</Item>
+                            </Picker>
                 {
                     collectMode===3?
                     <Block>
@@ -274,6 +286,7 @@ class OrderSure extends Component{
                 }
                     <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>商品金额</Item>
                 </List>
+                </Block>
         )
     }
     renderAdoptDept=()=>{
@@ -303,21 +316,9 @@ class OrderSure extends Component{
         const { reciveWay, popVisible,collectMode } = this.state
         return (
             <Block vf className={Styles.order_sure_wrapper}>
-                <Block>
-                    <List>
-                        <Picker
-                            data={reciveWay}
-                            cols={1}
-                            value={collectMode}
-                            onOk={this.seletedOrderSureWrapper}
-                            {...getFieldProps('recive',{
-                                initialValue:[reciveWay[0].value]
-                            })}>
-                            <Item arrow='horizontal' extra='请选择'>收货方式</Item>
-                        </Picker>
-                    </List>
-                </Block>
+                {/* 商品信息 */}
                 {this.renderGoodsArray()}
+                
                 {this.renderCollectInfo()}
                 <Block m={15} mt={20}>
                     <Button style={{borderRadius: 25}} type='primary' onClick={this.orderSubmit.bind(this)}>提交订单</Button>
