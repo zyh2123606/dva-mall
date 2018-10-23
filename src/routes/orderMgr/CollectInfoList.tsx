@@ -109,6 +109,11 @@ class  CollectInfoList extends React.Component{
             popVisible: false
         })
     }
+
+    // 添加收货地址
+    addCollection=()=>{
+        console.log('添加收货地址')
+    }
     renderItem=(item)=>{
         return (
             <Block vf>
@@ -117,6 +122,10 @@ class  CollectInfoList extends React.Component{
                     <Block>{item.tel}</Block>
                 </Block>
                 <Block mt={5}>收货地址：{item.address}</Block>
+                <Block mt={5} hf style={{borderTop:'1px solid #CCCCCC'}}>
+                    <Block f={1}>选择地址</Block>
+                    <Block w={100} a='c' j='c'>编辑</Block>
+                </Block>
             </Block>
         )
     }
@@ -126,9 +135,10 @@ class  CollectInfoList extends React.Component{
     renderContent=()=>{
         const {index,data}=this.state
         return <Block className={Styles.pop_content} f={1}>
+            <Block h={20} hf m={10}><Block f={1}></Block><Block onClick={this.addCollection} style={{color:'#FF8E44'}}>添加收货地址</Block></Block>
             {
                 data && data.length>0?data.map((item,i)=>(
-                    <Block key={'adopt-'+i} bc={index===i?'#FFF9F2':null} vf className={Styles.pop_item} onClick={this.selectItem.bind(this,i)}>
+                    <Block key={'adopt-'+i} vf className={Styles.pop_item} onClick={this.selectItem.bind(this,i)}>
                         {
                             this.renderItem(item)
                         }
@@ -148,7 +158,7 @@ class  CollectInfoList extends React.Component{
                     }
                 </Block>
                 <Modal
-                    popup
+                    popup={false}
                     visible={popVisible}
                     animationType='slide-up'>
                     <Block vf className={Styles.pop_wrapper}>

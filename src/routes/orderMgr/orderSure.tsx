@@ -10,6 +10,7 @@ import OrderService from '../../services/orderService'
 import ShoppingCartService from '../../services/shoppingCartService'
 import CollectInfoList from  './CollectInfoList'
 import Constant from '../../utils/constant'
+import HonbaoImage from '../../assets/img/hongbao@2x.png'
 const alert = Modal.alert;
 /**
  *订单确认
@@ -25,13 +26,42 @@ class OrderSure extends Component{
         totalPrise:0,//总价格,
         shoppingcard:[],//购物车ID集合
         goodsList:[],// 购物车商品集合
-        collectMode:2,//收货方式，shsm:送货上门，yytzt:营业厅自提
+        collectMode:2,//收货方式，2:送货上门，:营业厅自提
         reciveWay: [{label: '送货上门', value: 2},{label: '营业厅自提', value: 3}],
         adoptDeptList:[],//自提营业厅列表
         collectAddress:{},//收货地址
         popVisible: false,
         selectAdoptIndex:0,
         selectedAdopt:{deptId:0,deptName:'',saleNum:0},//自提营业厅列表选中项
+
+        timePopVisible:false,// 选择自提时间是否显示
+        adoptTimes:[
+            {label:'1月10日（周1）',value:'1'},
+            {label:'1月11日（周2）',value:'2'},
+            {label:'1月12日（周3）',value:'3'},
+            {label:'1月13日（周4）',value:'4'},
+            {label:'1月14日（周5）',value:'5'},
+        ],
+        adoptTimeSelect:{},
+
+        honbaoPopVisible:false,//红包选择
+        honbaoSelect:null,// 当前选中红包
+        honbaos:[
+            {
+                id:1,
+                amount:5,
+                conition:20,// 使用条件
+                overdueTime:'2018-1-10'// 到期时间
+            },
+            {
+                id:2,
+                amount:2,
+                conition:15,// 使用条件
+                overdueTime:'2018-1-10'// 到期时间
+            }
+        ]
+
+
     }
     async componentDidMount(){
         document.title='订单确认'
@@ -218,7 +248,44 @@ class OrderSure extends Component{
             collectAddress:data
         })
     }
+    
+    // 自提时间选择列表
+    renderrAdoptTime=()=>{
+        const {adoptTimes,adoptTimeSelect}=this.state
+        const selectStyle={
+            backgroundColor:'#FFF9F2',
+            color:'#FF5A60',
+            borderRadius:'5px',
+        }
+        const unSelectStyle={
+            backgroundColor:'rgb(172, 167, 167)',
+            borderRadius:'5px',
+        }
 
+        const potinselect={
+            backgroundColor:'#FF5A60',
+            borderRadius:'5px',
+        }
+        console.log(adoptTimeSelect)
+        return (
+            <Block className={Styles.pop_content}>
+                {
+                    adoptTimes && adoptTimes.length>0?adoptTimes.map((item,index)=>{
+                        let isSelect=false
+                        if(adoptTimeSelect && adoptTimeSelect.value===item.value){
+                            isSelect=true
+                        }
+                        return <Block ml={5} mr={5} mt={2} wf f={1} bc={isSelect?'#FFF9F2':'#F4F7FB'} onClick={()=>this.setState({adoptTimeSelect:item})} key={'adopt-time-'+index} style={isSelect?selectStyle:null} className={Styles.pop_item}>
+                                <Block f={1}>{item.label}</Block>
+                                <Block a='c' j='c'><Block h={10} w={10} style={isSelect?potinselect:unSelectStyle}></Block></Block>
+                            </Block>
+                    }):<Block wf f={1} className={Styles.pop_item}> 无自提时间 </Block>
+                }
+            </Block>
+        )
+    }
+
+    // 商品列表
     renderGoodsArray=()=>{
         return (
             <Block>
@@ -244,8 +311,9 @@ class OrderSure extends Component{
         )
     }
 
+    //收货地址列表
     renderCollectInfo(){
-        const {selectedAdopt,reciveWay,collectMode,totalPrise}=this.state
+        const {adoptTimeSelect,reciveWay,collectMode,totalPrise}=this.state
         const {match:{params:{sessionId,memId}},history,form:{getFieldProps}} = this.props
         return (
             <Block>
@@ -264,16 +332,7 @@ class OrderSure extends Component{
                 {
                     collectMode===3?
                     <Block>
-                        <Item onClick={this.openPopWin} wrap arrow='horizontal' extra={selectedAdopt.deptName===''?'请选择':selectedAdopt.deptName}>推荐自提营业厅</Item>
-                        <Item>
-                            <Block wf>
-                                <Block f={1}>门店库存量</Block>
-                                <Block className={Styles.order_pop_wrap}>{selectedAdopt.saleNum}件
-                                    <Block className={Styles.order_popover}>可以看看其他门店哦</Block>
-                                    <i className={Styles.pop_arr}></i>
-                                </Block>
-                            </Block>
-                        </Item>
+                        <Item onClick={()=>this.setState({timePopVisible:true})} wrap arrow='horizontal' extra={adoptTimeSelect?adoptTimeSelect.label:'请选择'}>自提时间</Item>
                     </Block>:
                     <Item arrow='horizontal' multipleLine wrap>
                         {/* 选择收货地址 */}
@@ -284,36 +343,39 @@ class OrderSure extends Component{
                         selectedOk={this.selectedCollectInfo}/>
                     </Item>
                 }
+                    <Item onClick={()=>this.setState({honbaoPopVisible:true})} wrap arrow='horizontal' extra={'请选择'}>红包</Item>
                     <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>商品金额</Item>
                 </List>
                 </Block>
         )
     }
-    renderAdoptDept=()=>{
-        const {adoptDeptList,selectAdoptIndex}=this.state
-        return <Block className={Styles.pop_content} f={1}>
-            {
-                adoptDeptList.map((item,i)=>(
-                    <Block key={'adopt-'+i} bc={selectAdoptIndex===i?'#FFF9F2':null} vf className={Styles.pop_item} onClick={this.selectAdoptItem.bind(this,i,item)}>
-                        <Block style={{fontWeight: 'bold'}}>{item.deptName}</Block>
-                        <Block mt={10} wf>
-                            <Block f={1}>门店库存量</Block>
-                            <Block>{item.saleNum}件</Block>
-                        </Block>
-                        <Block mt={5} wf>
-                            <Block f={1}>{item.deptAddress}</Block>
-                            <Block ml={10} wf a='c'>
-                                <Block className={Styles.pos_icon}></Block>{item.distance}km
+
+    //红包选择
+    rendeHonbao=()=>{
+        const {honbaos,honbaoSelect}=this.state
+        return(
+            <Block className={Styles.pop_content}>
+                {
+                     honbaos && honbaos.length>0?honbaos.map((item,index)=>{
+                         return <Block style={{backgroundImage:`url(${HonbaoImage})`}} ml={10} mr={10} mt={10} wf f={1} onClick={()=>this.setState({honbaoSelect:item})} key={'hb-'+index} className={Styles.pop_item_honbao}>
+                            <Block f={3} fs={20} a='c' j='c' style={{color:'#fff',fontWeight: 'bold'}}>￥5 </Block>
+                            <Block f={4} mt={10} vf pt={10} pl={10}>
+                                <Block fs={15} style={{fontWeight: 'bold'}}>满20可以使用</Block>
+                                <Block mt={10} fs={12} style={{color:'#CCCCCC'}}>2018-1-10 到期</Block>
                             </Block>
-                        </Block>
-                    </Block>
-                ))
-            }
-        </Block>
+                            <Block w={80} a='c' j='c'>
+                                <Block f={1} a='c' j='c' className={Styles.peceive}>立即使用</Block>
+                            </Block>
+                         </Block>
+                    }):null
+                }
+            </Block>
+        )
     }
+
     render(){
         const { getFieldProps } = this.props.form
-        const { reciveWay, popVisible,collectMode } = this.state
+        const { reciveWay, popVisible,collectMode,timePopVisible,honbaoPopVisible} = this.state
         return (
             <Block vf className={Styles.order_sure_wrapper}>
                 {/* 商品信息 */}
@@ -323,20 +385,36 @@ class OrderSure extends Component{
                 <Block m={15} mt={20}>
                     <Button style={{borderRadius: 25}} type='primary' onClick={this.orderSubmit.bind(this)}>提交订单</Button>
                 </Block>
-                {/* 选择推荐营业厅 */}
+            
                 <Modal
                     popup
-                    visible={popVisible}
+                    visible={timePopVisible}
                     animationType='slide-up'>
                     <Block vf className={Styles.pop_wrapper}>
                         <section className={Styles.pop_header}>
                             <Block wf>
-                                <Block onClick={this.closePopWin} ml={15} fc='#999'>取消</Block>
-                                <Block j='c' f={1}>选择自提营业厅</Block>
-                                <Block onClick={this.confirmAdopt} mr={15} className={Styles.orangeColor}>确定</Block>
+                                <Block onClick={()=>this.setState({adoptTimeSelect:null,timePopVisible:false})} ml={15} fc='#999'>取消</Block>
+                                <Block j='c' f={1}>选择自提时间</Block>
+                                <Block onClick={()=>this.setState({timePopVisible:false})} mr={15} className={Styles.orangeColor}>确定</Block>
                             </Block>
                         </section>
-                        {this.renderAdoptDept()}
+                        {this.renderrAdoptTime()}
+                    </Block>
+                </Modal>
+
+                <Modal
+                    popup
+                    visible={honbaoPopVisible}
+                    animationType='slide-up'>
+                    <Block vf className={Styles.pop_wrapper}>
+                        <section className={Styles.pop_header}>
+                            <Block wf>
+                                <Block onClick={()=>this.setState({honbaoPopVisible:false,honbaoSelect:null})} ml={15} fc='#999'>取消</Block>
+                                <Block j='c' f={1}>可用红包</Block>
+                                <Block onClick={()=>this.setState({honbaoPopVisible:false})} mr={15} className={Styles.orangeColor}>确定</Block>
+                            </Block>
+                        </section>
+                        {this.rendeHonbao()}
                     </Block>
                 </Modal>
             </Block>
