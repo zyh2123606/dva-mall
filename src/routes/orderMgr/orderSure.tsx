@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-import { List, Button, Modal, Picker,Toast } from 'antd-mobile'
+import { List, Button, Modal, Picker,Toast,InputItem } from 'antd-mobile'
 import { createForm } from 'rc-form'
 import {connect} from 'dva'
 import UserService from '../../services/userSeervice'
@@ -11,6 +11,8 @@ import ShoppingCartService from '../../services/shoppingCartService'
 import CollectInfoList from  './CollectInfoList'
 import Constant from '../../utils/constant'
 import HonbaoImage from '../../assets/img/hongbao@2x.png'
+import uncheck from '../../assets/img/uncheck.png'
+import checked from '../../assets/img/checked.png'
 const alert = Modal.alert;
 /**
  *订单确认
@@ -45,6 +47,7 @@ class OrderSure extends Component{
         adoptTimeSelect:{},
 
         honbaoPopVisible:false,//红包选择
+        isCheckedJifen:false,//是否使用积分
         honbaoSelect:null,// 当前选中红包
         honbaos:[
             {
@@ -59,8 +62,10 @@ class OrderSure extends Component{
                 conition:15,// 使用条件
                 overdueTime:'2018-1-10'// 到期时间
             }
-        ]
+        ],
 
+        fapiaoPopVisible:false,//发票选择
+        fapiaoSelect:null,//选中开发票模式
 
     }
     async componentDidMount(){
@@ -313,12 +318,12 @@ class OrderSure extends Component{
 
     //收货地址列表
     renderCollectInfo(){
-        const {adoptTimeSelect,reciveWay,collectMode,totalPrise}=this.state
+        const {adoptTimeSelect,reciveWay,collectMode,totalPrise,isCheckedJifen}=this.state
         const {match:{params:{sessionId,memId}},history,form:{getFieldProps}} = this.props
         return (
             <Block>
 
-                    <List renderHeader='收货信息'>
+                    <List renderHeader={<Block fs={18} style={{color:'#000',fontWeight: 'bold'}}>收货信息</Block>}>
                         <Picker
                                 data={reciveWay}
                                 cols={1}
@@ -343,8 +348,28 @@ class OrderSure extends Component{
                         selectedOk={this.selectedCollectInfo}/>
                     </Item>
                 }
+                    
+                    
+                </List>
+
+                 <List renderHeader={<Block fs={18} style={{color:'#000',fontWeight: 'bold'}}>开具发票</Block>}>
+                    <Item onClick={()=>this.setState({fapiaoPopVisible:true})} arrow='horizontal' extra={''}>选择发票</Item>
+                 </List>
+                <List renderHeader={<Block fs={18} style={{color:'#000',fontWeight: 'bold'}}>会员信息</Block>}>
                     <Item onClick={()=>this.setState({honbaoPopVisible:true})} wrap arrow='horizontal' extra={'请选择'}>红包</Item>
+                    <Item wrap extra={
+                        <Block hf onClick={()=>this.setState({isCheckedJifen:!isCheckedJifen})}>
+                            <Block f={1}>共12345积分，可抵扣12元</Block>
+                            <Block><img style={{height:'20px',width:'20px'}} src={isCheckedJifen?checked:uncheck}/></Block>
+                        </Block>
+                        }>积分</Item>
+                </List>
+
+                <List renderHeader={<Block fs={18} style={{color:'#000',fontWeight: 'bold'}}>总金额</Block>}>
                     <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>商品金额</Item>
+                    <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>红包抵扣</Item>
+                    <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>积分抵扣</Item>
+                    <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>总金额</Item>
                 </List>
                 </Block>
         )
@@ -373,9 +398,70 @@ class OrderSure extends Component{
         )
     }
 
+    // 开具发票页面
+    renderFapiaoWindow=()=>{
+        const {fapiaoSelect}=this.state
+        const {getFieldProps}=this.props.form
+        let selected=true
+        return (
+            <Block className={Styles.order_det_wrapper} bc='#fff' vf  p={15}>
+                <Block vf p={15} f={1}>
+                    <Block vf>
+                        <Block f={1} pb={13} fs={18}>购买数量</Block>
+                        <Block f={1} wf>
+                            <Block mr={10} className={selected?Styles.color_tag_select:Styles.color_tag}>普通纸质发票</Block>
+                            <Block mr={10} className={selected?Styles.color_tag_select:Styles.color_tag}>普通电子发票</Block>
+                        </Block>
+                    </Block>
+
+                    <Block vf mt={20}>
+                        <Block f={1} pb={13} fs={18}>发票抬头</Block>
+                        <Block f={1} wf>
+                            <Block mr={10} className={selected?Styles.color_tag_select:Styles.color_tag}>个人</Block>
+                            <Block mr={10} className={selected?Styles.color_tag_select:Styles.color_tag}>单位</Block>
+                        </Block>
+                        <Block f={1} className={Styles.company_info}>
+                            <InputItem
+                                {...getFieldProps('company')}
+                                placeholder='公司'/>
+                            <InputItem
+                                {...getFieldProps('taxpayerCode')}
+                                placeholder='纳税人识别号'/>
+                        </Block>
+                    </Block>
+
+                    <Block vf mt={20}>
+                        <Block f={1} pb={13} fs={18}>收票人信息</Block>
+                        <Block f={1} vf className={Styles.user_info_group}>
+                            <InputItem
+                                    {...getFieldProps('phone')}
+                                    placeholder='收票人手机'/>
+                                <InputItem
+                                    {...getFieldProps('email')}
+                                    placeholder='收票人邮箱'/>
+                        </Block>
+                    </Block>
+
+                    <Block vf mt={20}>
+                        <Block f={1} pb={13} fs={18}>发票内容</Block>
+                        <Block f={1} wf>
+                            <Block mr={10} className={selected?Styles.color_tag_select:Styles.color_tag}>不开发票</Block>
+                            <Block mr={10} className={selected?Styles.color_tag_select:Styles.color_tag}>商品明细</Block>
+                        </Block>
+                    </Block>
+                    <Block vf mt={5} style={{color: '#888',fontSize: '14px'}}>发票内容将显示详细商品名称与价格优惠</Block>
+                </Block>
+                <Block h={30} f={1}>
+                    <Button style={{borderRadius: 25}} type='primary'>确定</Button>
+                </Block>
+            </Block>
+            
+        )
+    }
+
     render(){
         const { getFieldProps } = this.props.form
-        const { reciveWay, popVisible,collectMode,timePopVisible,honbaoPopVisible} = this.state
+        const { reciveWay, popVisible,collectMode,timePopVisible,honbaoPopVisible,fapiaoPopVisible} = this.state
         return (
             <Block vf className={Styles.order_sure_wrapper}>
                 {/* 商品信息 */}
@@ -415,6 +501,22 @@ class OrderSure extends Component{
                             </Block>
                         </section>
                         {this.rendeHonbao()}
+                    </Block>
+                </Modal>
+
+                <Modal
+                    popup={false}
+                    visible={fapiaoPopVisible}
+                    animationType='slide-up'>
+                    <Block vf className={Styles.pop_wrapper_fapiao}>
+                        <section className={Styles.pop_header}>
+                            <Block wf>
+                                <Block onClick={()=>this.setState({fapiaoPopVisible:false,fapiaoSelect:null})} ml={15} fc='#999'>取消</Block>
+                                <Block j='c' f={1}>开具发票</Block>
+                                <Block onClick={()=>this.setState({fapiaoPopVisible:false})} mr={15} className={Styles.orangeColor}>确定</Block>
+                            </Block>
+                        </section>
+                        {this.renderFapiaoWindow()}
                     </Block>
                 </Modal>
             </Block>

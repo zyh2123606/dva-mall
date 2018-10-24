@@ -1,9 +1,14 @@
 import React from 'react';
 import Block from 'fs-flex'
 import Styles from './index.less'
-import {Modal, Picker,Toast } from 'antd-mobile'
+import {Modal, Radio,Toast,List } from 'antd-mobile'
 import UserService from '../../services/userSeervice'
 import Constant from '../../utils/constant'
+import bianji from '../../assets/img/bianji.png'
+import uncheck from '../../assets/img/uncheck.png'
+import checked from '../../assets/img/checked.png'
+
+const Item =List.Item
 class  CollectInfoList extends React.Component{
     state={
         popVisible:false,
@@ -17,51 +22,9 @@ class  CollectInfoList extends React.Component{
     }
     async componentDidMount(){
         document.title = '选择收货地址'
-        setTimeout(() => {
-            this.init()
-        }, 500);
+        this.queryCollectInfo()
     }
-    init(){
-        const {data}=this.props
-        let selectedItem={id:0,address:'',receiver:'',tel:''}
-        let selectIndex=0;
-        if(this.state.selectedItem.id!=0){
-            return this.renderItem(this.state.selectedItem)
-        }
-        if(data){
-            const defaultAdr= data.filter((item,index)=>{
-                if(item.defaultFlag===1){
-                    selectIndex=index
-                    return true
-                }
-                return false
-            })
-
-            if(defaultAdr && defaultAdr.length>0){
-                selectedItem={
-                    id:defaultAdr[0].id,
-                    address:defaultAdr[0].address,
-                    receiver:defaultAdr[0].receiver,
-                    tel:defaultAdr[0].tel,
-                }
-
-            }else{
-                const frist=data[0]
-                if(!frist){
-                    return
-                }
-                selectedItem={
-                    id:data[0].id,
-                    address:data[0].address,
-                    receiver:data[0].receiver,
-                    tel:data[0].tel,
-                }
-            }
-        }
-        this.setState({index:selectIndex,selectedItem})
-        // 设置默认收货地址
-        this.props.selectedOk(selectedItem,selectIndex)
-    }
+    
     openCollectInfo=()=>{
         this.setState({
             popVisible:true,
@@ -114,23 +77,44 @@ class  CollectInfoList extends React.Component{
     addCollection=()=>{
         console.log('添加收货地址')
     }
+    // 去编辑收货信息
+    toEditCollectInfo(item){
+        console.log('去编辑收货地址')
+    }
+    //选中收货地址
+    selectCollectinfoItem(item){
+        this.setState({selectedItem:item})
+    }
     renderItem=(item)=>{
+        const {selectedItem} =this.state
+        let isChecked=(selectedItem && selectedItem.id===item.id)
         return (
             <Block vf>
                 <Block wf f={1} style={{fontWeight: 'bold'}}>
                     <Block f={1}>{item.receiver}</Block>
                     <Block>{item.tel}</Block>
                 </Block>
-                <Block mt={5}>收货地址：{item.address}</Block>
-                <Block mt={5} hf style={{borderTop:'1px solid #CCCCCC'}}>
-                    <Block f={1}>选择地址</Block>
-                    <Block w={100} a='c' j='c'>编辑</Block>
+                <Block mt={5} pb={10}>收货地址：{item.address}</Block>
+                <Block pt={10} hf style={{borderTop:'1px solid #ddd'}}>
+                    <Block f={1} hf onClick={this.selectCollectinfoItem.bind(this,item)}>
+                        <Block a='c' j='c'><img style={{height:'20px',width:'20px'}} src={isChecked?checked:uncheck}/></Block>
+                        <Block a='c' j='c' ml={5}>选择地址</Block>
+                    </Block>
+                    <Block w={100} a='c' j='c' onClick={this.toEditCollectInfo.bind(this,item)}><img src={bianji}/></Block>
                 </Block>
             </Block>
         )
     }
     renderDefaultItem=()=>{
-        return this.renderItem(this.state.selectedItem)
+        const {selectedItem} =this.state
+        const isSelect=(selectedItem && selectedItem.id!==0)
+        return(
+            <Block hf>
+                <Block mt={5} f={1} pb={10}>收货地址：</Block>
+                <Block a='c' fs={16} style={{color:'#888'}}>{isSelect?selectedItem.address:'请选择'}</Block>
+            </Block>
+        )
+        return this.renderItem(selectedItem)
     }
     renderContent=()=>{
         const {index,data}=this.state
@@ -138,7 +122,7 @@ class  CollectInfoList extends React.Component{
             <Block h={20} hf m={10}><Block f={1}></Block><Block onClick={this.addCollection} style={{color:'#FF8E44'}}>添加收货地址</Block></Block>
             {
                 data && data.length>0?data.map((item,i)=>(
-                    <Block key={'adopt-'+i} vf className={Styles.pop_item} onClick={this.selectItem.bind(this,i)}>
+                    <Block key={'adopt-'+i} m={5} vf className={Styles.pop_item} style={{boxShadow:'0 0 1px #E6E6E6',borderRadius: '5px',color: '#707070'}} onClick={this.selectItem.bind(this,i)}>
                         {
                             this.renderItem(item)
                         }

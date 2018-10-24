@@ -130,7 +130,6 @@
     }
     .pop_item{
         padding: 10px 15px;
-        box-shadow:0 0 1px#fff inset;
         .thin-by-line();
     }
     .pop_content{
@@ -200,5 +199,89 @@
         height: 78px;
         border-radius: @borderRadius;
         border: #E6E6E6 solid 1px;
+    }
+}
+.my_radio .am-radio {
+    
+    padding: 2.5px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+.user_info_group :global(.am-list-item.am-input-item) {
+        height: 44px;
+        padding-left: 0px;
+}
+.company_info :global(.am-list-item.am-input-item) {
+    height: 44px;
+    padding-left: 0px;
+}
+.company_info :global(.am-list-item .am-list-line ) {
+        position: relative;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex: 1 1;
+        flex: 1 1;
+        -ms-flex-item-align: stretch;
+        align-self: stretch;
+        padding-right: 15px;
+        background-color: @bodyColor;
+        border-radius: 20px;
+        padding-left: 15px;
+        margin-top: 5px;
+        overflow: hidden;
+}
+
+.pop_wrapper_fapiao{
+    color: #333;
+    text-align: left;
+    height: 100%;
+    .pop_header{
+        padding: 10px 0;
+        .thin-by-line();
+    }
+    .pop_item{
+        padding: 10px 15px;
+        .thin-by-line();
+    }
+    .pop_content{
+        overflow: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .pos_icon{
+        width: 20px;
+        height: 20px;
+        background: url(../../assets/svg/positon.svg) no-repeat;
+        background-size: cover;
+        margin-right: 3px;
+    }
+    .pop_item_honbao{
+        height: 90px;
+        padding: 10px 15px;
+        .thin-by-line();
+        background-repeat:no-repeat;
+        background-size:100% 100%;
+        -moz-background-size:100% 100%;
+        box-shadow:0 0 1px #fff inset;
+
+    }
+    .peceive{
+        height: 25px;
+        border-radius: 15px;
+        border: 1px solid @orange;
+        color:@orange;
+        font-size: 10p;
+
+    }
+    .peceived{
+        height: 25px;
+        align-items: center;
+        line-height: 80px;
+        border-radius: 15px;
+        border: 1px solid @arrowColor;
+        color:@arrowColor;
+        font-size: 10p;
+
     }
 }
