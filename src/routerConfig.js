@@ -3,7 +3,7 @@
  */
 import {homePage, orderDetailPage, myOrderPage, orderSurePage, accountPage, addressMgrPage, 
     addAddressPage,updateAddressPage, orderInfoPage, orderCompletePage, productPage, searchPage, 
-    cartPage, successPage, failPage} from './lazyRoutes'
+    cartPage, successPage, failPage,deptSelect} from './lazyRoutes'
     
 const RouteConfig = [
     {path: '/home/:sessionId/:memId', component: homePage, exact: true},
@@ -20,7 +20,8 @@ const RouteConfig = [
     {path: '/order-complete/:orderId/:sessionId/:memId', component: orderCompletePage, exact: true},
     {path: '/cart/:sessionId/:memId', component: cartPage, exact: true},
     {path: '/success/:orderId/:sessionId/:memId', component: successPage, exact: true},
-    {path: '/fail', component: failPage, exact: true}
+    {path: '/fail', component: failPage, exact: true},
+    {path: '/dept-select/:sessionId/:memId', component: deptSelect, exact: true}
 ]
 
 export default RouteConfig

@@ -1,0 +1,110 @@
+@import '../../common.less';
+.default_wrapper{
+    .container;
+    .left_menu{
+        min-height: 100%;
+        background: #fff;
+        .thin-xr-line();
+        .menu_item{
+            width: 90px;
+            height: 50px;
+            .thin-by-line();
+        }
+        .menu_item_select{
+            background-color: @bodyColor;
+            color: @orange;
+            width: 90px;
+            height: 50px;
+            .thin-by-line();
+        }
+    }
+    .prod_panel{
+        .boxShadow();
+        border-radius: @borderRadius;
+        padding: 5px 5px 1px 3px;
+        line-height: normal;
+        background: #fff;
+        .type_prod_item{
+            background: #F4F7FB;
+            @value: 6px;
+            width: calc(~"33.33333333333333% - @{value}"); 
+            width: -webkit-calc(~"33.33333333333333% - @{value}");
+            height: 87px;
+            display: inline-block;
+            margin-left: 2px;
+            padding: 2px;
+            position: relative;
+            overflow: hidden;
+            border-radius: @borderRadius;
+            img{ border: none; width: 100%; border-radius: @borderRadius; height: 100%; display: block; }
+        }
+    }
+}
+/**商品搜索**/
+.search_wrapper{
+    .container;
+    height: 100%;
+    background: #fff;
+    .contrl{
+        height: 45px;
+        .thin-ty-line();
+        .thin-by-line();
+    }
+    .arrow{
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-color: transparent;
+    }
+    .arrow_t{
+        .arrow;
+        border-width: 6px 6px 0 6px;
+        border-top-color: #D2D2D2;
+    }
+    .arrow_b{
+        .arrow;
+        border-width: 0 6px 6px 6px;
+        border-bottom-color: @orange;
+    }
+    .sear_content{
+        position: relative;
+        overflow: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        .prod_pic{
+            width: 76px;
+            height: 76px;
+            padding: 2px;
+            border: #E6E6E6 solid 1px;
+            border-radius: @borderRadius;
+        }
+        .sear_list_item{
+            padding: 15px;
+            .thin-by-line();
+        }
+        .prod_tag{
+            background: #F0F0F0;
+            padding: 0 5px;
+            display: inline-block;
+            border-radius: 2px;
+            color: #666666;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+    }
+}
+/** 弹出层 **/
+.search_masker{
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 90px;
+    bottom: 0;
+    background: rgba(0, 0, 0, .4);
+    .search_pop{
+        min-height: 150px;
+        background: #fff;
+        padding-right: 10px;
+        padding-bottom: 10px;
+    }
+}

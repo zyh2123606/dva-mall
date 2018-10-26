@@ -19,3 +19,5 @@ export const myOrderWaitRecivePage = Loadable({loader: () => import('./routes/my
 export const myOrderCompletePage = Loadable({loader: () => import('./routes/myOrder/complete'), loading: () =>(<div></div>)})
 export const successPage = Loadable({loader: () => import('./routes/message/success'), loading: () => (<div></div>)})
 export const failPage = Loadable({loader: () => import('./routes/message/fail'), loading: () => (<div></div>)})
+export const deptSelect = Loadable({loader: () => import('./routes/deptSelect/index'), loading: () => (<div></div>)})
+
