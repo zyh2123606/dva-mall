@@ -23,7 +23,7 @@ export default{
     },
     proxy: {
         '/api': {
-            target: 'https://iretail.bonc.com.cn/',
+            target: 'https://newretail.bonc.com.cn/top_mall',
             changeOrigin: true,
             pathRewrite: {'^/api': '/api'}
         }

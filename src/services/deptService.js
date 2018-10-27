@@ -26,6 +26,13 @@ class DeptService extends HttpBase{
         return this.get(`/dept/getAdoptDeptList?skuId=${skuid}&orderDeptId=${orderDeptId}`);
     }
 
+    // 获取门店列表
+    getDeptList=(data,accountId)=>{
+        return this.postJson('/salesWebToWoStore/storeList',{
+            DATA:data,
+            accountId:accountId,//用户
+        })
+    }
 }
 
 export default DeptService;

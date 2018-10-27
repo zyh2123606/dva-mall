@@ -5,41 +5,89 @@ import Styles from './index.less';
 import Checked from '../../assets/img/checked.png';
 import unChecked from '../../assets/img/uncheck.png';
 import weizhi from '../../assets/img/weizhi.png';
+import DeptSelectService from '../../services/deptService';
+import Canstant from '../../utils/constant';
 
 
 class DeptSelect  extends Component {
     state={
-        searchKeyword:''
+        searchKeyword:null,
+        deptList:[],
+        currentSelect:null,// 当前选中条目
+    }
+
+    async componentDidMount(){
+        this.search()
+    }
+
+    searchInputChange=(val)=>{
+        this.setState({searchKeyword:val})
+    }
+
+    search=async()=>{
+        const {searchKeyword}=this.state
+        const accountId=9
+        let data={
+            deptIng:'102.725556',// 获取经度
+            deptLat:'102.725556',// 获取维度
+            currentPage:'1',
+            countPerPage:'25',
+            fullname:searchKeyword||null,//门店名称
+        }
+        const {RESP_CODE,DATA}=await new DeptSelectService(1,15).getDeptList(data,accountId);
+        if(RESP_CODE===Canstant.responseOK){
+            this.setState({deptList:DATA.deptList})
+        }
+    }
+
+    select(currentSelect){
+        this.setState({currentSelect})
     }
   render() {
-    const {searchKeyword}=this.state
+    const {searchKeyword,deptList,currentSelect}=this.state
     return (
       <Block className={Styles.default_wrapper} vf>
-          <Block>
-                <SearchBar placeholder='请输入商品名称查询'
-                showCancelButton={true} 
-                onChange={this.searchInputChange}
-                value={searchKeyword?searchKeyword:''}
-                onSubmit={this.cancelInput}
-                onCancel={this.cancelInput}
-                cancelText={<Button style={{marginTop: 6, borderRadius: 15}} type='primary' size='small' onSubmit={this.onSubmit}>搜索</Button>}/>
-            </Block>
-            <Block vf style={{marginTop:'10px'}}>
-                <Block vf pl={5} pr={5} style={{borderBottom:'1px solid'}}>
-                    <Block wf f={1} style={{fontWeight: 'bold'}}>
-                        <Block fs={15} f={1}>上海联通江苏路营业厅</Block>
-                        <Block mr={10}>
-                            <img style={{width:'20px',height:'20px'}} src={Checked}/>
-                        </Block>
-                    </Block>
-                    <Block pt={5} hf>
-                        <Block f={1} mr={15}>上海市 长宁区 江苏路1458号 上海联通江苏路营业厅</Block>
-                        <Block hf>
-                            <Block><img src={weizhi}/></Block>
-                            <Block j='c' ml={5}>6.5 KM</Block>
-                        </Block>
-                    </Block>
+            <Block f={1}>
+                <Block>
+                    <SearchBar placeholder='请输入门店名称搜索'
+                    showCancelButton={true} 
+                    onChange={this.searchInputChange}
+                    value={searchKeyword?searchKeyword:''}
+                    onSubmit={this.search}
+                    onCancel={this.search}
+                    cancelText={<Button style={{marginTop: 6, borderRadius: 15}} type='primary' size='small' onSubmit={this.onSubmit}>搜索</Button>}/>
                 </Block>
+                <Block vf>
+                    {
+                        deptList && deptList.length>0?deptList.map((item,index)=>{
+                            let isSelect=false
+                            if(currentSelect){
+                                isSelect=(currentSelect.depeId===item.depeId)
+                            }
+                            return(
+                                <Block key={'dept-'+index} mt={15} vf p={10} style={{borderBottom:'1px solid #ddd'}} onClick={this.select.bind(this,item)}>
+                                    <Block wf f={1} style={{fontWeight: 'bold'}}>
+                                        <Block fs={15} f={1}>{item.simplename}</Block>
+                                        <Block mr={10}>
+                                            <img style={{width:'20px',height:'20px'}} src={isSelect?Checked:unChecked}/>
+                                        </Block>
+                                    </Block>
+                                    <Block pt={5} hf>
+                                        <Block f={1} mr={15}>{item.fullname}</Block>
+                                        <Block hf>
+                                            <Block><img src={weizhi}/></Block>
+                                            <Block j='c' ml={5}>{item.distance?(item.distance/1000+' km'):null}</Block>
+                                        </Block>
+                                    </Block>
+                                </Block>
+                            )
+                        }):<Block a='c' j='c'>暂无门店可选</Block>
+                    }
+                    
+                </Block>
+            </Block>
+            <Block h={50} m={10}>
+                <Button style={{borderRadius:'30px'}} type="primary">确定</Button>
             </Block>
       </Block>
     )
