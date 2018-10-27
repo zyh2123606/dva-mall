@@ -12,6 +12,12 @@ class ProductService extends HttpBase{
             return config
         })
     }
+
+    // 获取商品详情
+    getGoodsDetai=(data)=>{
+        return this.postJson('/goodsInfoMallController/queryGoodsDetails',data)
+    }
+
     getDetailById = (typeId=undefined,cloudShelfId=undefined) => {
         if(typeId){
             return this.get(`/goods/getGoodsInfo?typeId=${typeId}`)

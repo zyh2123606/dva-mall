@@ -31,36 +31,19 @@ class OrderDetail extends Component{
 
         const services=new Service({sessionId,memId})
         const { cloudShelfId } = qs.parse(location.search.split('?')[1])
-        let res={}
-        if(cloudShelfId){
-            res = await services.getDetailById(null,cloudShelfId)
-        }else{
-            res=await services.getDetailById(pid,null)
-        }
-        const { data, code } = res
-        if(code===Constant.responseOK && data){
-            let colorsAttrs=new Map()
-            if(data.goodsTypeAttrList){
-                data.goodsTypeAttrList.map(item=>{
-                    const attrs = item.attrValList.filter(i=>i.selected===1)
-                    if(attrs && attrs.length>0){
-                        colorsAttrs.set(attrs[0].baseAttrId,attrs[0].attrValId)
-                    }
-
-                })
+        const {RESP_CODE,DATA}=await services.getGoodsDetai({
+            deptId:258,
+            accountId:9,
+            DATA:{
+                typeId:7048,
+                skuId:944
             }
-            this.setState({
-                cur_tag:colorsAttrs,
-                pageData: {...data,colors:colorsAttrs},
-                defaultSkuPrice:this.toMoney(data.defaultSkuPrice),
-                typeId:pid,
-                title:data.title,
-                logoPath:Constant.imgBaseUrl+data.logoPath,
-                skuid:data.defaultSkuId,
-                headerImg:data.goodsHeadPicList||[]})
+        })
+        if(RESP_CODE==Constant.responseOK){
+            this.setState({pageData:DATA})
         }
-        // 查询购物车商品数量
-        this.shoppingCart()
+        
+        // this.shoppingCart()
     }
     //选择颜色
     selectColor(attrValId,baseAttrId){
@@ -180,47 +163,33 @@ class OrderDetail extends Component{
         // productService.connectService(token)
     }
     // 渲染商品属性部分
-    renderAttrBlock=(baseAttrId)=>{
+    renderAttrBlock=(attrValue)=>{
         const { getFieldProps } = this.props.form
         const {cur_tag}=this.state
-        const {pageData:{goodsTypeAttrList}}=this.state
-        let attrList=[]
-        if(!goodsTypeAttrList){
-            return
-        }
-        goodsTypeAttrList.map(item=>{
-            const attrItems = item.attrValList.filter((v,i)=>v.baseAttrId===baseAttrId)
-            if (attrItems && attrItems.length>0){
-                attrList=[...attrList,...attrItems]
-            }
-        })
         return (
             <Block wf>
                 {
-                    attrList.map(({attrValId,attrCode,attrId,baseAttrId},idx)=>{
+                    attrValue?attrValue.map((item,idx)=>{
                         let selected=false
-                        cur_tag.forEach((value,key)=>{
-                            if(key===baseAttrId && value===attrValId){
-                                selected=true
-                                return
-                            }
-                            
-                        })
-                        return <Block key={'attr-item-'+idx} onClick={this.selectColor.bind(this, attrValId,baseAttrId)} 
+                        return <Block key={'attr-item-'+idx} onClick={this.selectColor.bind(this, null,null)} 
                                 {...getFieldProps('color_id', {initialValue: 100})}
                                 key={idx}  
                                 mr={idx !=0 && idx%3 == 0?0:10}
                                 className={selected?Styles.color_tag_select:Styles.color_tag}>
-                                {attrCode}
+                                {item}
                             </Block>
-                    })
+                    }):null
                 }
             </Block>
         )
     }
 
     renderHeaderImges=()=>{
-        const {headerImg} =this.state
+        const {pageData:{showImg}} =this.state
+        let images=[]
+        if(showImg && showImg.indexOf(",") != -1){
+            images=showImg.spilt(',')
+        }
         return <Carousel 
             autoplay={false} 
             infinite 
@@ -228,10 +197,10 @@ class OrderDetail extends Component{
             dotActiveStyle={{background: '#FF8E44'}}
             style={{touchAction: 'none'}}>
             {
-                headerImg.map((item,index)=><img 
+                images.map((item,index)=><img
                     key={'header-img-'+index}
-                    src={Constant.imgBaseUrl+item.picPath}
-                    alt={item.picName}
+                    src={Constant.imgBaseUrl+item}
+                    alt={item}
                     style={{marginTop: 0, borderRadius: '5px 5px 0 0'}} 
                     className={Styles.prod_img} 
                     onLoad={() => {window.dispatchEvent(new Event('resize'));}} 
@@ -248,25 +217,21 @@ class OrderDetail extends Component{
             pageData?<Block bc='#fff' vf p={15} className={Styles.order_det_wrapper}>
                 <Block vf className={Styles.pro_panel}>
                     <Block f={1} j='c' a='c'>
-                        {/* <img style={{marginTop: 0, 
-                            borderRadius: '5px 5px 0 0'}} 
-                            className={Styles.prod_img} 
-                            src={Constant.imgBaseUrl+goodsHeadPicList[0].picPath} alt='商品logo'/> */}
-                            {
-                                this.renderHeaderImges()
-                            }
+                        {
+                            this.renderHeaderImges()
+                        }
                     </Block>
                     <Block p={20} vf mt={10}>
                         <Block fs={16}>{title}</Block>
-                        <Block className={Styles.money_color} fs={20} mt={10}>￥{defaultSkuPrice}</Block>
+                        <Block className={Styles.money_color} fs={20} mt={10}>￥{pageData.salePrice}</Block>
                     </Block>
                 </Block>
                 {
-                    pageData.goodsBaseAttrList?pageData.goodsBaseAttrList.map(({baseAttrId,baseAttrName},baseIndex)=>{
+                    pageData.attrList?pageData.attrList.map(({attrValue,attrName},baseIndex)=>{
                         return <Block key={'base-attr-'+baseIndex}>
-                                <Block pt={20} pb={13} fs={18}>{baseAttrName}</Block>
+                                <Block pt={20} pb={13} fs={18}>{attrName}</Block>
                                 {
-                                    this.renderAttrBlock(baseAttrId)
+                                    this.renderAttrBlock(attrValue)
                                 }
                             </Block>
                     }):null
