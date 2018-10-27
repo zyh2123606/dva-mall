@@ -18,7 +18,7 @@ import GoodsTypeService from '../../services/goodsTypeService';
 class DefaultPage extends Component{
     state={
         firstTypeList:[],// 第一级分类集合
-        secondTypeList:[],// 第二级分类集合
+        secondTypeList:null,// 第二级分类集合
         searchKeyword:'',//搜索值
         parentTypeId:0,//当前选中父级typeId
     }
@@ -80,12 +80,23 @@ class DefaultPage extends Component{
 
     renderSecondType=()=>{
         const {secondTypeList}=this.state
+        console.log(secondTypeList===null || secondTypeList.length<1)
         return (
-            <Block className={Styles.prod_panel}>
+            <Block className={Styles.prod_panel} vf>
                 {
-                    secondTypeList.map((item,index)=>{
-                        return <Block a='c' j='c' key={'child-type-'+index} className={Styles.type_prod_item} onClick={this.selectChildItem.bind(this,item)}>
-                            <img src={item.grandFatherUrl?Constant.imgBaseUrl+item.grandFatherUrl:ImgErr} alt={item.grandFatherTypeName}/>
+                    secondTypeList===null || secondTypeList.length<1?<Block h={20}>暂无数据</Block>:
+                    secondTypeList.map((secondType,secondTypeIndex)=>{
+                        return <Block key={'second-'+secondTypeIndex}>
+                                <Block h={20} fs={17} p={10}>{secondType.grandpaTypeName}</Block>
+                                <Block f={1}>
+                                {
+                                    secondType.brandList && secondType.brandList.length>0 ?secondType.brandList.map((item,index)=>{
+                                        return <Block a='c' j='c' key={'child-type-'+index} className={Styles.type_prod_item} onClick={this.selectChildItem.bind(this,item)}>
+                                            <img src={item.grandFatherUrl?Constant.imgBaseUrl+item.grandFatherUrl:ImgErr} alt={item.grandFatherTypeName}/>
+                                        </Block>
+                                    }):<Block h={20}>暂无数据</Block>
+                                }
+                                </Block>
                         </Block>
                     })
                 }
