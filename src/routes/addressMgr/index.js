@@ -52,25 +52,24 @@ class AddressMgr extends Component {
     }
     deleteAddress=(item,index,e)=>{
         const alert = Modal.alert
-        const pcc = this.getProvince(item.province,item.city,item.county,AreaData)
-        alert('确认',`确认删除地址: ${pcc} ${item.address}么？`,[{text:'取消',onPress:()=>console.log('cancel')},
+        alert('确认',`确认删除地址: ${item.province}${item.city}${item.district}${item.street} ${item.addrDetail}么？`,[{text:'取消',onPress:()=>console.log('cancel')},
             {text:'确认',onPress:()=>{
                 (async(item,index)=>{
-                    const {id,memId} = item 
+                    const {addrId,memId} = item 
                     const {params} = this.props.match
                     const baseSer = new Service(params)
-                    const res = await baseSer.deleteAddress({addrId:id,memId:memId})
-                    const {code,msg} = res
-                    if(code==="0000"){
+                    const res = await baseSer.deleteAddress({addrId:addrId,memId:memId})
+                    const {RESP_CODE,RESP_DESC} = res
+                    if(RESP_CODE==="0000"){
                         Toast.info("删除成功！")
                         let newState = this.props.myAddress
                         newState.data.filter((data,idx)=>{
-                            if(data.id===id)
+                            if(data.addrId===addrId)
                                 newState.data.splice(idx,1)
                         })
                         this.setState({data:newState})
                     }else{
-                        Toast.info(msg)
+                        Toast.info(RESP_DESC)
                     }
                 })(item,index)
             }},])

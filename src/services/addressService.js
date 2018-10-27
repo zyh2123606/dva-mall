@@ -26,7 +26,8 @@ class AddressService extends HttpBase{
         return this.postJson(`https://newretail.bonc.com.cn/top_mall/api/salesWebToWoStore/updateMemberAddress`, pData)
     }
     deleteAddress=(data=undefined)=>{
-        return this.get(`/mem/addr/delete?addrId=${data.addrId}&memId=${this.MEMID}`)
+        const pData = {accountId:this.MEMID,DATA:{addrId:data.addrId}}
+        return this.postJson(`https://newretail.bonc.com.cn/top_mall/api/salesWebToWoStore/removeMemberAddress`, pData)
     }
 }
 
