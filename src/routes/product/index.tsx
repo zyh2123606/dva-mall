@@ -7,6 +7,7 @@ import Constant from '../../utils/constant'
 import {routerRedux} from 'dva/router';
 import {connect} from 'dva'
 import ImgErr from '../../assets/img/img_error.png'
+import GoodsTypeService from '../../services/GoodsTypeService';
 
 /**
  *商品列表入口

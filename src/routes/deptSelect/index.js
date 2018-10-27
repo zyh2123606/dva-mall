@@ -43,6 +43,10 @@ class DeptSelect  extends Component {
     select(currentSelect){
         this.setState({currentSelect})
     }
+
+    comfirmSelect=()=>{
+        console.log(this.state.currentSelect)
+    }
   render() {
     const {searchKeyword,deptList,currentSelect}=this.state
     return (
@@ -87,7 +91,7 @@ class DeptSelect  extends Component {
                 </Block>
             </Block>
             <Block h={50} m={10}>
-                <Button style={{borderRadius:'30px'}} type="primary">确定</Button>
+                <Button disabled={currentSelect===null} style={{borderRadius:'30px'}} type="primary" onClick={this.comfirmSelect}>确定</Button>
             </Block>
       </Block>
     )
