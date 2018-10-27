@@ -15,11 +15,21 @@ class GoodsTypeService extends HttpBase{
 
     // 获取以及商品分类
     getFirststageGoodsType=(deptId)=>{
-        return this.postJson({
+        return this.postJson('/goodsInfoMallController/typeList',{
             deptId:deptId,
             accountId:this.accountId
         })
     }
+    
+    // 获取第二级商品分类
+    getSecondstageGoodsType=(deptId,parentId)=>{
+        return this.postJson('/goodsInfoMallController/queryGoodsBrand',{
+            DATA:{grandFatherTypeId:parentId},
+            deptId:deptId,
+            accountId:this.accountId
+        })
+    }
+
 }
 
 export default GoodsTypeService;
