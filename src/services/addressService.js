@@ -13,7 +13,7 @@ class AddressService extends HttpBase{
         })
     }
     getMyAddress= (data=undefined) => {
-        return this.get(`/mem/addr/getList?memId=${this.MEMID}`, data)
+        return this.postJson(`https://newretail.bonc.com.cn/top_mall/api/salesWebToWoStore/queryMemberAddress`, {accountId:this.MEMID})
     }
     updateAddress=(data=undefined)=>{
         data.memId = this.MEMID

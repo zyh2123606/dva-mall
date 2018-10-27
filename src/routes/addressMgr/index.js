@@ -78,12 +78,14 @@ class AddressMgr extends Component {
     async componentDidMount() {
         document.title = '收货地址管理'
         const {params} = this.props.match
+        debugger
         const baseSer = new Service(params)
         const res = await baseSer.getMyAddress()
-        const {data, code} = res
+        const {DATA, RESP_CODE} = res
+        debugger
         const {dispatch, history} = this.props
-        if (code==="0000") {
-            this.setState({data: data}, () => {
+        if (RESP_CODE==="0000") {
+            this.setState({data: DATA.addressList}, () => {
                 const payload = this.state.data
                 dispatch({type: 'myAddress/initState', payload})
             })
@@ -119,6 +121,7 @@ class AddressMgr extends Component {
     }
     
     render() {
+        debugger
         return (
             <Block vf className={Styles.container}>
                 {this.props.myAddress.data?<Block ml={15} mr={15} pb={15} mb={80}>
@@ -126,10 +129,10 @@ class AddressMgr extends Component {
                         <Block className={Styles.addr_panel} key = {idx} vf>
                             <Block vf ml={15} mr={15}>
                                 <Block wf mt={10}>
-                                    <Block f={1}>{data.receiver}</Block>
-                                    <Block>{data.tel}</Block>
+                                    <Block f={1}>{data.conUser}</Block>
+                                    <Block>{data.conTel}</Block>
                                 </Block>
-                                <Block mt={5}>{this.AData?this.getProvince(data.province,data.city,data.county,this.AData):null}{data.address}</Block>
+                                <Block mt={5}>{data.province}{data.city}{data.district}{data.addrDetail}</Block>
                             </Block>
                             <Block className={Styles.act_addr} mt={10} wf>
                                 <Block f={1}>
