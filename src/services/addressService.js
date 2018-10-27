@@ -15,6 +15,12 @@ class AddressService extends HttpBase{
     getMyAddress= (data=undefined) => {
         return this.postJson(`https://newretail.bonc.com.cn/top_mall/api/salesWebToWoStore/queryMemberAddress`, {accountId:this.MEMID})
     }
+    saveAddress= (data=undefined) => {
+        data['accountId']=this.MEMID
+        const pData ={accountId:this.MEMID,DATA:data}
+        debugger
+        return this.postJson(`https://newretail.bonc.com.cn/top_mall/api/salesWebToWoStore/saveMemberAddress`, pData)
+    }
     updateAddress=(data=undefined)=>{
         data.memId = this.MEMID
         return this.postJson('/mem/addr/update',data)

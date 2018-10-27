@@ -32,23 +32,49 @@ class Create extends Component{
         colorValue: ['#00FF00'],
           
     }
+    getProvince=(provinceCode,cityCode,countyCode)=>{
+        const province = AreaData.filter((item,idx) => {
+            return item.value===provinceCode;
+        });
+        const provinceName = province[0].label;
+        let city =""
+        let cityName =""
+        for (var i = 0, len = province[0].children.length; i < len; i++) {
+            if(province[0].children[i].value===cityCode){
+                city = province[0].children[i]
+                cityName = city.label
+                break
+            }
+        }
+        let county=""
+        let districtName=""
+        for (var i = 0, len = city.children.length; i < len; i++) {
+            if(city.children[i].value===countyCode){
+                county = city.children[i]
+                districtName = county.label
+                break
+            }
+        }
+        return { provinceName,cityName,districtName } 
+    }
     submit=async()=>{
         const submitVales = this.props.form.getFieldsValue()
         if(!checkFormat(submitVales)){
             return
         }
-        const {address,defaultFlag,pcc:[province,city,county],receiver,tel}=submitVales
-        const temp={tel:tel,address:address,receiver:receiver,defaultFlag:defaultFlag?1:2,province:province,city:city,county:county}
+        const {addrDetail,isDefault,pcc:[province,city,district],conUser,conTel,street}=submitVales
+        const aData=this.getProvince(province,city,district)
+        const temp={street:street,conTel:conTel,addrDetail:addrDetail,conUser:conUser,isDefault:isDefault?1:2,province:aData.provinceName,city:aData.cityName,district:aData.districtName}
         const {params} = this.props.match
         const baseSer = new Service(params)
-        const res = await baseSer.updateAddress(temp)
-        const{code,msg} = res
-        if(code==="0000"){
+        const res = await baseSer.saveAddress(temp)
+        const{RESP_CODE,RESP_DESC} = res
+        if(RESP_CODE==="0000"){
             Toast.info("保存成功!")
             const {history} = this.props
             history.goBack()
         }else{
-            Toast.Info(msg)
+            Toast.Info(RESP_DESC)
         }
     }
     render(){
@@ -64,13 +90,13 @@ class Create extends Component{
                         placeholder='请输入姓名'
                         style={{textAlign: 'right'}}
                         maxLength={10} 
-                        {...getFieldProps('receiver')}>收货人</InputItem>
+                        {...getFieldProps('conUser')}>收货人</InputItem>
                     <InputItem 
                         type='number'
                         placeholder='请输入联系电话'
                         style={{textAlign: 'right'}}
                         maxLength={11} 
-                        {...getFieldProps('tel')}>联系电话</InputItem>
+                        {...getFieldProps('conTel')}>联系电话</InputItem>
                     <Picker data={AreaData} value={this.state.pickerValue} onChange={v=>this.setState({pickerValue:v})} 
                         onOk={()=>this.setState({visible:false})}
                         onDisemiss={()=>this.setState({visible:false})}
@@ -79,16 +105,23 @@ class Create extends Component{
                         <Item arrow='horizontal'>所在地区</Item>
                     </Picker>
                     <TextareaItem
+                        title='街道'
+                        placeholder='请输入街道'
+                        autoHeight
+                        style={{textAlign: 'right'}}
+                        {...getFieldProps('street')}
+                        maxLength={100}/>
+                    <TextareaItem
                         title='收货地址'
                         placeholder='请输入地址'
                         autoHeight
                         style={{textAlign: 'right'}}
-                        {...getFieldProps('address')}
+                        {...getFieldProps('addrDetail')}
                         maxLength={100}/>
                 </List>
                 <Block mt={10}>
                     <CheckboxItem 
-                        {...getFieldProps('defaultFlag')}>设为默认地址</CheckboxItem>
+                        {...getFieldProps('isDefault')}>设为默认地址</CheckboxItem>
                 </Block>
                 <Block ml={15} mr={15} mt={20}>
                     <Button style={{borderRadius: 25}} type='primary' onClick={this.submit.bind(this)}>保存</Button>

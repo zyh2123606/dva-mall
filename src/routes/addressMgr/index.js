@@ -78,11 +78,9 @@ class AddressMgr extends Component {
     async componentDidMount() {
         document.title = '收货地址管理'
         const {params} = this.props.match
-        debugger
         const baseSer = new Service(params)
         const res = await baseSer.getMyAddress()
         const {DATA, RESP_CODE} = res
-        debugger
         const {dispatch, history} = this.props
         if (RESP_CODE==="0000") {
             this.setState({data: DATA.addressList}, () => {
@@ -121,7 +119,6 @@ class AddressMgr extends Component {
     }
     
     render() {
-        debugger
         return (
             <Block vf className={Styles.container}>
                 {this.props.myAddress.data?<Block ml={15} mr={15} pb={15} mb={80}>
