@@ -17,6 +17,10 @@ export  function  checkFormat(addressInfo){
             Toast.info("请输入有效的所属区域！")
             return false
         }
+        if(addressInfo.street===undefined || addressInfo.street.length===0){
+            Toast.info("请输入有效的街道地址！")
+            return false
+        }
         if(addressInfo.addrDetail===undefined || addressInfo.addrDetail.length===0){
             Toast.info("请输入有效的收货地址！")
             return false
