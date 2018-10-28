@@ -24,7 +24,6 @@ class WaitPay extends Component{
         const statuswaitpay = "5"//5获取待付款订单
         const pData = {deptId:258,DATA:{currentPage:this.pageIndex,countPerPage:this.pageSize,orderStatus:statuswaitpay}}
         const res = await MyOrderSev.getMyOrder(pData)
-        debugger
         const { DATA, RESP_CODE } = res
         if(RESP_CODE==="0000")
             this.setState({ data: DATA.list})
