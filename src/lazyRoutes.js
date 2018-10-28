@@ -15,6 +15,7 @@ export const myOrderAllPage = Loadable({loader: () => import('./routes/myOrder/a
 export const myOrderWaitPayPage = Loadable({loader: () => import('./routes/myOrder/waitPay'), loading: () =>(<div></div>)})
 export const myOrderWaitRecivePage = Loadable({loader: () => import('./routes/myOrder/waitRecive'), loading: () =>(<div></div>)})
 export const myOrderCompletePage = Loadable({loader: () => import('./routes/myOrder/complete'), loading: () =>(<div></div>)})
+export const myOrderCancelPage = Loadable({loader: () => import('./routes/myOrder/cancel'), loading: () =>(<div></div>)})
 export const successPage = Loadable({loader: () => import('./routes/message/success'), loading: () => (<div></div>)})
 export const failPage = Loadable({loader: () => import('./routes/message/fail'), loading: () => (<div></div>)})
 export const deptSelect = Loadable({loader: () => import('./routes/deptSelect'), loading: () => (<div></div>)})
