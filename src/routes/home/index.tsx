@@ -157,11 +157,13 @@ class Home extends Component<IProps>{
                     <section>
                         <Swiper slidesPerView={4}>
                             {typeList.map(({grandFatherTypeId, grandFatherTypeName, grandFatherUrl}, idx) => (
-                                <Block vf className={Styles.type_item} key={idx} onClick={this.gotoGoodsPage.bind(this)}>
-                                    <Block className={Styles.type_pic_c} f={1}>
-                                        <img className={Styles.type_img} src={Constant.imgBaseUrl+grandFatherUrl} />
+                                <Block key={idx} onClick={this.gotoGoodsPage.bind(this)}>
+                                    <Block vf className={Styles.type_item}>
+                                        <Block className={Styles.type_pic_c} f={1}>
+                                            <img className={Styles.type_img} src={Constant.imgBaseUrl+grandFatherUrl} />
+                                        </Block>
+                                        <Block className={Styles.type_name_txt}>{grandFatherTypeName}</Block>
                                     </Block>
-                                    <Block className={Styles.type_name_txt}>{grandFatherTypeName}</Block>
                                 </Block>
                             ))}
                         </Swiper>

@@ -12,70 +12,100 @@ import Constant from '../../utils/constant';
  */
 class OrderComplete extends Component{
     state={
-        orderInfo:{//订单信息
-            Id:0,
-            orderCode:0,
-            createTime:'',
-            totalMoney:0,
-            actualMoney:0,
-            status:0,
-            dispatchWay:0,
-            deptId:0,
-            deptName:'',
-            adoptDeptId:0,
-            adoptDeptName:'',
-            addressInfo:{
-                provinceName:'',
-                cityName:'',
-                defaultFlag:0,
-                receiver:'',
-                tel:null,
-                address:''
-            },
-            memo:'',
-            goodsList:[
-                
-            ],
-            pickupCode:0,
-            logisticsDealer:'',
-            logisticsCode:''
+        address:{
+            conUser:null,
+            conTel:null,
+            addrDetail:null,
+            
         },
+        saleStoreGoods:[
+            {
+                goodsName:null,
+                salePrice:null,
+                goodsNum:null,
+                skuId:null,
+                goodsImg:null
+    
+            }
+        ],
+        saleOrderInfo:{
+            fullname:null,
+            deptAddress:null,
+            dispatchDate:null,
+            orderNum:null,
+            creatTime:null,
+            payMode:null,
+            orderStatus:null,
+            dispatchWay:null,
+            totalPrice:null,
+            balaMoney:null,
+            ticketNum:null,
+            feeMoney:null,
+            totalPrice:null,
+
+        }
 
     }
     async componentDidMount(){
         document.title = '订单完成'
-        await this.queryOrderInfo()
+        this.queryOrderInfo()
     }
     async queryOrderInfo(){
         const {match:{params:{orderId,sessionId,memId}}}=this.props
-        const {data,code}= await new OrderService({sessionId,memId}).getOrderList(orderId)
-        if(code===Constant.responseOK){
+        const {RESP_CODE,DATA}= await new OrderService({sessionId,memId}).getOrderDetail({
+            DATA:{
+                orderNum:'001810270334380002581265',
+                orderId:5507,
+            },
+            deptId:258,
+            accountId:9
+
+        })
+        if(RESP_CODE===Constant.responseOK){
             this.setState({
-                orderInfo:data[0]
+                address:DATA.address,
+                saleStoreGoods:DATA.saleStoreGoods,
+                saleOrderInfo:DATA.saleStoreGoods,
             })
         }
     }
     render(){
-        const {orderInfo,orderInfo:{addressInfo,goodsList}}=this.state
+        const {address,saleStoreGoods,saleOrderInfo}=this.state
+        let orderStatus=''
+        switch(saleOrderInfo.orderStatus){
+            case '1':
+                orderStatus='完成'
+                break;
+            case '3':
+                orderStatus='取消'
+                break;
+            case '5':
+                orderStatus='待支付'
+                break;
+            case '8':
+                orderStatus='待收货'
+                break;
+            
+        }
         return (
             <Block vf className={Styles.complete_container}>
                 <Block a='c' className={Styles.header}>
                     <Block ml={15} className={Styles.order_ico} j='c' a='c'>
                         <Icon type='check' />
                     </Block>
-                    <Block ml={10} fc='#fff'>{orderInfo.status===1?'待付款':(orderInfo.status===2?'待收货':'订单完成')}</Block>
+                    <Block ml={10} fc='#fff'>{orderStatus}</Block>
                 </Block>
                 {
-                   orderInfo.dispatchWay===2?
+                   address && address.conUser?
                    <Block bc='#fff' pt={15} pb={15} a='c' wf fs={14}>
                     <Block className={Styles.pos_ico}></Block>
                     <Block vf f={1} mr={15}>
                         <Block wf>
-                            <Block f={1}>{addressInfo.receiver}</Block>
-                            <Block>{addressInfo.tel}</Block>
+                            <Block f={1}>{address.conUser}</Block>
+                            <Block>{address.conTel}</Block>
                         </Block>
                         <Block mt={5} wf>
-                            <Block>{addressInfo.address}</Block>
+                            <Block>{address.addrDetail}</Block>
                         </Block>
                     </Block>
                 </Block>:null
@@ -84,21 +114,21 @@ class OrderComplete extends Component{
                 <Block vf bc='#fff' pl={15} pr={15} mt={10} pb={15}>
                     <Block pt={10} pb={10} fs={16} style={{fontWeight: 'bold'}}>商品信息</Block>
                     {
-                        goodsList.map((item,index)=>{
+                        saleStoreGoods.map((item,index)=>{
                             return <Block mt={5} wf key={'goods-item-'+index}>
-                            <Block className={Styles.prod_pic}><img style={{width:'78px'}} src={Constant.imgBaseUrl+item.logoPath} alt={item.goodsName}/></Block>
+                            <Block className={Styles.prod_pic}><img style={{width:'78px'}} src={Constant.imgBaseUrl+item.goodsImg} alt={item.goodsName}/></Block>
                             <Block f={1} ml={15}>
                                 <Block>{item.goodsName}</Block>
-                                <Block wf>
+                                {/* <Block wf>
                                     {
                                     item.attrList?item.attrList.map((attrItem,idx)=>{
                                         return <Block key={'goods-skuattr-'+idx} mt={5} ml={5} fs={12} fc='#999'>{attrItem.attrCode}</Block>
                                     }):null
                                 }
-                                </Block>
+                                </Block> */}
                                 <Block wf>
-                                    <Block f={1}>×{item.amount}</Block>
-                                    <Block className={Styles.orangeColor}>￥{Constant.toMoney(item.price)}</Block>
+                                    <Block f={1}>×{item.goodsNum}</Block>
+                                    <Block className={Styles.orangeColor}>￥{item.salePrice}</Block>
                                 </Block>
                             </Block>
                         </Block>
@@ -108,39 +138,42 @@ class OrderComplete extends Component{
                 <Block vf bc='#fff' pl={15} pr={15} mt={10} pb={15}>
                     <Block pt={10} pb={10} fs={16} style={{fontWeight: 'bold'}}>订单详情</Block>
                     <Block wf>
+                        <Block f={1}>自提门店</Block>
+                        <Block>{saleOrderInfo.fullname}</Block>
+                    </Block>
+                    <Block wf>
+                        <Block f={1}>自提地址</Block>
+                        <Block>{saleOrderInfo.deptAddress}</Block>
+                    </Block>
+                    <Block wf>
                         <Block f={1}>订单编号：</Block>
-                        <Block>{orderInfo.orderCode}</Block>
+                        <Block>{saleOrderInfo.orderNum}</Block>
                     </Block>
                     <Block mt={5} wf>
                         <Block f={1}>下单时间：</Block>
-                        <Block>{orderInfo.createTime}</Block>
+                        <Block>{saleOrderInfo.creatTime}</Block>
                     </Block>
                     <Block mt={5} wf>
-                        <Block f={1}>收货方式：</Block>
-                        <Block>{orderInfo.dispatchWay===2?'快递':(orderInfo.dispatchWay===3?'营业厅自提':'无配送')}</Block>
+                        <Block f={1}>支付方式：</Block>
+                        <Block>{saleOrderInfo.payMode}</Block>
                     </Block>
                     <Block mt={5} wf>
                         <Block f={1}>订单状态：</Block>
-                        <Block>{orderInfo.status===1?'待付款':(orderInfo.status===2?'待收货':'完成')}</Block>
+                        <Block>{orderStatus}</Block>
                     </Block>
-                    <Block mt={5} wf>
+                    
+                </Block>
+
+                <Block vf bc='#fff' pl={15} pr={15} mt={10} pb={15}>
+                    <Block pt={10} pb={10} fs={16} style={{fontWeight: 'bold'}}>订单明细</Block>
+                    <Block wf>
                         <Block f={1}>商品金额：</Block>
-                        <Block className={Styles.orangeColor}>{Constant.toMoney(orderInfo.totalMoney)}</Block>
+                        <Block>{saleOrderInfo.totalPrice}</Block>
                     </Block>
-                    {
-                        orderInfo.dispatchWay===3?
-                        <Block mt={10} wf style={{fontWeight: 'bold'}}>
-                            <Block f={1}>　自提码：</Block>
-                            <Block>{orderInfo.pickupCode}</Block>
-                        </Block>:null
-                    }
-                    {
-                        orderInfo.dispatchWay===2?
-                        <Block mt={10} wf style={{fontWeight: 'bold'}}>
-                            <Block f={1}>物流单号：</Block>
-                            <Block>{orderInfo.logisticsCode}</Block>
-                        </Block>:null
-                    }
+                    <Block wf>
+                        <Block f={1}>总金额：</Block>
+                        <Block>{saleOrderInfo.balaMoney}</Block>
+                    </Block>
                 </Block>
             </Block>
         )

@@ -6,12 +6,12 @@ initReactFastclick()
 
 function RouterConfig({ history }) {
   return (
-      <Router history={history}>
-          <Switch>
-                {Routes.map((route, idx) => (
-                    <Route key={idx} {...route} />
-                ))}
-          </Switch>
+    <Router history={history}>
+        <Switch>
+            {Routes.map((route, idx) => (
+                <Route key={idx} {...route} />
+            ))}
+        </Switch>
     </Router>
   );
 }
