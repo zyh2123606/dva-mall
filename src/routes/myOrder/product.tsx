@@ -16,42 +16,52 @@ class Product extends Component{
         const { sessionId, memId } = this.props.auth || {}
         wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-info/${orderId}/${sessionId}/${memId}`})
     }
-    createButByStatus(status:number, orderId:number, typeId:number){
-        switch (status){
+    createButByStatus(status:number, orderId:number, skuId:number){
+        const data = Number(status)
+        //1:完成 3:取消 5:待支付 8:待收货
+        switch (data){
             case 1 :
-                return (<Block className={Styles.prod_btn_primary}>去支付</Block>)
+                return (
+                    //TODO invId有则开发票
+                    <Block onClick={this.goToProdDetail.bind(this, orderId, skuId)} className={Styles.prod_btn_ghost}>再次购买</Block>)
                 break
             case 2 :
                 return (<Block onClick={this.gotoLogistDetail.bind(this, orderId)} className={Styles.prod_btn_normal}>查看物流</Block>)
                 break
             case 3 :
-                return (<Block onClick={this.goToProdDetail.bind(this, orderId, typeId)} className={Styles.prod_btn_ghost}>再次购买</Block>)
+                return null
+                break
+            case 8 :
+                return (<Block onClick={this.gotoLogistDetail.bind(this, orderId)} className={Styles.prod_btn_normal}>查看物流</Block>)
+                break
+            case 5 :
+                return (<Block className={Styles.prod_btn_primary}>去支付</Block>)
                 break
             default:
                 return null
         }
-        return (<Block onClick={this.goToProdDetail.bind(this, orderId, typeId)} className={Styles.prod_btn_ghost}>再次购买</Block>)
+        return (<Block onClick={this.goToProdDetail.bind(this, orderId, skuId)} className={Styles.prod_btn_ghost}>再次购买</Block>)
     }
-    goToProdDetail(typeId:number){
+    goToProdDetail(skuId:number){
         const { sessionId, memId } = this.props.auth || {}
-        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}/${sessionId}/${memId}`})
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${skuId}/${sessionId}/${memId}`})
     }
     render(){
         const { status, orderId } = this.props
-        const {goodsName,logoPath,price,amount,typeId} = this.props.data
+        const {goodsName,goodsimg,salePrice,goodsNum,skuId} = this.props.data
         return (
                 <Block wf className={Styles.prod_cont}>
                     <Block j='c' className={Styles.prod_pic}>
-                        <img src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} alt=''/>
+                        <img src={goodsimg?Constant.imgBaseUrl+goodsimg:ImgErr} alt=''/>
                     </Block>
                     <Block f={1} ml={10} vf>
                         <Block>{goodsName}</Block>
                         <Block mt={5} wf>
-                            <Block f={1}>实付：<span className={Styles.orangeColor}>￥ {price?price/100:0.00}</span></Block>
-                            <Block>×{amount}</Block>
+                            <Block f={1}>实付：<span className={Styles.orangeColor}>￥ {salePrice?salePrice:0.00}</span></Block>
+                            <Block>×{goodsNum}</Block>
                         </Block>
                         <Block mt={15} j='e'>
-                            {this.createButByStatus(status, orderId, typeId)}
+                            {this.createButByStatus(status, orderId, skuId)}
                         </Block>
                     </Block>
                 </Block>
