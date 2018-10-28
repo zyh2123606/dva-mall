@@ -31,7 +31,7 @@ class DefaultPage extends Component{
         const { url } = this.props.match
         return (
             <>  
-                <Block w='100%' h='100%' pb={50}>
+                <Block w='100%' h='100%'>
                     <Switch>
                         <Route path={`${url}/home`} component={Home} exact />
                         <Route path={`${url}/cart`} component={Cart} exact />

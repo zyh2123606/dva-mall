@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { Facebook } from 'react-content-loader'
 import Service from '../../services/baseService'
 import { Toast } from 'antd-mobile'
+import Qs from 'qs'
 
 /**
  *账户中心
@@ -16,9 +17,11 @@ class Account extends Component{
     state = {userInfo: null, deptInfo: {}, auth: {}}
     async componentDidMount(){
         document.title = '我的'
-        const { params } = this.props.match
-        const accountSev = new Service(params)
-        const usRes = await accountSev.getUserInfo()
+        const { search } = this.props.location
+        let params = search.split('?')[1] || ''
+        params = Qs.parse(params)
+        const accountSev = new Service()
+        const usRes = await accountSev.getUserInfo(params)
         if(usRes.code !== '0000') return Toast.info(usRes.msg)
         const depRes = await accountSev.getDeptInfo()
         if(depRes.code != '0000') return Toast.info(depRes.msg)

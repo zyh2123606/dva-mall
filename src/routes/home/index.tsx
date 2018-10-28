@@ -25,7 +25,8 @@ class Home extends Component<IProps>{
         pageLoad: [],
         focusImgs: [],
         isRequest: false,
-        typeList: []
+        typeList: [],
+        deptInfo: {}
     }
     _PAGE_DATA_ = { accountId: '', deptId: '' }
     constructor(props:IProps){
@@ -39,9 +40,11 @@ class Home extends Component<IProps>{
         const BaseSev = new Service(),
             result = await BaseSev.getHomeData(this._PAGE_DATA_),
             prod_res = result[0],
-            type_res = result[1];
+            type_res = result[1],
+            dept_res = result [2];
         if(prod_res.RESP_CODE !== '0000') return Toast.info(prod_res.RESP_DESC)
         if(type_res.RESP_CODE !== '0000') return Toast.info(type_res.RESP_DESC)
+        if(dept_res.RESP_CODE !== '0000') return Toast.info(dept_res.RESP_DESC)
         let _focus = [], _data = [];
         prod_res.DATA.filter((item, idx) => {
             if(item.displayType === '1'){
@@ -54,7 +57,8 @@ class Home extends Component<IProps>{
             pageLoad: _data,
             focusImgs: _focus,
             isRequest: true,
-            typeList: type_res.DATA
+            typeList: type_res.DATA,
+            deptInfo: dept_res.DATA
         })
     }
     
@@ -106,14 +110,14 @@ class Home extends Component<IProps>{
         })
     }
     render(){
-        const { isRequest, focusImgs, typeList } = this.state
-        const { deptAddress, deptManager, deptName, deptManagerAvatar, deptTel } = {}
+        const { isRequest, focusImgs, typeList, deptInfo } = this.state
+        const { deptAddress, deptManager='刘可可', deptName, deptManagerAvatar, deptTel='18313856734' } = deptInfo || {}
         return (
             isRequest?<Block className={Styles.container} bc='#fff'>
                 <Block vf p='0 15px'>
                     {/* top start */}
                     <Block a='c' wf pt={10}>
-                        <img width={57} src={GxLogo} />
+                        <img width={57} src={Logo} />
                         <Block f={1} j='c' vf className={Styles.logo_txt}>
                             <Block fs={12} fc='#FD8007'>{deptName}</Block>
                             <Block>
@@ -121,7 +125,7 @@ class Home extends Component<IProps>{
                             </Block>
                         </Block>
                         <Block className={Styles.head_pic}>
-                            <img src={Constant.imgBaseUrl+deptManagerAvatar}/>
+                            <i className={Styles.icon_account} />
                         </Block>
                         <Block fs={10} ml={5}>店长：{deptManager}</Block>
                     </Block>
@@ -170,6 +174,7 @@ class Home extends Component<IProps>{
                     </section>
                 </Block>
                 {this.renderColumnView()}
+                <Block h={50} />
             </Block>:
             <Block vf w='100%' h='100%' bc='#fff'>
                 <Block p={10}>
