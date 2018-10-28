@@ -21,11 +21,12 @@ class WaitPay extends Component{
         const { search } = this.props.location
         this.AUTH = qs.parse(search.split('?')[1])
         const MyOrderSev = new Service(this.AUTH)
-        const statuswaitpay = 1//1获取待付款订单
-        const res = await MyOrderSev.getMyOrder(statuswaitpay)
-        const { data, code } = res
-        if(code==="0000")
-            this.setState({ data: data})
+        const statuswaitpay = "5"//5获取待付款订单
+        const pData = {deptId:258,DATA:{currentPage:this.pageIndex,countPerPage:this.pageSize,orderStatus:statuswaitpay}}
+        const res = await MyOrderSev.getMyOrder(pData)
+        const { DATA, RESP_CODE } = res
+        if(RESP_CODE==="0000")
+            this.setState({ data: DATA.list})
     }
     //获取数据
     async getList(loading=true){
@@ -57,8 +58,8 @@ class WaitPay extends Component{
                 damping={100}>
                 {data?
                     data instanceof Array && data.length?
-                    this.state.data.map(({orderCode,status,goodsList,id},idx)=>(
-                        <Order {...this.props} auth={this.AUTH} key={idx} orderCode={orderCode} status = {status} goodsList={goodsList} orderId={id} orderIndex={idx} delFunc={this.deleteOrderInState}/>
+                    this.state.data.map(({orderNum,orderStatus,saleStoreGoods, orderId},idx)=>(
+                        <Order {...this.props} key={idx} auth={this.AUTH} orderCode={orderNum} status = {orderStatus} goodsList={saleStoreGoods} orderId={orderId} orderIndex={idx} delFunc={this.deleteOrderInState}/>
                     )):<Empty />
                 :null}
             </PullToRefresh>

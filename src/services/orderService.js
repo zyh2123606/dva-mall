@@ -12,12 +12,9 @@ class OrderService extends HttpBase{
             return config
         })
     }
-    getMyOrder = (status)=>{
-        if(status){
-            return this.get(`order/getList?memId=${this.MEMID}&status=${status}`)
-        }
-        let res = this.get(`order/getList?memId=${this.MEMID}`)
-        return res
+    getMyOrder = (data)=>{
+        data['accountId']=this.MEMID
+        return this.postJson('https://newretail.bonc.com.cn/top_mall/api/salesWebToWoStore/queryStoreOrderInfoTable',data)
     }  
     //提交订单
     addOrder=(data=undefined)=>{

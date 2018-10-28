@@ -3,7 +3,7 @@ import Block from 'fs-flex'
 import { Route, Switch } from 'react-router-dom'
 import { Tabs } from 'antd-mobile'
 import Styles from './index.less'
-import { myOrderAllPage, myOrderWaitPayPage, myOrderWaitRecivePage, myOrderCompletePage } from '../../lazyRoutes'
+import {myOrderCancelPage, myOrderAllPage, myOrderWaitPayPage, myOrderWaitRecivePage, myOrderCompletePage } from '../../lazyRoutes'
 import qs from 'qs'
 
 /**
@@ -19,7 +19,10 @@ class MyOrder extends Component{
     }
     static getDerivedStateFromProps(nextProps, prevState){
         const { pathname } = nextProps.location
-        if(pathname.includes('/complete')){
+        if(pathname.includes('/cancel')){
+            prevState.currentTab = '/cancel'
+            prevState.tabIndex = 4
+        }else if(pathname.includes('/complete')){
             prevState.currentTab = '/complete'
             prevState.tabIndex = 3
         }else if(pathname.includes('/wait-pay')){
@@ -38,7 +41,8 @@ class MyOrder extends Component{
         {sub: '', title: '全部'},
         {sub: '/wait-pay', title: '待付款'},
         {sub: '/wait-recive', title: '待收货'},
-        {sub: '/complete', title: '已完成'}
+        {sub: '/complete', title: '已完成'},
+        {sub: '/cancel', title: '已取消'}
     ]
     //tab切换
     tabHandleChange = tab => {
@@ -71,6 +75,7 @@ class MyOrder extends Component{
                                 <Route path={`${url}/wait-pay`} exact component={myOrderWaitPayPage} />
                                 <Route path={`${url}/wait-recive`} exact component={myOrderWaitRecivePage} />
                                 <Route path={`${url}/complete`} exact component={myOrderCompletePage} />
+                                <Route path={`${url}/cancel`} exact component={myOrderCancelPage} />
                             </Switch>
                         </Tabs>
                     </section>

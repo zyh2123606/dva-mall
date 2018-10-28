@@ -21,10 +21,11 @@ class All extends Component{
         this.AUTH = qs.parse(search.split('?')[1])
         const statusall = 0//0获取全部状态
         const MyOrderSev = new Service(this.AUTH)
-        const res = await MyOrderSev.getMyOrder(statusall)
-        const { data, code } = res
-        if(code==="0000")
-            this.setState({ data: data})
+        const pData = {deptId:258,DATA:{currentPage:this.pageIndex,countPerPage:this.pageSize}}
+        const res = await MyOrderSev.getMyOrder(pData)
+        const { DATA, RESP_CODE } = res
+        if(RESP_CODE==="0000")
+            this.setState({ data: DATA.list})
     }
     //获取数据
     async getList(loading=true){
@@ -56,8 +57,8 @@ class All extends Component{
                 damping={100}>
                 {data?
                     data instanceof Array && data.length?
-                    this.state.data.map(({orderCode,status,goodsList, id},idx)=>(
-                        <Order {...this.props} key={idx} auth={this.AUTH} orderCode={orderCode} status = {status} goodsList={goodsList} orderId={id} orderIndex={idx} delFunc={this.deleteOrderInState}/>
+                    this.state.data.map(({orderNum,orderStatus,saleStoreGoods, orderId},idx)=>(
+                        <Order {...this.props} key={idx} auth={this.AUTH} orderCode={orderNum} status = {orderStatus} goodsList={saleStoreGoods} orderId={orderId} orderIndex={idx} delFunc={this.deleteOrderInState}/>
                     )):<Empty />
                 :null}
             </PullToRefresh>

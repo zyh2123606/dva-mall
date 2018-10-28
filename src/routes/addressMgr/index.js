@@ -23,24 +23,25 @@ class AddressMgr extends Component {
         let newState = this.props.myAddress
         if(e.target.checked){
             newState.data.filter((data,idx)=>{
-                data.defaultFlag=2
-                if(idx===index) data.defaultFlag = 1
+                data.isDefault="2"
+                if(idx===index) data.isDefault = "1"
             })
         }else{
-            newState.data[index].defaultFlag = 2
+            newState.data[index].isDefault = "2"
         }
         const addr = newState.data[index]
-        const {id,tel,memId,address,receiver,defaultFlag,province,city,county}=addr
-        const temp ={id:id,tel:tel,memId:memId,address:address,receiver:receiver,defaultFlag:defaultFlag,province:province,city:city,county:county}
+        const {addrId,conTel,accountId,addrDetail,conUser,isDefault,province,city,district,street}=addr
         const {params} = this.props.match
         const baseSer = new Service(params)
-        const res = await baseSer.updateAddress(temp)
-        const{code,msg} = res
-        if(code==="0000"){
+        const res = await baseSer.updateAddress(addr)
+        const{RESP_CODE,RESP_DESC} = res
+        debugger
+        if(RESP_CODE==="0000"){
+            this.setState(newState)
             Toast.info("保存成功!")
             this.setState({data:newState})
         }else{
-            Toast.Info(msg)
+            Toast.Info(RESP_DESC)
         }
     }
     setEditAddress = (item,index,e) => {
@@ -51,25 +52,24 @@ class AddressMgr extends Component {
     }
     deleteAddress=(item,index,e)=>{
         const alert = Modal.alert
-        const pcc = this.getProvince(item.province,item.city,item.county,AreaData)
-        alert('确认',`确认删除地址: ${pcc} ${item.address}么？`,[{text:'取消',onPress:()=>console.log('cancel')},
+        alert('确认',`确认删除地址: ${item.province}${item.city}${item.district}${item.street} ${item.addrDetail}么？`,[{text:'取消',onPress:()=>console.log('cancel')},
             {text:'确认',onPress:()=>{
                 (async(item,index)=>{
-                    const {id,memId} = item 
+                    const {addrId,memId} = item 
                     const {params} = this.props.match
                     const baseSer = new Service(params)
-                    const res = await baseSer.deleteAddress({addrId:id,memId:memId})
-                    const {code,msg} = res
-                    if(code==="0000"){
+                    const res = await baseSer.deleteAddress({addrId:addrId,memId:memId})
+                    const {RESP_CODE,RESP_DESC} = res
+                    if(RESP_CODE==="0000"){
                         Toast.info("删除成功！")
                         let newState = this.props.myAddress
                         newState.data.filter((data,idx)=>{
-                            if(data.id===id)
+                            if(data.addrId===addrId)
                                 newState.data.splice(idx,1)
                         })
                         this.setState({data:newState})
                     }else{
-                        Toast.info(msg)
+                        Toast.info(RESP_DESC)
                     }
                 })(item,index)
             }},])
@@ -133,7 +133,7 @@ class AddressMgr extends Component {
                             </Block>
                             <Block className={Styles.act_addr} mt={10} wf>
                                 <Block f={1}>
-                                    <CheckboxItem checked={data.defaultFlag===1} onChange={this.checkHandleChange.bind(this,data.id,idx)}>默认地址</CheckboxItem>
+                                    <CheckboxItem checked={data.isDefault==="1"} onChange={this.checkHandleChange.bind(this,data.id,idx)}>默认地址</CheckboxItem>
                                 </Block>
                                 <Block wf a='c'>
                                     <Block className={Styles.edit} onClick={this.setEditAddress.bind(this,data,idx)}></Block>
