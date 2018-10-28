@@ -3,7 +3,7 @@ import cookie from 'react-cookies'
 const Constant = {
     responseOK:'0000',
     responseError:'1111',
-    imgBaseUrl:'https://iretail.bonc.com.cn/pic/',
+    imgBaseUrl:'https://newretail.bonc.com.cn',
     toMoney(num){
         return (num/100).toFixed(2);
     },

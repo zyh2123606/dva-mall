@@ -17,7 +17,11 @@ class ProductService extends HttpBase{
     getGoodsDetai=(data)=>{
         return this.postJson('/goodsInfoMallController/queryGoodsDetails',data)
     }
-
+    
+    // goodsInfoMallController/querySkuGoods
+    querySkuGoods=(data)=>{
+        return this.postJson('/goodsInfoMallController/querySkuGoods',data)
+    }
     getDetailById = (typeId=undefined,cloudShelfId=undefined) => {
         if(typeId){
             return this.get(`/goods/getGoodsInfo?typeId=${typeId}`)
