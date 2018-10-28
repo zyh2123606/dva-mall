@@ -12,7 +12,7 @@ class BaseService extends HttpBase{
     }
     //获取用户收货列表
     getHomeData = (data=undefined) => {
-        return this.all([this.getProdList(data), this.getProdTypeList(data)])
+        return this.all([this.getProdList(data), this.getProdTypeList(data), this.getInitDeptInfo(data)])
     }
     //获取商品详情
     getProdList = (data=undefined) => {
@@ -25,6 +25,10 @@ class BaseService extends HttpBase{
     //获取门店信息
     getDeptInfo = () => {
         return this.get('/dept/getDeptInfo?id=1')
+    }
+    //获取初始化门店信息
+    getInitDeptInfo(data){
+        return this.post('/salesWebToWoStore/initDept', data)
     }
 	//获取用户信息
     getUserInfo = (accountId = '') => {

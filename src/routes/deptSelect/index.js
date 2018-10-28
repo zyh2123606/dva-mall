@@ -7,7 +7,7 @@ import unChecked from '../../assets/img/uncheck.png';
 import weizhi from '../../assets/img/weizhi.png';
 import DeptSelectService from '../../services/deptService';
 import Canstant from '../../utils/constant';
-
+import EventEmitter from '../../utils/EventEmitter'
 
 class DeptSelect  extends Component {
     state={
@@ -19,6 +19,9 @@ class DeptSelect  extends Component {
     async componentDidMount(){
         this.search()
     }
+    componentWillUnmount(){
+        EventEmitter.removeListeners('SELECT_DEPT')
+    }
 
     searchInputChange=(val)=>{
         this.setState({searchKeyword:val})
@@ -26,12 +29,12 @@ class DeptSelect  extends Component {
 
     search=async()=>{
         const {searchKeyword}=this.state
-        const accountId=9
+        const {accountId}=this.props.match.params
         let data={
             deptIng:'102.725556',// 获取经度
             deptLat:'102.725556',// 获取维度
-            currentPage:'1',
-            countPerPage:'25',
+            currentPage:1,
+            countPerPage:25,
             fullname:searchKeyword||null,//门店名称
         }
         const {RESP_CODE,DATA}=await new DeptSelectService(1,15).getDeptList(data,accountId);
@@ -45,7 +48,10 @@ class DeptSelect  extends Component {
     }
 
     comfirmSelect=()=>{
-        console.log(this.state.currentSelect)
+        const { currentSelect } = this.state
+        const { history } = this.props
+        EventEmitter.emit('SELECT_DEPT', currentSelect)
+        history.go(-1)
     }
   render() {
     const {searchKeyword,deptList,currentSelect}=this.state
@@ -85,7 +91,7 @@ class DeptSelect  extends Component {
                                     </Block>
                                 </Block>
                             )
-                        }):<Block a='c' j='c'>暂无门店可选</Block>
+                        }):<Block mt={50} fc='#999' fs={16} a='c' j='c'>暂无门店可选</Block>
                     }
                     
                 </Block>

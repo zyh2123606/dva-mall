@@ -18,7 +18,7 @@ const RouteConfig = [
     {path: '/order-complete', component: orderCompletePage, exact: true},
     {path: '/success/:orderId/:sessionId/:memId', component: successPage, exact: true},
     {path: '/fail', component: failPage, exact: true},
-    {path: '/dept-select/:sessionId/:memId', component: deptSelect, exact: true}
+    {path: '/dept-select/:accountId', component: deptSelect, exact: true}
 ]
 
 export default RouteConfig

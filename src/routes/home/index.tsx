@@ -12,6 +12,7 @@ import Constant from '../../utils/constant'
 import ImgErr from '../../assets/img/img_error.png'
 import ContentLoader from 'react-content-loader'
 import Qs from 'qs'
+import EventEmitter from '../../utils/EventEmitter'
 
 /**
  *首页
@@ -25,7 +26,8 @@ class Home extends Component<IProps>{
         pageLoad: [],
         focusImgs: [],
         isRequest: false,
-        typeList: []
+        typeList: [],
+        deptInfo: {}
     }
     _PAGE_DATA_ = { accountId: '', deptId: '' }
     constructor(props:IProps){
@@ -36,12 +38,17 @@ class Home extends Component<IProps>{
         let params = search.split('?')[1] || ''
         params = Qs.parse(params)
         this._PAGE_DATA_ = {...this._PAGE_DATA_, ...params}
+        //事件订阅
+        EventEmitter.listenerEmit('SELECT_DEPT', this.getSelectDept.bind(this))
+
         const BaseSev = new Service(),
             result = await BaseSev.getHomeData(this._PAGE_DATA_),
             prod_res = result[0],
-            type_res = result[1];
+            type_res = result[1],
+            dept_res = result [2];
         if(prod_res.RESP_CODE !== '0000') return Toast.info(prod_res.RESP_DESC)
         if(type_res.RESP_CODE !== '0000') return Toast.info(type_res.RESP_DESC)
+        if(dept_res.RESP_CODE !== '0000') return Toast.info(dept_res.RESP_DESC)
         let _focus = [], _data = [];
         prod_res.DATA.filter((item, idx) => {
             if(item.displayType === '1'){
@@ -54,19 +61,20 @@ class Home extends Component<IProps>{
             pageLoad: _data,
             focusImgs: _focus,
             isRequest: true,
-            typeList: type_res.DATA
+            typeList: type_res.DATA,
+            deptInfo: dept_res.DATA
         })
     }
     
     gotoProdDetail(typeId){
-        const {memId, sessionId}=this.props.match.params
-        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}/${sessionId}/${memId}`})
+        const { accountId, deptId, sessionId=1001 } = this._PAGE_DATA_
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}/${sessionId}/${accountId}`})
         // this.props.history.push(`/order-detail/${typeId}/${sessionId}/${memId}`)
     }
     gotoGoodsPage(url){
-        const {memId,sessionId}=this.props.match.params
+        const { accountId, deptId, sessionId=1001 } = this._PAGE_DATA_
         if(url){
-            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#${url}/${sessionId}/${memId}`})
+            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#${url}/${sessionId}/${accountId}`})
             // this.props.history.push(`${url}/${sessionId}/${memId}`)
         }
     }
@@ -105,41 +113,47 @@ class Home extends Component<IProps>{
             )
         })
     }
+    //选择门店
+    selectDept = (e:any) => {
+        const { history } = this.props
+        history.push(`/dept-select/${this._PAGE_DATA_.accountId}`)
+    }
+    //选择门店
+    getSelectDept(dept_info){
+        console.log(dept_info)
+    }
     render(){
-        const { isRequest, focusImgs, typeList } = this.state
-        const { deptAddress, deptManager, deptName, deptManagerAvatar, deptTel } = {}
+        const { isRequest, focusImgs, typeList, deptInfo } = this.state
+        const { deptAddress, district, province, deptManager='刘可可', deptName, deptManagerAvatar, deptTel='18313856734' } = deptInfo || {}
         return (
             isRequest?<Block className={Styles.container} bc='#fff'>
                 <Block vf p='0 15px'>
                     {/* top start */}
                     <Block a='c' wf pt={10}>
-                        <img width={57} src={GxLogo} />
+                        <img width={57} src={Logo} />
                         <Block f={1} j='c' vf className={Styles.logo_txt}>
-                            <Block fs={12} fc='#FD8007'>{deptName}</Block>
+                            <Block fs={12} fc='#FD8007'>{province+district}营业厅</Block>
                             <Block>
                                 <span className={Styles.tag}>官方认证</span>
                             </Block>
                         </Block>
-                        <Block className={Styles.head_pic}>
-                            <img src={Constant.imgBaseUrl+deptManagerAvatar}/>
+                        <Block onClick={this.selectDept} wf j='e' a='c'>
+                            <Block mr={5}>选择门店</Block>
+                            <i className={Styles.arrow_right}/>
                         </Block>
-                        <Block fs={10} ml={5}>店长：{deptManager}</Block>
                     </Block>
-                    <Block wf fs={10} style={{lineHeight: 'normal'}} mt={7}>
+                    <Block wf fs={10} style={{lineHeight: 'normal', display: this._PAGE_DATA_.deptId?'':'none'}} mt={7}>
                         <Block vf f={1}>
                             <Block>
                                 <Block className={Styles.addr_txt}>实体店地址：{deptAddress}</Block>
                             </Block>
                             <Block a='c' fs={10} wf mt={2}>
-                                <Block>联系　电话：</Block>
+                                <Block mr={10}>联系人：刘可可</Block>
+                                <Block>联系电话：</Block>
                                 <Block className={Styles.mobile}>
                                     <a style={{color: '#fd8007'}} href={`tel:${deptTel}`}>{deptTel}</a>
                                 </Block>
                             </Block>
-                        </Block>
-                        <Block j='c' a='c' wf className={Styles.sev_txt}>
-                            <Block className={Styles.sev_ico}></Block>
-                            <Block ml={3}>服务承诺</Block>
                         </Block>
                     {/* top end */}
                     </Block>
@@ -170,6 +184,7 @@ class Home extends Component<IProps>{
                     </section>
                 </Block>
                 {this.renderColumnView()}
+                <Block h={50} />
             </Block>:
             <Block vf w='100%' h='100%' bc='#fff'>
                 <Block p={10}>
