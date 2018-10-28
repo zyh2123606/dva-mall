@@ -1,54 +1,26 @@
 import HttpBase from '../utils/httpBase'
 
 class BaseService extends HttpBase{
-    constructor({sessionId, memId}){
+    constructor(props){
         super('/api')
-        this.MEMID = memId
         //添加拦截器设置请求头
         this.$http.interceptors.request.use(config => {
+            const { sessionId=undefined } = props || {}
             config.headers.common['CSESSIONID'] = sessionId
             return config
         })
     }
     //获取用户收货列表
-    getHomeData = () => {
-        return this.all([this.getSpecialProducts(), this.getHotProducts(), this.getNewProducts(),
-            this.getTypesList(), this.getDeptInfo(),this.getAllBanne()])
-    }
-    //获取banner图
-    getBannerList = () => {
-        return this.get('/commend/getGoodsList?reType=1&deptId=1')
-    }
-    //特惠商品
-    getSpecialProducts = () => {
-        return this.get('/commend/getGoodsList?reType=1&deptId=1')
-    }
-    //热门商品
-    getHotProducts = () => {
-        return this.get('/commend/getGoodsList?reType=2&deptId=1')
-    }
-    //新品上架
-    getNewProducts = () => {
-        return this.get('/commend/getGoodsList?reType=3&deptId=1')
-    }
-    //获取商品分类
-    getProductTypes = () => {
-        return this.get('/commend/getGoodsList?reType=5&deptId=1')
-    }
-    getTypesList = () => {
-        return this.get('/ad/getList?adType=5')
+    getHomeData = ({ accountId, deptId }) => {
+        return this.post('/salesWebToWoStore/index', { accountId, deptId })
     }
     //获取门店信息
     getDeptInfo = () => {
         return this.get('/dept/getDeptInfo?id=1')
     }
-    // 获取首页所有类别下的banner图片信息（地址、名称）
-    getAllBanne=() => {
-        return this.get(`/ad/getList`)
-    }
 	//获取用户信息
-    getUserInfo = () => {
-        return this.get(`/mem/info/${this.MEMID}`)
+    getUserInfo = (accountId = '') => {
+        return this.get(`/mem/info/${accountId}`)
     }
 }
 

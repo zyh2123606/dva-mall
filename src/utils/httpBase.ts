@@ -24,10 +24,10 @@ class HttpBase implements HttpInterFace {
         this.$http = Axios.create({baseURL: base_url})
         this.dataMethodDefault = {
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/json;charset=UTF-8'
             },
             withCredentials: true,
-            transformRequest: [(data: any) => qs.stringify(data)],
+            //transformRequest: [(data: any) => qs.stringify(data)],
             timeout: 30000
         }
         //添加拦截器，提前处理返回的数据
@@ -65,7 +65,7 @@ class HttpBase implements HttpInterFace {
                     default:
                 }
             }
-            Toast.info(err.response.status + err.message)
+            Toast.info(err.message)
             return Promise.reject(err)
         })
     }

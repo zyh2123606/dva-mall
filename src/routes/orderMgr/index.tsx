@@ -23,96 +23,84 @@ class OrderDetail extends Component{
         logoPath:'',
         skuid:0,
         headerImg:[],// 头部商品展示图片集合
+        selectedAttr:new Map(),//当前选中的attr
     }
     //dom挂在完成请求数据
     async componentDidMount(){
         document.title='商品详情'
         const {match:{params:{pid,sessionId,memId}},location}  =this.props
-
         const services=new Service({sessionId,memId})
         const { cloudShelfId } = qs.parse(location.search.split('?')[1])
-        let res={}
-        if(cloudShelfId){
-            res = await services.getDetailById(null,cloudShelfId)
-        }else{
-            res=await services.getDetailById(pid,null)
-        }
-        const { data, code } = res
-        if(code===Constant.responseOK && data){
-            let colorsAttrs=new Map()
-            if(data.goodsTypeAttrList){
-                data.goodsTypeAttrList.map(item=>{
-                    const attrs = item.attrValList.filter(i=>i.selected===1)
-                    if(attrs && attrs.length>0){
-                        colorsAttrs.set(attrs[0].baseAttrId,attrs[0].attrValId)
-                    }
-
-                })
+        const {RESP_CODE,DATA}=await services.getGoodsDetai({
+            deptId:258,
+            accountId:9,
+            DATA:{
+                typeId:7048,
+                skuId:944
             }
-            this.setState({
-                cur_tag:colorsAttrs,
-                pageData: {...data,colors:colorsAttrs},
-                defaultSkuPrice:this.toMoney(data.defaultSkuPrice),
-                typeId:pid,
-                title:data.title,
-                logoPath:Constant.imgBaseUrl+data.logoPath,
-                skuid:data.defaultSkuId,
-                headerImg:data.goodsHeadPicList||[]})
+        })
+        if(RESP_CODE==Constant.responseOK){
+            this.setDefaultAttrs(DATA)
+            this.setState({pageData:DATA})
         }
-        // 查询购物车商品数量
+        
         this.shoppingCart()
     }
-    //选择颜色
-    selectColor(attrValId,baseAttrId){
-        const { form } = this.props
-        const {cur_tag}=this.state
-        form.setFieldsValue({ color_id: attrValId })
-        
-        const new_cur_tag=cur_tag.set(baseAttrId,attrValId)
-        this.setState({cur_tag: new_cur_tag}, () => {
-            const { getFieldProps } = this.props.form
-            const { onChange } = getFieldProps('color_id')
-            onChange(attrValId)
-        })
-        this.queryPriceByGoodsColor()
-    }
-    // 点击颜色，查询该颜色属性对应的商品信息
-    async queryPriceByGoodsColor() {
-        const {typeId,cur_tag,pageData:{goodsTypeAttrList}}=this.state
-        const {match:{params:{sessionId,memId}}}  =this.props
-        let attrList=[]
-        cur_tag.forEach((value,key)=>{
-            goodsTypeAttrList.map(attrItem=>{
-                const attrItems = attrItem.attrValList.filter((v,i)=>v.attrValId===value)
-                if (attrItems && attrItems.length>0){
-                    attrList.push({attrId:attrItems[0].attrId,attrValId:attrItems[0].attrValId})
-                }
-            })
-            
-        })
-        const services=new Service(sessionId,memId)
-        const {data,code} = await services.queryPriceByGoodsColor({typeId:typeId,attrList:attrList})
-        if(code===Constant.responseOK){
-            if(data.goodsHeadPicList && data.goodsHeadPicList.length>0){
-                let picList=[]
-                data.goodsHeadPicList.map(item=>{
-                    picList.push({
-                        "picName":"",
-                        "picPath":item,
-                    })
+    // 设置当前默认选中属性
+    setDefaultAttrs=(DATA)=>{
+        // 获取默认选中属性
+        let selectedAttr=this.state.selectedAttr
+        const attrNames=DATA.attrNames// 属性集合（字符串）
+        if (attrNames){
+            if(attrNames.indexOf(' ')!==-1){
+                const attrs=attrNames.split(' ')
+                attrs.map((item)=>{
+                    const attrs=DATA.attrList.filter(v=>v.attrCode.indexOf(item)!==-1)
+                    if(attrs && attrs.length>0){
+                        selectedAttr.set(attrs[0].attrName,item)
+                    }
                 })
-                this.setState({
-                    defaultSkuPrice:this.toMoney(data.skuPrice.salePrice),
-                    skuid:data.id,
-                    headerImg:picList
-                })
-            }else{
-                this.setState({
-                    defaultSkuPrice:this.toMoney(data.skuPrice.salePrice),
-                    skuid:data.id})
             }
         }
+        this.setState({selectedAttr})
+    }
+    //选择颜色
+    selectAttr(attrName,item){
+        let selectedAttr=this.state.selectedAttr
+        selectedAttr.set(attrName,item)
+        this.setState({selectedAttr})
+        this.queryPriceByGoodsColor()
 
+    }
+    // 点击属性，查询该属性对应的商品信息
+    async queryPriceByGoodsColor() {
+        const selectedAttr= this.state.selectedAttr
+        let attr=''
+        let attrLen=0
+        
+        //遍历key
+        for (var value of selectedAttr.values()) {
+            if(selectedAttr.size===1 || attrLen===(selectedAttr.size-1)){
+                attr+=value
+            }else{
+                attr+=(value+' ')
+            }
+            attrLen++
+        }
+
+        const {RESP_CODE,DATA}=await new Service(1,15).querySkuGoods({
+            deptId:258,
+            accountId:9,
+            DATA:{
+                typeId:7048,
+                attrList:attr
+            }
+        })
+        if(RESP_CODE==Constant.responseOK){
+            const {salePrice,skuId,goodsNum}=DATA
+            let pageData = Object.assign({}, this.state.pageData, { salePrice: salePrice,skuId:skuId,goodsNum:goodsNum })
+            this.setState({pageData})
+        }
     }
     // 金额转换
     toMoney(num){
@@ -122,47 +110,56 @@ class OrderDetail extends Component{
     async sureBuy(){
         const {form,match:{params:{sessionId,memId}}}  =this.props
         const {num} = form.getFieldsValue()
-        const {skuid}=this.state
-        const params={
-            memId:memId,// TODO 用户ID
-            skuId:skuid,// skuid
-            amount:num// 数量
-        }
-        // 添加购物车
-        const {code,data} = await new ShoppingCartService({sessionId,memId}).save(params);
-        if(code===Constant.responseOK){
-            // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-sure/${data+','}/${sessionId}/${memId}`})
-            this.props.history.push(`/order-sure/${data+','}/${sessionId}/${memId}`)
-        }else{
-            Toast.fail('操作失败！',1)
-        }
+        const {skuId}=this.state.pageData
+
+        this.props.history.push(`/order-sure?skuId=${skuId}&num=${num}`)
     }
     // 添加到购物车
     async addToShoppingCart(){
         const {form,match:{params:{sessionId,memId}}}  =this.props
         const {num} = form.getFieldsValue()
 
-        const {skuid}=this.state
+        const {skuId}=this.state.pageData
         const params={
-            memId:memId,// 用户ID
-            skuId:skuid,// skuid
-            amount:num// 数量
+            DATA:{
+                goodsTotal:num,
+                skuId:skuId              
+            },
+            accountId:9,
+            deptId:258
         }
         const shoppingCartService = new ShoppingCartService({sessionId,memId})
-        const {code} = await shoppingCartService.save(params);
-        if (code===Constant.responseOK){
+        const {RESP_CODE} = await shoppingCartService.save(params);
+        if (RESP_CODE===Constant.responseOK){
             this.setState((preState) => ({
-                shoppingCartCount: preState.shoppingCartCount + 1
+                shoppingCartCount: preState.shoppingCartCount + num
               }))
             Toast.success('添加购物车成功！',1)
         }
     }
+    // 查看购物车
     async shoppingCart(){
         const {match:{params:{sessionId,memId}}}  =this.props
         const shoppingCartService = new ShoppingCartService({sessionId,memId})
-        const {data,code} = await shoppingCartService.query()
-        if (code===Constant.responseOK){
-            this.setState({shoppingCartCount:data.length})
+        const {RESP_CODE,DATA} = await shoppingCartService.query({
+            DATA:{
+                currentPage:1,
+                countPerPage:100,
+            },
+            accountId:9,
+            deptId:258,
+
+        })
+        if (RESP_CODE===Constant.responseOK){
+            let total=0;
+            if(DATA && DATA.length>0){
+                DATA.map(item=>{
+                    if(item.goodsTotal){
+                        total+=(item.goodsTotal)
+                    }
+                })
+            }
+            this.setState({shoppingCartCount:total})
         }
     }
     // 查看购物车
@@ -180,47 +177,39 @@ class OrderDetail extends Component{
         // productService.connectService(token)
     }
     // 渲染商品属性部分
-    renderAttrBlock=(baseAttrId)=>{
+    renderAttrBlock=(attrName,attrValue)=>{
         const { getFieldProps } = this.props.form
-        const {cur_tag}=this.state
-        const {pageData:{goodsTypeAttrList}}=this.state
-        let attrList=[]
-        if(!goodsTypeAttrList){
-            return
-        }
-        goodsTypeAttrList.map(item=>{
-            const attrItems = item.attrValList.filter((v,i)=>v.baseAttrId===baseAttrId)
-            if (attrItems && attrItems.length>0){
-                attrList=[...attrList,...attrItems]
-            }
-        })
+        const {selectedAttr}=this.state
         return (
             <Block wf>
                 {
-                    attrList.map(({attrValId,attrCode,attrId,baseAttrId},idx)=>{
+                    attrValue?attrValue.map((item,idx)=>{
                         let selected=false
-                        cur_tag.forEach((value,key)=>{
-                            if(key===baseAttrId && value===attrValId){
-                                selected=true
-                                return
-                            }
-                            
-                        })
-                        return <Block key={'attr-item-'+idx} onClick={this.selectColor.bind(this, attrValId,baseAttrId)} 
+                        if(selectedAttr.has(attrName)){
+                            selected=(selectedAttr.get(attrName)===item)
+                        }
+                        return <Block key={'attr-item-'+idx} onClick={this.selectAttr.bind(this, attrName,item)} 
                                 {...getFieldProps('color_id', {initialValue: 100})}
                                 key={idx}  
                                 mr={idx !=0 && idx%3 == 0?0:10}
                                 className={selected?Styles.color_tag_select:Styles.color_tag}>
-                                {attrCode}
+                                {item}
                             </Block>
-                    })
+                    }):null
                 }
             </Block>
         )
     }
 
     renderHeaderImges=()=>{
-        const {headerImg} =this.state
+        const {pageData:{showImg}} =this.state
+        let images=[]
+        if(showImg && showImg.indexOf(",") != -1){
+            images=showImg.spilt(',')
+        }else{
+            images.push(showImg)
+        }
+        console.log(images)
         return <Carousel 
             autoplay={false} 
             infinite 
@@ -228,10 +217,10 @@ class OrderDetail extends Component{
             dotActiveStyle={{background: '#FF8E44'}}
             style={{touchAction: 'none'}}>
             {
-                headerImg.map((item,index)=><img 
+                images.map((item,index)=><img
                     key={'header-img-'+index}
-                    src={Constant.imgBaseUrl+item.picPath}
-                    alt={item.picName}
+                    src={Constant.imgBaseUrl+item}
+                    alt={item}
                     style={{marginTop: 0, borderRadius: '5px 5px 0 0'}} 
                     className={Styles.prod_img} 
                     onLoad={() => {window.dispatchEvent(new Event('resize'));}} 
@@ -242,37 +231,45 @@ class OrderDetail extends Component{
 
     render(){
         const { pageData,defaultSkuPrice,shoppingCartCount} = this.state
-        const { title,goodsPicList } = pageData || {}
+        const { title,conImg } = pageData || {}
         const { getFieldProps } = this.props.form
+
+        let xiangqing=[]
+        if (conImg){
+            if(conImg.indexOf(',')!==-1){
+                xiangqing=conImg.split(',')
+            }else{
+                xiangqing.push(conImg)
+            }
+        }
         return (
             pageData?<Block bc='#fff' vf p={15} className={Styles.order_det_wrapper}>
                 <Block vf className={Styles.pro_panel}>
                     <Block f={1} j='c' a='c'>
-                        {/* <img style={{marginTop: 0, 
-                            borderRadius: '5px 5px 0 0'}} 
-                            className={Styles.prod_img} 
-                            src={Constant.imgBaseUrl+goodsHeadPicList[0].picPath} alt='商品logo'/> */}
-                            {
-                                this.renderHeaderImges()
-                            }
+                        {
+                            this.renderHeaderImges()
+                        }
                     </Block>
                     <Block p={20} vf mt={10}>
                         <Block fs={16}>{title}</Block>
-                        <Block className={Styles.money_color} fs={20} mt={10}>￥{defaultSkuPrice}</Block>
+                        <Block className={Styles.money_color} fs={20} mt={10}>￥{pageData.salePrice}</Block>
                     </Block>
                 </Block>
                 {
-                    pageData.goodsBaseAttrList?pageData.goodsBaseAttrList.map(({baseAttrId,baseAttrName},baseIndex)=>{
+                    pageData.attrList?pageData.attrList.map(({attrValue,attrName},baseIndex)=>{
                         return <Block key={'base-attr-'+baseIndex}>
-                                <Block pt={20} pb={13} fs={18}>{baseAttrName}</Block>
+                                <Block pt={20} pb={13} fs={18}>{attrName}</Block>
                                 {
-                                    this.renderAttrBlock(baseAttrId)
+                                    this.renderAttrBlock(attrName,attrValue)
                                 }
                             </Block>
                     }):null
                 }
                 <Block mt={20} a='c' wf>
-                    <Block fs={18} f={1}>购买数量</Block>
+                    <Block fs={18} f={1} hf>
+                        <Block>购买数量</Block>
+                        <Block style={{color:'#CCCCCC'}}>（库存数量：{pageData.goodsNum}）</Block>
+                    </Block>
                     <Stepper
                         style={{ width: '120px', touchAction: 'none'}}
                         showNumber
@@ -285,8 +282,9 @@ class OrderDetail extends Component{
                 <Block pt={20} pb={20} fs={18} style={{fontWeight: 'bold'}}>套餐详情</Block>
                 <Block vf mb={60}>
                     {
-                        goodsPicList?goodsPicList.map((item,index)=>(
-                            <img className={Styles.prod_img} key={index} src={item.picPath?Constant.imgBaseUrl+item.picPath:ImgErr} alt={item.picName}/>
+                        
+                        xiangqing?xiangqing.map((item,index)=>(
+                            <img className={Styles.prod_img} key={index} src={item?Constant.imgBaseUrl+item:ImgErr} alt='详情'/>
                         )):null
                     }
                 </Block>

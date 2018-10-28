@@ -13,6 +13,7 @@ import Constant from '../../utils/constant'
 import HonbaoImage from '../../assets/img/hongbao@2x.png'
 import uncheck from '../../assets/img/uncheck.png'
 import checked from '../../assets/img/checked.png'
+import qs from 'qs'
 const alert = Modal.alert;
 /**
  *订单确认
@@ -47,6 +48,7 @@ class OrderSure extends Component{
         adoptTimeSelect:{},
 
         honbaoPopVisible:false,//红包选择
+        
         isCheckedJifen:false,//是否使用积分
         honbaoSelect:null,// 当前选中红包
         honbaos:[
@@ -65,15 +67,18 @@ class OrderSure extends Component{
         ],
 
         fapiaoPopVisible:false,//发票选择
+        invoiceType:[],// 可选择开发票形式
+        selectInvoiceType:null,// 当前选中开发票形式
+
         fapiaoSelect:null,//选中开发票模式
 
     }
     async componentDidMount(){
         document.title='订单确认'
-        this.queryGoodsdAndSkuInfo()
-        setTimeout(() => {
-            this.queryAdoptDeptList()
-        }, 1000);
+        const {location}  =this.props
+        const { num,skuId } = qs.parse(location.search.split('?')[1])
+
+        this.queryInvoiceType()// 查询可开发票信息
     }
     async queryGoodsdAndSkuInfo(){
         let { history,match:{params:{shoppingcardId,sessionId,memId}}} = this.props
@@ -185,7 +190,8 @@ class OrderSure extends Component{
 
         const {data,code}= await new OrderService({sessionId,memId}).addOrder({...params})
         if (code===Constant.responseOK){
-            this.pay(data)
+            // this.pay(data)
+            wx.miniProgram.navigateTo({url: `/pages/payPage/payPage?id=${data}`})
         }
     }
     // 调用支付接口
@@ -195,7 +201,7 @@ class OrderSure extends Component{
         if(code===Constant.responseOK){
             Toast.success('成功！',1)
             setTimeout(() => {
-                wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/success/${orderCode}/${sessionId}/${memId}`})
+                // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/success/${orderCode}/${sessionId}/${memId}`})
                 // this.props.history.push(`/success/${orderCode}/${sessionId}/${memId}`)
             }, 1000);
         }else{
@@ -252,6 +258,22 @@ class OrderSure extends Component{
         this.setState({
             collectAddress:data
         })
+    }
+
+    //--------------------------------------------------------------------------------发票相关
+    // 查询可开发票信息
+    async queryInvoiceType(){
+        const {DATA}=await new UserService(1,15).queryInvoiceType({
+            deptCode:258,
+            DATA:{},
+        })
+        if(DATA){
+            this.setState({invoiceType:DATA})
+        }
+    }
+    // 选中开票类型
+    selectInvoic(selectItem){
+        this.setState({selectInvoiceType:selectItem})
     }
     
     // 自提时间选择列表
@@ -400,17 +422,22 @@ class OrderSure extends Component{
 
     // 开具发票页面
     renderFapiaoWindow=()=>{
-        const {fapiaoSelect}=this.state
+        const {fapiaoSelect,invoiceType,selectInvoiceType}=this.state
         const {getFieldProps}=this.props.form
+        
         let selected=true
         return (
             <Block className={Styles.order_det_wrapper} bc='#fff' vf  p={15}>
                 <Block vf p={15} f={1}>
                     <Block vf>
-                        <Block f={1} pb={13} fs={18}>购买数量</Block>
+                        <Block f={1} pb={13} fs={18}>发票类型</Block>
                         <Block f={1} wf>
-                            <Block mr={10} className={selected?Styles.color_tag_select:Styles.color_tag}>普通纸质发票</Block>
-                            <Block mr={10} className={selected?Styles.color_tag_select:Styles.color_tag}>普通电子发票</Block>
+                            {
+                                invoiceType && invoiceType.length>0?invoiceType.map((item,index)=>{
+                                    const typeSelected=(selectInvoiceType && selectInvoiceType.invoiceType===item.invoiceType) 
+                                    return <Block onClick={this.selectInvoic.bind(this,item)} mr={10} key={'invoiceType'+index} className={typeSelected?Styles.color_tag_select:Styles.color_tag}>{item.typeName}</Block>
+                                }):null
+                            }
                         </Block>
                     </Block>
 
