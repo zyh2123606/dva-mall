@@ -11,8 +11,16 @@ class BaseService extends HttpBase{
         })
     }
     //获取用户收货列表
-    getHomeData = ({ accountId, deptId }) => {
-        return this.post('/salesWebToWoStore/index', { accountId, deptId })
+    getHomeData = (data=undefined) => {
+        return this.all([this.getProdList(data), this.getProdTypeList(data)])
+    }
+    //获取商品详情
+    getProdList = (data=undefined) => {
+        return this.post('/salesWebToWoStore/index', data)
+    }
+    //获取商品类型列表
+    getProdTypeList = (data=undefined) => {
+        return this.post('/goodsInfoMallController/typeList', data)
     }
     //获取门店信息
     getDeptInfo = () => {
