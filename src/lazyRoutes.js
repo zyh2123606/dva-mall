@@ -2,7 +2,7 @@ import Loadable from 'react-loadable'
 
 export const homePage = Loadable({loader: () => import('./routes/home'), loading: () =>(<div></div>)})
 export const orderDetailPage = Loadable({loader: () => import('./routes/orderMgr'), loading: () =>(<div></div>)})
-// export const myOrderPage = Loadable({loader: () => import('./routes/myOrder'), loading: () =>(<div></div>)})
+export const myOrderPage = Loadable({loader: () => import('./routes/myOrder'), loading: () =>(<div></div>)})
 export const orderSurePage = Loadable({loader: () => import('./routes/orderMgr/orderSure'), loading: () =>(<div></div>)})
 export const addressMgrPage = Loadable({loader: () => import('./routes/addressMgr'), loading: () =>(<div></div>)})
 export const addAddressPage = Loadable({loader: () => import('./routes/addressMgr/create'), loading: () =>(<div></div>)})
