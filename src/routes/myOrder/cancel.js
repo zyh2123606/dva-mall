@@ -12,7 +12,7 @@ import qs from 'qs'
  * @class WaitPay
  * @extends {Component}
  */
-class WaitPay extends Component{
+class Cancel extends Component{
     state = { refreshing: true, data: null }
     pageIndex = 1
     pageSize = 10
@@ -21,10 +21,9 @@ class WaitPay extends Component{
         const { search } = this.props.location
         this.AUTH = qs.parse(search.split('?')[1])
         const MyOrderSev = new Service(this.AUTH)
-        const statuswaitpay = "5"//5获取待付款订单
+        const statuswaitpay = "3"//5获取已取消订单
         const pData = {deptId:258,DATA:{currentPage:this.pageIndex,countPerPage:this.pageSize,orderStatus:statuswaitpay}}
         const res = await MyOrderSev.getMyOrder(pData)
-        debugger
         const { DATA, RESP_CODE } = res
         if(RESP_CODE==="0000")
             this.setState({ data: DATA.list})
@@ -68,4 +67,4 @@ class WaitPay extends Component{
     }
 }
 
-export default WaitPay
+export default Cancel
