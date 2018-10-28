@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Block from 'fs-flex'
 import { connect } from 'dva'
-import { Button ,Modal} from 'antd-mobile'
+import { Button, Toast } from 'antd-mobile'
 import { Link } from 'react-router-dom'
 import Styles from './index.less'
 import Logo from '../../assets/img/logo.png'
@@ -11,7 +11,8 @@ import Service from '../../services/baseService'
 import Constant from '../../utils/constant'
 import ImgErr from '../../assets/img/img_error.png'
 import ContentLoader from 'react-content-loader'
-const alert = Modal.alert;
+import Qs from 'qs'
+
 /**
  *首页
  *
@@ -21,44 +22,29 @@ const alert = Modal.alert;
 interface IProps{dispatch: any, history: any}
 class Home extends Component<IProps>{
     state = {
-        specialList: [],
-        hotList: [],
-        newList: [],
-        productTypes: [],
-        bannerList: [],
-        isRequest: false,
-        deptInfo: {},
-        allBanner:[],
+        pageLoad: [],
+        isRequest: false
     }
-
-
-    bannerStyle={1:Styles.banner_inner,2:Styles.th_banner,3:Styles.hot_banner,4:Styles.new_banner}
-
+    _PAGE_DATA_ = { accountId: '', deptId: '' }
     constructor(props:IProps){
         super(props)
     }
     async componentDidMount(){
-        const { params } = this.props.match
-        const BaseSev = new Service(params)
-        const res = await BaseSev.getHomeData()
-        if(!res) return
+        const { search } = this.props.location
+        let params = search.split('?')[1] || ''
+        params = Qs.parse(params)
+        this._PAGE_DATA_ = {...this._PAGE_DATA_, ...params}
+        const BaseSev = new Service()
+        const { RESP_CODE, RESP_DESC, DATA } = await BaseSev.getHomeData(this._PAGE_DATA_)
+        if(RESP_CODE !== '0000') return Toast.info(RESP_DESC)
         this.setState({
-            specialList: res[0].data || [],
-            hotList: res[1].data || [],
-            newList: res[2].data || [],
-            typeList: res[3].data || [],
-            deptInfo: res[4].data || {},
-            allBanner: res[5].data || [],
+            pageLoad: DATA,
             isRequest: true
         })
     }
     
     gotoProdDetail(typeId){
-        const {memId,sessionId}=this.props.match.params
-        // alert('info', `info-session:${sessionId} info-id:${memId}  info-type:${typeId}`, [
-        //     { text: 'Cancel', onPress: () => console.log('cancel'), style: 'default' },
-        //     { text: 'OK', onPress: () => console.log('ok') },
-        //   ]);
+        const {memId, sessionId}=this.props.match.params
         wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}/${sessionId}/${memId}`})
         // this.props.history.push(`/order-detail/${typeId}/${sessionId}/${memId}`)
     }
@@ -69,31 +55,43 @@ class Home extends Component<IProps>{
             // this.props.history.push(`${url}/${sessionId}/${memId}`)
         }
     }
-
-    // 渲染各个分类的banner图片
-    renderBanner=(adType)=>{
-        const allBanner=this.state.allBanner
-        if (!allBanner || allBanner.length===0){
-            return <Block className={this.bannerStyle[adType]}></Block>
-        }
-        let currentBanner=allBanner.filter(item=>item.adType===adType)
-        if (!currentBanner || currentBanner.length===0){
-            return <Block className={this.bannerStyle[adType]}></Block>
-        }
-        currentBanner=currentBanner[0]
-        return (
-            <Block onClick={this.gotoGoodsPage.bind(this,currentBanner.adUrl)}><img style={{width:'100%',height:'150px'}} src={Constant.imgBaseUrl+currentBanner.adPic} alt='banner'/></Block>
-        )
+    //商品
+    renderColumnView(){
+        const { pageLoad } = this.state
+        return pageLoad.map(({columnName, mallRelation, columnType, displayType}, index) => {
+            return (
+                <React.Fragment key={index}>
+                    <Block ml={15} mr={15}>
+                        <Block wf a='c'>
+                            <Block f={1} className={Styles.type_title}>{columnName}</Block>
+                        </Block>
+                        <Block className={Styles.hot_banner}></Block>
+                    </Block>
+                    <Block mr={5} ml={10} style={{lineHeight: 'normal'}}>
+                        {mallRelation.map(({ displayName, displayPic, displayPrice, displaySort, perateType, relSkuId, relTypeid }, idx) => (
+                            <Block key={idx} onClick={this.gotoProdDetail.bind(this, relTypeid)} vf className={Styles.prod_item} mt={15}>
+                                <Block j='c' className={Styles.prod_img_c}>
+                                    <img className={Styles.prod_img} src={displayPic?Constant.imgBaseUrl+displayPic:ImgErr} />
+                                </Block>
+                                <Block mt={5} className={Styles.type_name_txt}>{displayName}</Block>
+                                <Block j='c' fs={12} pb={7} className={Styles.orangeRedColor}>￥{Constant.toMoney(displayPrice)}</Block>
+                                {perateType === '1'?<Button type='primary' className={Styles.buy_btn}>立即购买</Button>
+                                :<Button type='primary' className={Styles.order_btn}>立即预约</Button>}
+                            </Block>
+                        ))}
+                    </Block>
+                </React.Fragment>
+            )
+        })
     }
     render(){
-        const { specialList, hotList, typeList, newList, isRequest, deptInfo } = this.state
-        const { deptAddress, deptManager, deptName, deptManagerAvatar, deptTel } = deptInfo || {}
+        const { isRequest } = this.state
+        const { deptAddress, deptManager, deptName, deptManagerAvatar, deptTel } = {}
         return (
             isRequest?<Block className={Styles.container} bc='#fff'>
                 <Block vf p='0 15px'>
                     {/* top start */}
                     <Block a='c' wf pt={10}>
-                        {/* <img width={57} src={Logo} /> */}
                         <img width={57} src={GxLogo} />
                         <Block f={1} j='c' vf className={Styles.logo_txt}>
                             <Block fs={12} fc='#FD8007'>{deptName}</Block>
@@ -125,107 +123,11 @@ class Home extends Component<IProps>{
                     {/* top end */}
                     </Block>
                     <Block mt={10} className={Styles.type_banner}>
-                        {/* <Block className={Styles.banner_inner}></Block> */}
-                        {
-                            this.renderBanner(1)
-                        }
+                        <Block className={Styles.banner_inner}></Block>
                     </Block>
                     <Block className={Styles.type_title}>商品类型</Block>
                 </Block>
-                {/* start */}
-                <section className={Styles.swiper_container}>
-                    <Swiper slidesPerView={4}>
-                        {typeList.map(({adPic, title,adUrl}, idx) => (
-                            <Block key={idx} onClick={this.gotoGoodsPage.bind(this, adUrl)}>
-                                <Block vf className={Styles.type_item}>
-                                    <Block f={1}>
-                                        <img className={Styles.type_img} src={Constant.imgBaseUrl+adPic} />
-                                    </Block>
-                                    <Block className={Styles.type_name_txt}>{title}</Block>
-                                </Block>
-                            </Block>
-                        ))}
-                    </Swiper>
-                </section>
-                {/* end */}
-                <Block ml={15} mr={15}>
-                    <Block wf a='c'>
-                        <Block f={1} className={Styles.type_title}>特惠专区</Block>
-                        {/* <Link className={Styles.link_sty} to='/'>More</Link> */}
-                    </Block>
-                    {
-                        this.renderBanner(2)
-                    }
-                    {/* <Block className={Styles.th_banner}></Block> */}
-                </Block>
-                {/* start */}
-                <section className={Styles.swiper_container}>
-                    <Swiper slidesPerView={3}>
-                        {specialList.map(({logoPath, typeName, minPrice, typeId}, idx) => (
-                            <Block onClick={this.gotoProdDetail.bind(this, typeId)} key={idx} style={{lineHeight: 'normal'}}>
-                                <Block vf className={Styles.type_item} mt={15}>
-                                    <Block j='c' className={Styles.prod_img_c}>
-                                        <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
-                                    </Block>
-                                    <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
-                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{Constant.toMoney(minPrice)}</Block>
-                                </Block>
-                            </Block>
-                        ))}
-                    </Swiper>
-                </section>
-                {/* end */}
-                <Block ml={15} mr={15}>
-                    <Block wf a='c'>
-                        <Block f={1} className={Styles.type_title}>热门商品</Block>
-                        {/* <Link className={Styles.link_sty} to='/'>More</Link> */}
-                    </Block>
-                    {/* <Block className={Styles.hot_banner}></Block> */}
-                    {
-                        this.renderBanner(3)
-                    }
-                </Block>
-                <section className={Styles.swiper_container}>
-                    <Swiper slidesPerView={3}>
-                        {hotList.map(({logoPath, typeName, minPrice, typeId}, idx) => (
-                            <Block onClick={this.gotoProdDetail.bind(this, typeId)} key={idx} style={{lineHeight: 'normal'}}>
-                                <Block vf className={Styles.type_item} mt={15}>
-                                    <Block j='c' className={Styles.prod_img_c}>
-                                        <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
-                                    </Block>
-                                    <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
-                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{Constant.toMoney(minPrice)}</Block>
-                                </Block>
-                            </Block>
-                        ))}
-                    </Swiper>
-                </section>
-                {/* start */}
-                <Block ml={15} mr={15}>
-                    <Block wf a='c'>
-                        <Block f={1} className={Styles.type_title}>新品上架</Block>
-                        {/* <Link className={Styles.link_sty} to='/'>More</Link> */}
-                    </Block>
-                    {/* <Block className={Styles.new_banner}></Block> */}
-                    {
-                        this.renderBanner(4)
-                    }
-                </Block>
-                <section className={Styles.swiper_container}>
-                    <Swiper slidesPerView={3}>
-                        {newList.map(({logoPath, typeName, minPrice, typeId}, idx) => (
-                            <Block onClick={this.gotoProdDetail.bind(this, typeId)} key={idx} style={{lineHeight: 'normal'}}>
-                                <Block vf className={Styles.type_item} mt={15}>
-                                    <Block j='c' className={Styles.prod_img_c}>
-                                        <img className={Styles.prod_img} src={logoPath?Constant.imgBaseUrl+logoPath:ImgErr} />
-                                    </Block>
-                                    <Block mt={5} className={Styles.type_name_txt}>{typeName}</Block>
-                                    <Block j='c' fs={12} pb={7} className={Styles.orangeColor}>{Constant.toMoney(minPrice)}</Block>
-                                </Block>
-                            </Block>
-                        ))}
-                    </Swiper>
-                </section>
+                {this.renderColumnView()}
             </Block>:
             <Block vf w='100%' h='100%' bc='#fff'>
                 <Block p={10}>
@@ -242,7 +144,6 @@ class Home extends Component<IProps>{
                     </ContentLoader>
                 </Block>
             </Block>
-            
         )
     }
 }

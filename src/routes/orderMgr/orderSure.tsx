@@ -190,7 +190,8 @@ class OrderSure extends Component{
 
         const {data,code}= await new OrderService({sessionId,memId}).addOrder({...params})
         if (code===Constant.responseOK){
-            this.pay(data)
+            // this.pay(data)
+            wx.miniProgram.navigateTo({url: `/pages/payPage/payPage?id=${data}`})
         }
     }
     // 调用支付接口
@@ -200,7 +201,7 @@ class OrderSure extends Component{
         if(code===Constant.responseOK){
             Toast.success('成功！',1)
             setTimeout(() => {
-                wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/success/${orderCode}/${sessionId}/${memId}`})
+                // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/success/${orderCode}/${sessionId}/${memId}`})
                 // this.props.history.push(`/success/${orderCode}/${sessionId}/${memId}`)
             }, 1000);
         }else{
