@@ -134,8 +134,7 @@
     font-size: 12px;
     height: 25px;
     line-height: 25px;
-    border-radius: 15px;
-    margin: 0 20px;
+    border-radius: 30px;
     width: 65px;
 }
 .buy_btn{
@@ -147,4 +146,29 @@
 }
 .order_btn{
     .btn;
+}
+.focus_slide{
+    width: 100%;
+    img{
+        display: block;
+        width: 100%;
+        min-height: 150px;
+    }
+}
+.type_item{
+    @value: 10px;
+    width: calc(~"25% - @{value}");
+    width: -webkit-calc(~"25% - @{value}");
+    margin: 5px 5px 10px 5px;
+    background: #FFFFFF;
+    .boxShadow();
+    border-radius: @borderRadius;
+    padding-bottom: 10px;
+    font-size: 12px;
+    .type_pic_c{
+        height: 80px;
+    }
+    img{
+        border-radius: @borderRadius @borderRadius 0 0;
+    }
 }

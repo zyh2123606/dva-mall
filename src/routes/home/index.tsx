@@ -23,7 +23,9 @@ interface IProps{dispatch: any, history: any}
 class Home extends Component<IProps>{
     state = {
         pageLoad: [],
-        isRequest: false
+        focusImgs: [],
+        isRequest: false,
+        typeList: []
     }
     _PAGE_DATA_ = { accountId: '', deptId: '' }
     constructor(props:IProps){
@@ -34,12 +36,25 @@ class Home extends Component<IProps>{
         let params = search.split('?')[1] || ''
         params = Qs.parse(params)
         this._PAGE_DATA_ = {...this._PAGE_DATA_, ...params}
-        const BaseSev = new Service()
-        const { RESP_CODE, RESP_DESC, DATA } = await BaseSev.getHomeData(this._PAGE_DATA_)
-        if(RESP_CODE !== '0000') return Toast.info(RESP_DESC)
+        const BaseSev = new Service(),
+            result = await BaseSev.getHomeData(this._PAGE_DATA_),
+            prod_res = result[0],
+            type_res = result[1];
+        if(prod_res.RESP_CODE !== '0000') return Toast.info(prod_res.RESP_DESC)
+        if(type_res.RESP_CODE !== '0000') return Toast.info(type_res.RESP_DESC)
+        let _focus = [], _data = [];
+        prod_res.DATA.filter((item, idx) => {
+            if(item.displayType === '1'){
+                _focus = item.mallRelation || []
+            }else{
+                _data.push(item)
+            }
+        })
         this.setState({
-            pageLoad: DATA,
-            isRequest: true
+            pageLoad: _data,
+            focusImgs: _focus,
+            isRequest: true,
+            typeList: type_res.DATA
         })
     }
     
@@ -58,14 +73,18 @@ class Home extends Component<IProps>{
     //商品
     renderColumnView(){
         const { pageLoad } = this.state
-        return pageLoad.map(({columnName, mallRelation, columnType, displayType}, index) => {
+        return pageLoad.map(({columnName, mallRelation, columnType, displayType, setId}, index) => {
             return (
                 <React.Fragment key={index}>
                     <Block ml={15} mr={15}>
                         <Block wf a='c'>
                             <Block f={1} className={Styles.type_title}>{columnName}</Block>
                         </Block>
-                        <Block className={Styles.hot_banner}></Block>
+                        {setId === 1?
+                        <img style={{
+                            width: '100%',
+                            height: 'auto'
+                        }} src={Constant.imgBaseUrl + mallRelation[0].displayPic} />:null}
                     </Block>
                     <Block mr={5} ml={10} style={{lineHeight: 'normal'}}>
                         {mallRelation.map(({ displayName, displayPic, displayPrice, displaySort, perateType, relSkuId, relTypeid }, idx) => (
@@ -75,8 +94,10 @@ class Home extends Component<IProps>{
                                 </Block>
                                 <Block mt={5} className={Styles.type_name_txt}>{displayName}</Block>
                                 <Block j='c' fs={12} pb={7} className={Styles.orangeRedColor}>￥{Constant.toMoney(displayPrice)}</Block>
-                                {perateType === '1'?<Button type='primary' className={Styles.buy_btn}>立即购买</Button>
-                                :<Button type='primary' className={Styles.order_btn}>立即预约</Button>}
+                                <Block j='c'>
+                                    {perateType === '1'?<Button type='primary' className={Styles.buy_btn}>立即购买</Button>
+                                    :<Button type='primary' className={Styles.order_btn}>立即预约</Button>}
+                                </Block>
                             </Block>
                         ))}
                     </Block>
@@ -85,7 +106,7 @@ class Home extends Component<IProps>{
         })
     }
     render(){
-        const { isRequest } = this.state
+        const { isRequest, focusImgs, typeList } = this.state
         const { deptAddress, deptManager, deptName, deptManagerAvatar, deptTel } = {}
         return (
             isRequest?<Block className={Styles.container} bc='#fff'>
@@ -122,10 +143,29 @@ class Home extends Component<IProps>{
                         </Block>
                     {/* top end */}
                     </Block>
-                    <Block mt={10} className={Styles.type_banner}>
-                        <Block className={Styles.banner_inner}></Block>
-                    </Block>
+                    <section>
+                        <Swiper autoplay={{delay: 3000, disableOnInteraction: false}}>
+                            {focusImgs.map((item, idx) => (
+                                <Block key={idx} className={Styles.focus_slide}>
+                                    <img src={Constant.imgBaseUrl+item.displayPic} />
+                                </Block>
+                            ))}
+                        </Swiper>
+                        <div className='swiper-pagination'></div>
+                    </section>
                     <Block className={Styles.type_title}>商品类型</Block>
+                    <section>
+                        <Swiper slidesPerView={4}>
+                            {typeList.map(({grandFatherTypeId, grandFatherTypeName, grandFatherUrl}, idx) => (
+                                <Block vf className={Styles.type_item} key={idx} onClick={this.gotoGoodsPage.bind(this)}>
+                                    <Block className={Styles.type_pic_c} f={1}>
+                                        <img className={Styles.type_img} src={Constant.imgBaseUrl+grandFatherUrl} />
+                                    </Block>
+                                    <Block className={Styles.type_name_txt}>{grandFatherTypeName}</Block>
+                                </Block>
+                            ))}
+                        </Swiper>
+                    </section>
                 </Block>
                 {this.renderColumnView()}
             </Block>:
