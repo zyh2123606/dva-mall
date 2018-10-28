@@ -28,7 +28,7 @@ class BaseService extends HttpBase{
     }
 	//获取用户信息
     getUserInfo = (accountId = '') => {
-        return this.get(`/mem/info/${accountId}`)
+        return this.postJson(`salesWebToWoStore/queryMemAccountInfo`,{accountId:accountId})
     }
 }
 

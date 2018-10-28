@@ -19,10 +19,10 @@ class Account extends Component{
         const { params } = this.props.match
         const accountSev = new Service(params)
         const usRes = await accountSev.getUserInfo()
-        if(usRes.code !== '0000') return Toast.info(usRes.msg)
+        if(usRes.RESP_CODE !== '0000') return Toast.info(usRes.RESP_DESC)
         const depRes = await accountSev.getDeptInfo()
-        if(depRes.code != '0000') return Toast.info(depRes.msg)
-        this.setState({userInfo: usRes.data || {}, deptInfo: depRes.data, auth: params})
+        if(depRes.RESP_CODE != '0000') return Toast.info(depRes.RESP_DESC)
+        this.setState({userInfo: usRes.DATA || {}, deptInfo: depRes.DATA, auth: params})
     }
     goToTarget(target){
         wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/${target}`})
@@ -34,10 +34,10 @@ class Account extends Component{
                 <Block className={Styles.header} vf>
                     <Block a='c' mt={30}>
                         <Block j='c' a='c' fc='#eee' fs={30} ml={20} className={Styles.user_head}>
-                            {userInfo.avatar?<img src={userInfo.avatar} alt='' />
+                            {userInfo.wxImg?<img src={userInfo.wxImg} alt='' />
                             :<i className={Styles.icon_account} />}
                         </Block>
-                        <Block ml={20} fc='#fff' fs={20}>{userInfo.nickname}</Block>
+                        <Block ml={20} fc='#fff' fs={20}>{userInfo.wxNickname}</Block>
                     </Block>
                 </Block>
                 <Block fs={16} p={15}>我的订单</Block>
