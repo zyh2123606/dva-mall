@@ -25,7 +25,7 @@ class OrderService extends HttpBase{
         return this.post('/order/pay',data)
     }
 
-    getOrderList=(data)=>{
+    getOrderDetail=(data)=>{
         return this.post('/salesWebToWoStore/queryStoreOrderDetail',data)
 
     }
