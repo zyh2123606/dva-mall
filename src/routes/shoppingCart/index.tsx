@@ -8,6 +8,8 @@ import Constant from '../../utils/constant'
 import {routerRedux} from 'dva/router'
 import {connect} from 'dva'
 import ImgErr from '../../assets/img/img_error.png'
+import qs from 'qs'
+
 const alert = Modal.alert;
 /**
  *购物车
@@ -34,11 +36,21 @@ class Cart extends Component<IPropos>{
         this.queryShoppingCart()
     }
     async queryShoppingCart(){
-        const { match:{params:{sessionId,memId}}} = this.props
-        const {data,code}=await new ShoppingCartService({sessionId,memId}).query()
-        if (code===Constant.responseOK){
+        const { match:{params:{sessionId,memId}},location} = this.props
+        const { accountId,deptId } = qs.parse(location.search.split('?')[1])
+        const {RESP_CODE,DATA}=await new ShoppingCartService(1,15).query({
+            DATA:{
+                currentPage:0,
+                countPerPage:20
+
+            },
+            accountId:9,
+            deptId:258
+
+        })
+        if (RESP_CODE===Constant.responseOK){
             this.setState({
-                goodsList:data
+                goodsList:DATA
             })
         }
     }
@@ -179,24 +191,19 @@ class Cart extends Component<IPropos>{
                                                     <Icon color='#FF8E44' type='check-circle' />
                                                 </Block>
                                             </Block>
-                                            
                                         
                                         ):<Block j='c' m='30px 10px 5px 10px' onClick={this.checked.bind(this,index)}><Block className={Styles.custom_check}></Block></Block>
                                     }
                                     <Block className={Styles.prod_pic}>
-                                        <img style={{width:'76px', borderRadius: 4}} src={item.logoPath?Constant.imgBaseUrl+item.logoPath:ImgErr} alt={item.goodsName}/>
+                                        <img style={{width:'76px', borderRadius: 4}} src={item.goodsImg?Constant.imgBaseUrl+item.goodsImg:ImgErr} alt={item.typeName}/>
                                         </Block>
                                     <Block vf f={1} ml={10}>
-                                        <Block fs={14}>{item.goodsName}</Block>
+                                        <Block fs={14}>{item.typeName}</Block>
                                         <Block mt={5}>
-                                            {
-                                                item.attrList?item.attrList.map((subItem,subIndex)=>{
-                                                    return <Block key={'attr-item-index-'+subIndex} className={Styles.prod_tag}>{subItem.attrCode}</Block>
-                                                }):null
-                                            }
+                                            <Block className={Styles.prod_tag}>{item.attrNames}</Block>
                                         </Block>
                                         <Block wf a='c' mt={5}>
-                                            <Block f={1} className={Styles.orangeColor}>￥{Constant.toMoney(item.salePrice)}</Block>
+                                            <Block f={1} className={Styles.orangeColor}>￥{item.salePrice}</Block>
                                             <Block mr={10}>
                                                 <Stepper
                                                     style={{ width: '100%', minWidth: '100px' }}
@@ -204,7 +211,7 @@ class Cart extends Component<IPropos>{
                                                     max={10}
                                                     min={1}
                                                     onChange={(val)=>this.goodsCountChange(val,item)}
-                                                    defaultValue={item.amount}
+                                                    defaultValue={item.goodsTotal}
                                                 />
                                             </Block>
                                         </Block>
@@ -225,11 +232,11 @@ class Cart extends Component<IPropos>{
         }
         return (
             <Block vf className={Styles.cart_container}>
-                <Block className={Styles.cart_content}>
+                <Block className={Styles.cart_content} f={1} style={{marginBottom:'50px'}}>
                     {this.renderCartItem()}
                 </Block>
                 {/* footer */}
-                <Block className={Styles.footer_bar}>
+                <Block className={Styles.footer_bar} style={{marginBottom:'50px'}}>
                     <Block a='c' wf className={Styles.footer_content}>
                         <Block f={1}>
                             <CheckboxItem onChange={this.selelctAll.bind(this)}>全部</CheckboxItem>

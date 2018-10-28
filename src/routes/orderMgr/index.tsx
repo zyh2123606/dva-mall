@@ -251,7 +251,7 @@ class OrderDetail extends Component{
                         }
                     </Block>
                     <Block p={20} vf mt={10}>
-                        <Block fs={16}>{title}</Block>
+                        <Block fs={16}>{pageData.goodsName}</Block>
                         <Block className={Styles.money_color} fs={20} mt={10}>￥{pageData.salePrice}</Block>
                     </Block>
                 </Block>

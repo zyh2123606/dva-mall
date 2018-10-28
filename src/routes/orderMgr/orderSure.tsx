@@ -258,8 +258,7 @@ class OrderSure extends Component{
                 salePrice:item.salePrice,
                 goodsNum:item.goodsTotal,
                 skuId:item.skuId
-                cartId:item.cartId
-
+                cartId:item.cartId  
             })
         })
 
@@ -271,7 +270,7 @@ class OrderSure extends Component{
                     invType:selectInvoiceType,
                     invTitle:invTitle===1?'个人':'公司',
                     invContent:fapiaoContentSelect,
-                    identNum:taxpayerCode,
+                    identNum:taxpayerCode||invTitle,
                     invEmail:email,
                     titleType:invTitle
 
@@ -281,7 +280,10 @@ class OrderSure extends Component{
         
         const {RESP_CODE,DATA}= await new OrderService({sessionId,memId}).addOrder(params)
         if (RESP_CODE===Constant.responseOK){
-            console.log(DATA)
+            Toast.success('提交的名单成功！',2)
+            setTimeout(() => {
+                this.props.history.push(`/order-complete?orderNum=${DATA.orderNum}&orderId=${DATA.id}&deptId=${258}&accountId=${9}`)
+            }, 1000);
         }
     }
     // 调用支付接口
@@ -478,7 +480,7 @@ class OrderSure extends Component{
                                     <Block fs={12} fc='#666'>{item.attrNames}</Block>
                                     <Block wf>
                                         <Block f={1}>×{item.goodsTotal}</Block>
-                                        <Block className={Styles.orangeColor}>￥{Constant.toMoney(item.salePrice)}</Block>
+                                        <Block className={Styles.orangeColor}>￥{item.salePrice}</Block>
                                     </Block>
                                 </Block>
                             </Block>
@@ -538,10 +540,10 @@ class OrderSure extends Component{
                 </List> */}
 
                 <List renderHeader={<Block fs={18} style={{color:'#000',fontWeight: 'bold'}}>总金额</Block>}>
-                    <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>商品金额</Item>
+                    <Item extra={<Block className={Styles.orangeColor}>￥{totalPrise}</Block>}>商品金额</Item>
                     {/* <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>红包抵扣</Item>
                     <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>积分抵扣</Item> */}
-                    <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>总金额</Item>
+                    <Item extra={<Block className={Styles.orangeColor}>￥{totalPrise}</Block>}>总金额</Item>
                 </List>
                 </Block>
         )
