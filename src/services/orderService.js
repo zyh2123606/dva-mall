@@ -25,11 +25,9 @@ class OrderService extends HttpBase{
         return this.post('/order/pay',data)
     }
 
-    getOrderList=(orderCode)=>{
-        if(orderCode){
-            return this.get(`order/getList?memId=${this.MEMID}&orderCode=${orderCode}`)
-        }
-        return this.get(`order/getList?memId=${this.MEMID}`)
+    getOrderList=(data)=>{
+        return this.post('/salesWebToWoStore/queryStoreOrderDetail',data)
+
     }
     //支付接口
     pay=(orderCode)=>{
