@@ -30,7 +30,7 @@ class DefaultPage extends Component{
         const { current } = this.state
         return (
             <>  
-                <Block w='100%' h='100%'>
+                <Block w='100%' h='100%' pb={50}>
                     <Switch>
                         <Route path='/home' component={Home} exact />
                         <Route path='/cart' component={Cart} exact />
