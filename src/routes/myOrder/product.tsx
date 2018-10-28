@@ -60,9 +60,6 @@ class Product extends Component{
                             <Block f={1}>实付：<span className={Styles.orangeColor}>￥ {salePrice?salePrice:0.00}</span></Block>
                             <Block>×{goodsNum}</Block>
                         </Block>
-                        <Block mt={15} j='e'>
-                            {this.createButByStatus(status, orderId, skuId)}
-                        </Block>
                     </Block>
                 </Block>
         )

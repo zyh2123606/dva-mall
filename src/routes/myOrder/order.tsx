@@ -30,13 +30,46 @@ class Order extends Component{
             }},])
 
     }
+    gotoLogistDetail(orderId){
+        const { sessionId, memId } = this.props.auth || {}
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-info/${orderId}/${sessionId}/${memId}`})
+    }
+    createButByStatus(status, orderId){
+        const data = Number(status)
+        //1:完成 3:取消 5:待支付 8:待收货
+        switch (data){
+            case 1 :
+                return (
+                    //TODO invId有则开发票
+                    <Block onClick={this.goToProdDetail.bind(this, orderId)} className={Styles.order_btn_ghost}>再次购买</Block>)
+                break
+            case 2 :
+                return (<Block onClick={this.gotoLogistDetail.bind(this, orderId)} className={Styles.order_btn_normal}>查看物流</Block>)
+                break
+            case 3 :
+                return null
+                break
+            case 8 :
+                return (<Block onClick={this.gotoLogistDetail.bind(this, orderId)} className={Styles.order_btn_normal}>查看物流</Block>)
+                break
+            case 5 :
+                return (<Block className={Styles.order_btn_primary}>去支付</Block>)
+                break
+            default:
+                return null
+        }
+        return (<Block onClick={this.goToProdDetail.bind(this, orderId)} className={Styles.order_btn_ghost}>再次购买</Block>)
+    }
+    goToProdDetail(skuId){
+        const { sessionId, memId } = this.props.auth || {}
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${skuId}/${sessionId}/${memId}`})
+    }
     render(){
         const { status, orderId, auth } = this.props
         return (
             <Block vf className={Styles.prod_panel} p={15}>
                 <Block pb={15} wf>
                     <Block f={1}>订单编号：{this.props.orderCode}</Block>
-                    <Block onClick={ this.deleteOrder.bind(this) }>删除</Block>
                 </Block>
                 {this.props.goodsList?this.props.goodsList.map((item,idx)=>(
                   <Product
@@ -48,6 +81,9 @@ class Order extends Component{
                         {...this.props}
                   />
                   )):null}
+                <Block mt={15} j='e'>
+                    {this.createButByStatus(status, orderId)}
+                </Block>
             </Block>
         )
     }
