@@ -19,8 +19,9 @@ class OrderService extends HttpBase{
         let res = this.get(`order/getList?memId=${this.MEMID}`)
         return res
     }  
+    //提交订单
     addOrder=(data=undefined)=>{
-        return this.postJson('/order/create',data)
+        return this.postJson('/salesWebToWoStore/saveGoodsToSales',data)
     }
 
     queryOrderById=(data)=>{

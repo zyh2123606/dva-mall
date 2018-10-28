@@ -111,8 +111,8 @@ class OrderDetail extends Component{
         const {form,match:{params:{sessionId,memId}}}  =this.props
         const {num} = form.getFieldsValue()
         const {skuId}=this.state.pageData
-
-        this.props.history.push(`/order-sure?skuId=${skuId}&num=${num}`)
+        this.props.history.push(`/order-sure?skuId=${skuId}&num=${num}&typeId=${7048}`)
+        
     }
     // 添加到购物车
     async addToShoppingCart(){

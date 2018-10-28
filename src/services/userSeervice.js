@@ -7,7 +7,6 @@ class UserService extends HttpBase{
         this.MEMID=memId
         //添加拦截器设置请求头
         this.$http.interceptors.request.use(config => {
-            console.log('config:',config)
             config.headers.common['CSESSIONID']=sessionId
             Toast.loading('正在请求', 15)
             return config
@@ -24,6 +23,15 @@ class UserService extends HttpBase{
     // 查询可开发票信息salesWebToWoStore/queryInvoiceType
     queryInvoiceType=(data)=>{
         return this.postJson('/salesWebToWoStore/queryInvoiceType',data)
+    }
+
+    // 获取可用红包MemberMallController/queryRedTicket
+    queryRedTicket=(data)=>{
+        return this.postJson('/MemberMallController/queryRedTicket',data)
+    }
+    // 获取会员信息
+    queryMember=(data)=>{
+        return this.postJson('/MemberMallController/queryMemberBasicInfoByDeptIdAndTelnum',data)
     }
 }
 
