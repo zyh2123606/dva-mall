@@ -1,4 +1,5 @@
 @import "../../common.less";
+@import "../../inconfont.less";
 .tag{
     background: #FE4863;
     font-size: 10px;
@@ -17,6 +18,8 @@
     height: 25px;
     border-radius: 16px;
     background: #f5f5f5;
+    color: #bbb;
+    text-align: center;
     img{
         width: 25px;
         height: 25px;
@@ -159,7 +162,7 @@
     @value: 10px;
     width: calc(~"100% - @{value}"); 
     width: -webkit-calc(~"100% - @{value}");
-    margin: 5px 20px 10px 5px;
+    margin: 5px 5px 10px 5px;
     background: #FFFFFF;
     .boxShadow();
     border-radius: @borderRadius;
