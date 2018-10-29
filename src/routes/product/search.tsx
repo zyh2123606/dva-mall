@@ -8,6 +8,11 @@ import Constatn from '../../utils/constant'
 import Constant from '../../utils/constant';
 import {connect} from 'dva';
 import qs from 'qs'
+import sortAsc from '../../assets/img/sortAsc.png'
+import sortAscChecked from '../../assets/img/sortAscChecked.png'
+import sortDesc from '../../assets/img/sortDesc.png'
+import sortDescChecked from '../../assets/img/sortDescChecked.png'
+
 /**
  *商品搜索页
  *
@@ -19,100 +24,73 @@ class SearchProduct extends Component{
         refreshing: true, 
         data: null, 
         popVisible: false, 
-        curMenu: null,
-        filterConditions:[],// 过滤条件
-        selectedSku: new Map(),//存放选中的sku属性
-        currentAllowSku:[],
+
         goods:[],// 商品列表
-        searchKeyword:null//关键词
+        searchKeyword:null,//关键词
+        sortDefault:true,//综合排序
+        sales:null,// 按照销量排序：null不排序，asc升序，desc降序
+        price:null,// 按价格量排序：null不排序，asc升序，desc降序
     }
     pageIndex = 1
     pageSize = 10
     pageCount = 1
-    skuNameFieldMapping={'brandName':'品牌','colour':'颜色','memory':'内存','priceDur':'价格','saleNum':'销量'}
     menus = [
         {title: '综合',content:[]},
     ]
     async queryGoods(){
-        const {searchKeyword,selectedSku}=this.state
-        const {parentType,sessionId,memId}=this.props.match.params
-        const selectColor=selectedSku.get('颜色')
-        const selectBrand=selectedSku.get('品牌')
-        const selectMemory=selectedSku.get('内存')
-        const price=selectedSku.get('价格')
-        const saleNum=selectedSku.get('销量')
-        let sortList=[]
-        if (saleNum){
-            if(saleNum==='销量升序'){
-                sortList.push('+saleNum')
-            }else if(saleNum==='销量降序'){
-                sortList.push('-saleNum')
+        const {searchKeyword,sortDefault,sales,price}=this.state
+        const {match:{params:{sessionId,memId}},location}  =this.props
+        const { parentType,deptId,accountId } = qs.parse(location.search.split('?')[1])
+        let paramData={
+            currentPage:0,
+            countPerPage:100,
+        }
+        if(!sortDefault){
+            // 不是综合排序才解析排序参数
+            if(sales && sales==='asc'){
+                paramData.SalesSort=1
+            }else if(sales && sales==='desc'){
+                paramData.SalesSort=2
+            }else if(price && price==='asc'){
+                paramData.priceSort=1
+            }else if(price && price==='desc'){
+                paramData.priceSort=2
             }
         }
-        const {data,code}=await new ProductService(sessionId,memId).searchGoods({
-            keyword:searchKeyword && searchKeyword!=='all'?searchKeyword:null,//关键字
-            colour:selectColor?selectColor:null,//颜色
-            brandName:selectBrand?selectBrand:null,//品牌
-            memorySize:selectMemory?selectMemory:null,//内存
-            priceDur:price?price:null,//价格区间
-            sortList:sortList,
-            typeId:parentType
+        if(searchKeyword && searchKeyword!=='all'&&searchKeyword!==''){
+            //判断是否输入关键字
+            console.log(`searchKeyword:${searchKeyword}`)
+            paramData.goodsNameDim=searchKeyword//关键字
+        }else{
+            paramData.parentTypeId=parentType;
+        }
+        const {RESP_CODE,DATA}=await new ProductService({sessionId,memId}).searchGoods({
+            deptId:deptId,
+            accountId:accountId,
+            DATA:paramData
         })
-        if (code === Constant.responseOK){
-            this.setState({goods:data})
+        if (RESP_CODE === Constant.responseOK){
+            this.setState({goods:DATA})
         }
     }
     async componentDidMount() {
         document.title='搜索'
         const { location} = this.props
-        const { name } = qs.parse(location.search.split('?')[1])
+        const { name,keyword} = qs.parse(location.search.split('?')[1])
         
-        if(name!=='all'){
+        if(keyword && keyword!=='all'){
             this.setState({searchKeyword:name})
         }
-        this.queryFilterItem()
+
         setTimeout(() => {
             this.queryGoods()
-        }, 500);
+        }, 200);
     }
     getKeyWords=()=>{
         const { location} = this.props
         return qs.parse(location.search.split('?')[1])
     }
-    async queryFilterItem(){
-        let {selectedSku}=this.state
-        const { match:{params:{parentType,sessionId,memId}}, location} = this.props
-        const { name } = qs.parse(location.search.split('?')[1])
-        console.log(`url name: ${name}`)
-        const productService=new ProductService({sessionId,memId})
-        const {data,code} = await productService.queryFilterItem(parentType)
-       
-        if(code!==Constatn.responseOK || !data){
-            return
-        }
-        let filterConditions=[{title: '综合',content:[]}]
-        for (let key of Object.keys(data)){
-            const skuName=this.skuNameFieldMapping[key]
-            filterConditions.push({
-                title:skuName,
-                content:data[key]
-            })
-        }
-        filterConditions.push({title: '销量',content:['销量升序','销量降序']})
-        // 页面打开时，设置默认选中品牌
-        filterConditions.map(({title,content},index)=>{
-            content.map(item=>{
-                if(item===name){
-                    selectedSku.set('品牌',name)
-                }
-            })
-        })
-        this.setState({
-            searchKeyword:name==='all'?'':name,
-            filterConditions,
-            selectedSku:selectedSku
-        })
-    }
+   
     searchInputChange=(value)=>{
         this.setState({searchKeyword:value})
     }
@@ -121,37 +99,25 @@ class SearchProduct extends Component{
         this.queryGoods()
     }
 
-    menuHandleClk(curMenu){
-        let {selectedSku}=this.state
-        const value = selectedSku.get(curMenu.title)
-        let currentAllowSk=new Map()
-        currentAllowSk.set('title',curMenu.title)
-        if (curMenu.title==='综合'){
-            selectedSku=new Map()
-            currentAllowSk.set('content',[])
-        }else{
-            selectedSku.delete('综合')
-            currentAllowSk.set('content',curMenu.content)
+    menuHandleClk(curMenu,sort){
+        let sortDefault=false;
+        let sales=null;
+        let price=null;
+        if(curMenu==='综合'){
+            sortDefault=true
+        }else if(curMenu==='价格'){
+            price=sort
+        }else if(curMenu==='销量'){
+            sales=sort
         }
-        selectedSku.set(curMenu.title,value)
-        if (curMenu.title!=='综合'){
-            this.setState({
-                curMenu,
-                popVisible: true,
-                selectedSku:selectedSku,
-                currentAllowSk:currentAllowSk,
-            })
-        }else{
-            this.setState({
-                curMenu,
-                selectedSku:selectedSku,
-                currentAllowSk:currentAllowSk
-            })
-            setTimeout(() => {
-                this.queryGoods()
-            }, 200);
-        }
-        
+        this.setState({
+            sortDefault:sortDefault,
+            sales:sales,
+            price:price,
+        })
+        setTimeout(() => {
+            this.queryGoods()
+        }, 200);
     }
 
     //获取数据
@@ -183,26 +149,39 @@ class SearchProduct extends Component{
     }
     // 跳转到商品详情页面 
     toGoodsDetailPage(item){
-        const { match:{params:{sessionId,memId}}} = this.props
-        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${item.typeId}/${sessionId}/${memId}`})
-        // this.props.history.push(`/order-detail/${item.typeId}/${sessionId}/${memId}`)
+        const {location} = this.props
+        const { parentType,deptId,accountId } = qs.parse(location.search.split('?')[1])
+        // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${item.typeId}/${sessionId}/${memId}`})
+        this.props.history.push(`/order-detail?deptId=${deptId}&accountId=${accountId}&typeId=${item.typeId}&skuId=${item.skuId}`)
     }
     // 渲染搜索栏一级大类
     renderSkuSelectBar(){
-        const {filterConditions,selectedSku}=this.state
+        const {sortDefault,sales,price}=this.state
         return (
             <Block className={Styles.contrl} wf>
-                {
-                    filterConditions.map((item,index)=>{
-                        const isSelected = selectedSku.has(item.title)
-                        return  <Block onClick={this.menuHandleClk.bind(this, item)} key={index} f={1} j='c' a='c'>
-                                    <Block mr={5} className={isSelected?Styles.orangeColor:''}>{item.title}</Block>
-                                    {
-                                        item.title==='综合'?null:<i className={isSelected?Styles.arrow_b:Styles.arrow_t}></i>
-                                    }
-                                </Block>
-                    })
-                }
+                <Block onClick={this.menuHandleClk.bind(this, '综合','default')} f={1} j='c' a='c'>
+                    <Block mr={5} className={sortDefault?Styles.orangeColor:''}>综合</Block>
+                </Block>
+                <Block onClick={this.menuHandleClk.bind(this, '价格',price==='asc'?'desc':'asc')} f={1} j='c' a='c' wf>
+                    <Block mr={5} a='r' className={price ?Styles.orangeColor:''}>价格
+                        
+                    </Block>
+                    <Block vf h={35}>
+                        <Block style={{width:'16',height:'16px'}}><img style={{width:'16',height:'16px',marginTop:'8px'}} src={price && price==='asc'?sortAscChecked:sortAsc}/></Block>
+                        <Block style={{width:'16',height:'16px'}}><img style={{width:'16',height:'16px',marginBottom:'8px'}} src={price && price==='desc'?sortDescChecked:sortDesc}/></Block>
+                    </Block>
+                    
+                </Block>
+                <Block onClick={this.menuHandleClk.bind(this, '销量',sales==='asc'?'desc':'asc')} f={1} j='c' a='c' wf>
+                    <Block mr={5} a='r' className={sales?Styles.orangeColor:''}>销量
+                        
+                    </Block>
+                    <Block vf h={35}>
+                        <Block style={{width:'16',height:'16px'}}><img style={{width:'16',height:'16px',marginTop:'8px'}} src={sales && sales==='asc'?sortAscChecked:sortAsc}/></Block>
+                        <Block style={{width:'16',height:'16px'}}><img style={{width:'16',height:'16px',marginBottom:'8px'}} src={sales && sales==='desc'?sortDescChecked:sortDesc}/></Block>
+                    </Block>
+                    
+                </Block>
             </Block>
         )
     }
@@ -239,15 +218,17 @@ class SearchProduct extends Component{
                     goods && goods.length>0?
                     goods.map((item,index) =>{
                         return <Block key={'goods-'+index} wf className={Styles.sear_list_item} onClick={this.toGoodsDetailPage.bind(this,item)}>
-                                <Block className={Styles.prod_pic}><img style={{'width':'76px',height:'76px'}} src={Constant.imgBaseUrl+item.logoPath}/></Block>
+                                <Block className={Styles.prod_pic}><img style={{'width':'76px',height:'76px'}} src={Constant.imgBaseUrl+item.goodsImg}/></Block>
                                 <Block f={1} ml={15}>
-                                    <Block>{item.title}</Block>
+                                    <Block>{item.goodsName}</Block>
+                                    <Block mt={5} wf>{item.attrNames}</Block>
                                     <Block mt={5} wf>
                                         <Block f={1}>
-                                            <Block mt={5} className={Styles.prod_tag}>{item.memorySize}</Block>
-                                            <Block mt={5} className={Styles.prod_tag}>{item.colour}</Block>
+                                        {
+                                            item.attrList?item.attrList.map((attr,i)=><Block key={'attr-'+i} mt={5} className={Styles.prod_tag}>{attr}</Block>):null
+                                        }
                                         </Block>
-                                        <Block mt={5} className={Styles.orangeColor}>￥{Constant.toMoney(item.salePrice)}</Block>
+                                        <Block mt={5} className={Styles.orangeColor}>￥ {item.salePrice?item.salePrice.toFixed(2):null}</Block>
                                     </Block>
                                 </Block>
                             </Block>
@@ -275,12 +256,6 @@ class SearchProduct extends Component{
                         this.renderGoodsList()
                     }
                 </Block>
-                {/* 弹出层 */}
-                <section style={{display: popVisible?'block':'none'}} className={Styles.search_masker} onClick={this.handleClose}>
-                    {
-                        this.renderSeleteDownPage()
-                    }
-                </section>
             </Block>
         )
     }

@@ -8,6 +8,7 @@ import {routerRedux} from 'dva/router';
 import {connect} from 'dva'
 import ImgErr from '../../assets/img/img_error.png'
 import GoodsTypeService from '../../services/goodsTypeService';
+import qs from 'qs'
 
 /**
  *商品列表入口
@@ -19,7 +20,7 @@ class DefaultPage extends Component{
     state={
         firstTypeList:[],// 第一级分类集合
         secondTypeList:null,// 第二级分类集合
-        searchKeyword:'',//搜索值
+        searchKeyword:null,//搜索值
         parentTypeId:0,//当前选中父级typeId
     }
     async componentDidMount(){
@@ -30,20 +31,24 @@ class DefaultPage extends Component{
 
     // 获取第第一级商品分类
     async GoodsTypeService(){
-        const {RESP_CODE,DATA}=await new GoodsTypeService(1,15).getFirststageGoodsType(258)
+        const {match:{params:{sessionId,memId}},location}  =this.props
+        const { deptId,accountId,firstType } = qs.parse(location.search.split('?')[1])
+        const {RESP_CODE,DATA}=await new GoodsTypeService({sessionId,memId}).getFirststageGoodsType(deptId)
         if(Constant.responseOK===RESP_CODE){
             this.setState({firstTypeList:DATA})
             if(DATA && DATA.length>0){
-                this.setState({parentTypeId:DATA[0].grandFatherTypeId})
-                this.querychildTypeList(DATA[0].grandFatherTypeId)
+                this.setState({parentTypeId:firstType?firstType:DATA[0].grandFatherTypeId})
+                this.querychildTypeList(firstType?firstType:DATA[0].grandFatherTypeId)
             }
         }
     }
 
     // 获取第二级菜单数据
     async querychildTypeList(parentId){
-        const { match:{params:{sessionId,memId}}} = this.props
-        const {RESP_CODE,DATA}=await new GoodsTypeService(sessionId,memId).getSecondstageGoodsType(258,parentId)
+        const {match:{params:{sessionId,memId}},location}  =this.props
+        const { deptId,accountId } = qs.parse(location.search.split('?')[1])
+
+        const {RESP_CODE,DATA}=await new GoodsTypeService({sessionId,memId}).getSecondstageGoodsType(deptId,parentId)
         if(Constant.responseOK===RESP_CODE){
             this.setState({secondTypeList:DATA,parentTypeId:parentId})
         }
@@ -56,8 +61,14 @@ class DefaultPage extends Component{
     }
     // 选中第二级菜单
     selectChildItem(item){
-        const { match:{params:{sessionId,memId}}} = this.props
-        console.log('selectChildItem:',item)
+        const {match:{params:{sessionId,memId}},location}  =this.props
+        const { deptId,accountId } = qs.parse(location.search.split('?')[1])
+        let searchKeyword=this.state.searchKeyword
+        if(!searchKeyword){
+            searchKeyword='all'
+        }
+        console.log(item)
+        this.props.history.push(`/search?parentType=${item.parentTypeId}&keyword=${searchKeyword}&deptId=${deptId}&accountId=${accountId}`)
         // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/search/${item.parentType}/${sessionId}/${memId}&name=${item.typeName}`})
         //this.props.history.push(`/search/${item.parentType}/${sessionId}/${memId}?name=${item.typeName}`)
     }
@@ -92,7 +103,7 @@ class DefaultPage extends Component{
                                 {
                                     secondType.brandList && secondType.brandList.length>0 ?secondType.brandList.map((item,index)=>{
                                         return <Block a='c' j='c' key={'child-type-'+index} className={Styles.type_prod_item} onClick={this.selectChildItem.bind(this,item)}>
-                                            <img src={item.grandFatherUrl?Constant.imgBaseUrl+item.grandFatherUrl:ImgErr} alt={item.grandFatherTypeName}/>
+                                            <img src={item.parentTypeUrl?Constant.imgBaseUrl+item.parentTypeUrl:ImgErr} alt={item.grandFatherTypeName}/>
                                         </Block>
                                     }):<Block h={20}>暂无数据</Block>
                                 }
@@ -128,7 +139,7 @@ class DefaultPage extends Component{
                             onClick={this.selectedParentItem.bind(this,item)} 
                             key={'firstType-'+index} 
                             a='c' 
-                            className={parentTypeId===item.grandFatherTypeId? Styles.menu_item_select: Styles.menu_item}>{item.grandFatherTypeName}</Block>
+                            className={parseInt(parentTypeId)===parseInt(item.grandFatherTypeId)? Styles.menu_item_select: Styles.menu_item}>{item.grandFatherTypeName}</Block>
                         )
                     }
                     </Block>

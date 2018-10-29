@@ -96,7 +96,7 @@ class OrderSure extends Component{
                 goodsList.push({
                     goodsImg:DATA.goodsImg,
                     salePrice:DATA.salePrice,
-                    goodsTotal:num,
+                    goodsTotal:parseInt(num),
                     cartId:null,
                     typeName:DATA.goodsName,
                     attrNames:DATA.attrNames,

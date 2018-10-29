@@ -67,16 +67,18 @@ class Home extends Component<IProps>{
         })
     }
     
-    gotoProdDetail(typeId){
+    gotoProdDetail(typeId,skuId){
         const { accountId, deptId, sessionId=1001 } = this._PAGE_DATA_
-        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/order-detail/${typeId}/${sessionId}/${accountId}`})
-        // this.props.history.push(`/order-detail/${typeId}/${sessionId}/${memId}`)
+        // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/order-detail/${typeId}/${sessionId}/${accountId}`})
+        console.log(`gotoProdDetail:${typeId}`)
+        this.props.history.push(`/order-detail?deptId=${deptId}&accountId=${accountId}&typeId=${typeId}&skuId=${skuId}`)
     }
-    gotoGoodsPage(url){
+    gotoGoodsPage(grandFatherTypeId){
         const { accountId, deptId, sessionId=1001 } = this._PAGE_DATA_
-        if(url){
-            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#${url}/${sessionId}/${accountId}`})
-            // this.props.history.push(`${url}/${sessionId}/${memId}`)
+        if(grandFatherTypeId){
+            // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#${url}/${sessionId}/${accountId}`})
+            
+            this.props.history.push(`/product?deptId=${deptId}&accountId=${accountId}&firstType=${grandFatherTypeId}`)
         }
     }
     //商品
@@ -97,7 +99,7 @@ class Home extends Component<IProps>{
                     </Block>
                     <Block mr={5} ml={10} style={{lineHeight: 'normal'}}>
                         {mallRelation.map(({ displayName, displayPic, displayPrice, displaySort, perateType, relSkuId, relTypeid }, idx) => (
-                            <Block key={idx} onClick={this.gotoProdDetail.bind(this, relTypeid)} vf className={Styles.prod_item} mt={15}>
+                            <Block key={idx} onClick={this.gotoProdDetail.bind(this, relTypeid,relSkuId)} vf className={Styles.prod_item} mt={15}>
                                 <Block j='c' className={Styles.prod_img_c}>
                                     <img className={Styles.prod_img} src={displayPic?Constant.imgBaseUrl+displayPic:ImgErr} />
                                 </Block>
@@ -168,7 +170,7 @@ class Home extends Component<IProps>{
                     <section>
                         <Swiper slidesPerView={4}>
                             {typeList.map(({grandFatherTypeId, grandFatherTypeName, grandFatherUrl}, idx) => (
-                                <Block key={idx} onClick={this.gotoGoodsPage.bind(this)}>
+                                <Block key={idx} onClick={this.gotoGoodsPage.bind(this,grandFatherTypeId)}>
                                     <Block vf className={Styles.type_item}>
                                         <Block className={Styles.type_pic_c} f={1}>
                                             <img className={Styles.type_img} src={Constant.imgBaseUrl+grandFatherUrl} />
