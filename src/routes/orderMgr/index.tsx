@@ -29,14 +29,14 @@ class OrderDetail extends Component{
     async componentDidMount(){
         document.title='商品详情'
         const {match:{params:{pid,sessionId,memId}},location}  =this.props
+        const { typeId,deptId,accountId,skuId } = qs.parse(location.search.split('?')[1])
         const services=new Service({sessionId,memId})
-        const { cloudShelfId } = qs.parse(location.search.split('?')[1])
         const {RESP_CODE,DATA}=await services.getGoodsDetai({
-            deptId:258,
-            accountId:9,
+            deptId:deptId,
+            accountId:accountId,
             DATA:{
-                typeId:7048,
-                skuId:944
+                typeId:typeId,
+                skuId:skuId
             }
         })
         if(RESP_CODE==Constant.responseOK){
@@ -108,29 +108,30 @@ class OrderDetail extends Component{
     }
     //立即购买
     async sureBuy(){
-        const {form,match:{params:{sessionId,memId}}}  =this.props
+        const {form,match:{params:{sessionId,memId}},location}  =this.props
         const {num} = form.getFieldsValue()
         const {skuId}=this.state.pageData
+        const { typeId,deptId,accountId } = qs.parse(location.search.split('?')[1])
         // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/order-sure/skuId=${skuId}/num=${num}/typeId=${7048}`})
-        this.props.history.push(`/order-sure?skuId=${skuId}&num=${num}&typeId=${7048}`)
+        this.props.history.push(`/order-sure?skuId=${skuId}&num=${num}&typeId=${typeId}&deptId=${deptId}&accountId=${accountId}`)
         
     }
     // 添加到购物车
     async addToShoppingCart(){
-        const {form,match:{params:{sessionId,memId}}}  =this.props
+        const {form,match:{params:{sessionId,memId}},location}  =this.props
         const {num} = form.getFieldsValue()
-
         const {skuId}=this.state.pageData
+        const { typeId,deptId,accountId } = qs.parse(location.search.split('?')[1])
         const params={
             DATA:{
                 goodsTotal:num,
                 skuId:skuId              
             },
-            accountId:9,
-            deptId:258
+            accountId:accountId,
+            deptId:deptId
         }
         const shoppingCartService = new ShoppingCartService({sessionId,memId})
-        const {RESP_CODE} = await shoppingCartService.save(params);
+        const {RESP_CODE} = await shoppingCartService.add(params);
         if (RESP_CODE===Constant.responseOK){
             this.setState((preState) => ({
                 shoppingCartCount: preState.shoppingCartCount + num
@@ -140,36 +141,34 @@ class OrderDetail extends Component{
     }
     // 查看购物车
     async shoppingCart(){
-        const {match:{params:{sessionId,memId}}}  =this.props
+        const {match:{params:{sessionId,memId}},location}  =this.props
+        const { deptId,accountId } = qs.parse(location.search.split('?')[1])
         const shoppingCartService = new ShoppingCartService({sessionId,memId})
         const {RESP_CODE,DATA} = await shoppingCartService.query({
             DATA:{
-                currentPage:1,
+                currentPage:0,
                 countPerPage:100,
             },
-            accountId:9,
-            deptId:258,
+            accountId:accountId,
+            deptId:deptId,
 
         })
         if (RESP_CODE===Constant.responseOK){
             let total=0;
             if(DATA && DATA.length>0){
-                DATA.map(item=>{
-                    if(item.goodsTotal){
-                        total+=(item.goodsTotal)
-                    }
-                })
+                total=DATA.length
             }
             this.setState({shoppingCartCount:total})
         }
     }
     // 查看购物车
     toShoppingCart=()=>{
-        const {match:{params:{sessionId,memId}}}  =this.props
+        const {match:{params:{sessionId,memId}},location}  =this.props
+        const { deptId,accountId } = qs.parse(location.search.split('?')[1])
         // TODO 处理跳转到购物车需要携带的sessionID和memId
 
         // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/cart/${sessionId}/${memId}`})
-        this.props.history.push(`/cart/${sessionId}/${memId}`)
+        this.props.history.push(`/mall/cart?deptId=${deptId}&accountId=${accountId}`)
     }
     //联系客服
     connectService=()=>{

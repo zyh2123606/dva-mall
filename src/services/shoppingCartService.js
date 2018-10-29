@@ -18,8 +18,11 @@ import { Toast } from 'antd-mobile'
         })
     }
 
-    save=(data=undefined)=>{
+    add=(data)=>{
         return this.postJson('ShopCartController/saveMemberMallCart',data)
+    }
+    save=(data=undefined)=>{
+        return this.postJson('ShopCartController/changeMemberMallCart',data)
     }
 
     //查询当前用户购物车商品数量（分页数据怎么传有待考量）
@@ -28,8 +31,8 @@ import { Toast } from 'antd-mobile'
     }
 
     //删除购物车
-    delete=(cartId)=>{
-        return this.get(`cart/delete?cartId=${cartId}&memId=${this.MEMID}`) 
+    delete=(data)=>{
+        return this.postJson(`ShopCartController/delMemberMallCart`,data) 
     }
  }
  export default ShoppingCartService;

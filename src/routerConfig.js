@@ -6,7 +6,7 @@ import {orderDetailPage, myOrderPage, orderSurePage, addressMgrPage,
     
 const RouteConfig = [
     {path: '/mall', component: defaultPage},
-    {path: '/order-detail/:pid/:sessionId/:memId', component: orderDetailPage, exact: true},
+    {path: '/order-detail', component: orderDetailPage, exact: true},
     {path: '/my-order', component: myOrderPage, exact: false},
     {path: '/order-sure', component: orderSurePage, exact: true},
     {path: '/address-mgr/:sessionId/:memId', component: addressMgrPage, exact: true},
