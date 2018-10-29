@@ -7,7 +7,6 @@ import unChecked from '../../assets/img/uncheck.png';
 import weizhi from '../../assets/img/weizhi.png';
 import DeptSelectService from '../../services/deptService';
 import Canstant from '../../utils/constant';
-import EventEmitter from '../../utils/EventEmitter'
 
 class DeptSelect  extends Component {
     state={
@@ -18,9 +17,6 @@ class DeptSelect  extends Component {
 
     async componentDidMount(){
         this.search()
-    }
-    componentWillUnmount(){
-        EventEmitter.removeListeners('SELECT_DEPT')
     }
 
     searchInputChange=(val)=>{
@@ -49,9 +45,9 @@ class DeptSelect  extends Component {
 
     comfirmSelect=()=>{
         const { currentSelect } = this.state
+        const {accountId}=this.props.match.params
         const { history } = this.props
-        EventEmitter.emit('SELECT_DEPT', currentSelect)
-        history.go(-1)
+        history.push(`/mall/home?accountId=${accountId}&deptId=${currentSelect.depeId}`)
     }
   render() {
     const {searchKeyword,deptList,currentSelect}=this.state

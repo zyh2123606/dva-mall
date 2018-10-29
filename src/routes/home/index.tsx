@@ -12,7 +12,6 @@ import Constant from '../../utils/constant'
 import ImgErr from '../../assets/img/img_error.png'
 import ContentLoader from 'react-content-loader'
 import Qs from 'qs'
-import EventEmitter from '../../utils/EventEmitter'
 
 /**
  *首页
@@ -33,14 +32,16 @@ class Home extends Component<IProps>{
     constructor(props:IProps){
         super(props)
     }
-    async componentDidMount(){
+    componentDidMount(){
         const { search } = this.props.location
         let params = search.split('?')[1] || ''
         params = Qs.parse(params)
         this._PAGE_DATA_ = {...this._PAGE_DATA_, ...params}
-        //事件订阅
-        EventEmitter.listenerEmit('SELECT_DEPT', this.getSelectDept.bind(this))
+        this.getData()
+    }
+    
 
+    async getData(){
         const BaseSev = new Service(),
             result = await BaseSev.getHomeData(this._PAGE_DATA_),
             prod_res = result[0],
@@ -117,10 +118,6 @@ class Home extends Component<IProps>{
     selectDept = (e:any) => {
         const { history } = this.props
         history.push(`/dept-select/${this._PAGE_DATA_.accountId}`)
-    }
-    //选择门店
-    getSelectDept(dept_info){
-        console.log(dept_info)
     }
     render(){
         const { isRequest, focusImgs, typeList, deptInfo } = this.state
