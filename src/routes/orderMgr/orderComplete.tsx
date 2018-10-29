@@ -81,7 +81,7 @@ class OrderComplete extends Component{
             title:'小程序支付',
             balaMoney:saleOrderInfo.balaMoney
         })
-        wx.miniProgram.navigateTo({url: `/pages/payPage?params=${params}`})
+        wx.miniProgram.navigateTo({url: `/pages/payPage/payPage?params=${params}`})
     }
     render(){
         const {address,saleStoreGoods,saleOrderInfo}=this.state

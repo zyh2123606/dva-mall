@@ -2,7 +2,7 @@ import HttpBase from '../utils/httpBase'
 
 class BaseService extends HttpBase{
     constructor(props){
-        super('/api')
+        super('https://newretail.bonc.com.cn/top_mall/api')
         //添加拦截器设置请求头
         this.$http.interceptors.request.use(config => {
             const { sessionId=undefined } = props || {}

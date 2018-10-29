@@ -68,13 +68,13 @@ class Home extends Component<IProps>{
     
     gotoProdDetail(typeId){
         const { accountId, deptId, sessionId=1001 } = this._PAGE_DATA_
-        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${typeId}/${sessionId}/${accountId}`})
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/order-detail/${typeId}/${sessionId}/${accountId}`})
         // this.props.history.push(`/order-detail/${typeId}/${sessionId}/${memId}`)
     }
     gotoGoodsPage(url){
         const { accountId, deptId, sessionId=1001 } = this._PAGE_DATA_
         if(url){
-            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#${url}/${sessionId}/${accountId}`})
+            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#${url}/${sessionId}/${accountId}`})
             // this.props.history.push(`${url}/${sessionId}/${memId}`)
         }
     }

@@ -282,7 +282,8 @@ class OrderSure extends Component{
         if (RESP_CODE===Constant.responseOK){
             Toast.success('提交的名单成功！',2)
             setTimeout(() => {
-                this.props.history.push(`/order-complete?orderNum=${DATA.orderNum}&orderId=${DATA.id}&deptId=${258}&accountId=${9}`)
+                // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/order-complete/orderNum=${DATA.orderNum}/orderId=${DATA.orderId}/deptId=${258}/accountId=${9}`})
+                this.props.history.push(`/order-complete?orderNum=${DATA.orderNum}&orderId=${DATA.orderId}&deptId=${258}&accountId=${9}`)
             }, 1000);
         }
     }

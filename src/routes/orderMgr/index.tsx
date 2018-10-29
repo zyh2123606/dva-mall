@@ -111,6 +111,7 @@ class OrderDetail extends Component{
         const {form,match:{params:{sessionId,memId}}}  =this.props
         const {num} = form.getFieldsValue()
         const {skuId}=this.state.pageData
+        // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/order-sure/skuId=${skuId}/num=${num}/typeId=${7048}`})
         this.props.history.push(`/order-sure?skuId=${skuId}&num=${num}&typeId=${7048}`)
         
     }
