@@ -26,7 +26,6 @@ const Item = List.Item
 class OrderSure extends Component{
     state = {
         typeId:1,
-        orderDeptId:1,// 当前营业厅
         totalPrise:0,//总价格,
         shoppingcard:[],//购物车ID集合
         goodsList:[],// 购物车商品集合
@@ -81,12 +80,12 @@ class OrderSure extends Component{
     async componentDidMount(){
         document.title='订单确认'
         const {location}  =this.props
-        const { num,skuId,typeId,cartds } = qs.parse(location.search.split('?')[1])
+        const { num,skuId,typeId,cartIds,deptId,accountId } = qs.parse(location.search.split('?')[1])
         let goodsList=[]
         if(num && skuId &&typeId ){// 判断是否是从商品详情页面进入
             const {RESP_CODE,DATA}=await new Service(1,15).getGoodsDetai({
-                deptId:258,
-                accountId:9,
+                deptId:deptId,
+                accountId:accountId,
                 DATA:{
                     typeId:typeId,
                     skuId:skuId
@@ -111,21 +110,22 @@ class OrderSure extends Component{
                     currentPage:1,
                     countPerPage:100,
                 },
-                accountId:9,
-                deptId:258,
+                accountId:accountId,
+                deptId:deptId,
             })
             if (RESP_CODE===Constant.responseOK){
                 let idArray=[]
                 let sss=''
-                if(cartds && cartds.indexOf(',')){
-                    idArray=cartds.split(',')
+                if(cartIds && cartIds.indexOf(',')){
+                    idArray=cartIds.split(',')
                 }else{
-                    idArray.push(cartds)
+                    idArray.push(cartIds)
                 }
+                console.log(idArray)
                 if(DATA && DATA.length>0){
-                    idArray.map
+                    console.log(DATA)
                     idArray.map(item=>{
-                        const selectCart=DATA.filter(v=>v.cartId===item)
+                        const selectCart=DATA.filter(v=>parseInt(v.cartId)===parseInt(item))
                         if(selectCart &&selectCart.length>0){
                             goodsList.push(selectCart[0])
                         }
@@ -135,48 +135,12 @@ class OrderSure extends Component{
         }
         let totalPrise=0
         goodsList.map(item=>{
-            totalPrise+=(item.salePrice||0)
+            totalPrise+=(item.salePrice.toFixed(2)*item.goodsTotal.toFixed(2)||0)
         })
-        this.setState({goodsList,totalPrise})
-    }
-    async queryGoodsdAndSkuInfo(){
-        let { history,match:{params:{shoppingcardId,sessionId,memId}}} = this.props
-        if (shoppingcardId.length>1){
-            shoppingcardId=shoppingcardId.split(',')
-        }else{
-            shoppingcardId=[Number.parseInt(shoppingcardId)]
-        }
-        const shoppingCartService = new ShoppingCartService({sessionId,memId})
-        const {data,code}=await shoppingCartService.query(shoppingcardId)
-        if (code===Constant.responseOK){
-            let totalPrise=0
-            if(!data || data.length===0){
-                // TODO 这里应该跳转到购物车？个人中心？
-                wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/cart/${sessionId}/${memId}`})
-            }
-            data.map(item=>{
-                totalPrise+=(item.salePrice*item.amount)
-            })
-            this.setState({
-                totalPrise:totalPrise,
-                goodsList:data
-            })
-        }
         this.setState({
-            shoppingcard:shoppingcardId
+            goodsList:goodsList,
+            totalPrise:totalPrise.toFixed(2)
         })
-    }
-    // 查询周边自提营业厅
-    async queryAdoptDeptList(){
-        const {goodsList,orderDeptId} = this.state
-        // 因为有多个商品的情况，所以默认去第一个商品的skuID
-        const { match:{params:{sessionId,memId}}} = this.props
-        if(goodsList&& goodsList.length>0){
-            const {code,data}=await new DeptService({sessionId,memId}).getAdoptDeptList(goodsList[0].skuId,orderDeptId)
-            if (code===Constant.responseOK && data){
-                this.setState({adoptDeptList:data})
-            }
-        }
     }
 
     //日期选择
@@ -201,7 +165,8 @@ class OrderSure extends Component{
     }
     //提交订单
     async orderSubmit () {
-        const {match:{params:{sessionId,memId}},form} = this.props
+        const {match:{params:{sessionId,memId}},form,location} = this.props
+        const { deptId,accountId } = qs.parse(location.search.split('?')[1])
         const {collectMode,goodsList,collectAddress,shoppingcard,totalPrise,fapiaoContentSelect,selectInvoiceType,invTitle,fapiaoSelect,adoptTimeSelect}=this.state
         let params={
             deptId:258,
@@ -258,8 +223,7 @@ class OrderSure extends Component{
                 salePrice:item.salePrice,
                 goodsNum:item.goodsTotal,
                 skuId:item.skuId
-                cartId:item.cartId
-
+                cartId:item.cartId  
             })
         })
 
@@ -271,7 +235,7 @@ class OrderSure extends Component{
                     invType:selectInvoiceType,
                     invTitle:invTitle===1?'个人':'公司',
                     invContent:fapiaoContentSelect,
-                    identNum:taxpayerCode,
+                    identNum:taxpayerCode||invTitle,
                     invEmail:email,
                     titleType:invTitle
 
@@ -281,32 +245,15 @@ class OrderSure extends Component{
         
         const {RESP_CODE,DATA}= await new OrderService({sessionId,memId}).addOrder(params)
         if (RESP_CODE===Constant.responseOK){
-            console.log(DATA)
-        }
-    }
-    // 调用支付接口
-    async pay(orderCode){
-        const {match:{params:{sessionId,memId}}} = this.props
-        const {code} = await new OrderService({sessionId,memId}).pay(orderCode)
-        if(code===Constant.responseOK){
-            Toast.success('成功！',1)
+            Toast.success('提交的名单成功！',2)
             setTimeout(() => {
-                // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/success/${orderCode}/${sessionId}/${memId}`})
-                // this.props.history.push(`/success/${orderCode}/${sessionId}/${memId}`)
-            }, 1000);
-        }else{
-            Toast.fail('提交订单失败！',1)
-            setTimeout(() => {
-                wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/fail/${sessionId}/${memId}`})
-                // this.props.history.push(`/fanpmil/${sessionId}/${memId}`)
+                // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/order-complete/orderNum=${DATA.orderNum}/orderId=${DATA.orderId}/deptId=${258}/accountId=${9}`})
+        const { deptId,accountId } = qs.parse(location.search.split('?')[1])
+                this.props.history.push(`/order-complete?orderNum=${DATA.orderNum}&orderId=${DATA.orderId}&deptId=${deptId}&accountId=${accountId}`)
             }, 1000);
         }
     }
-
-    // 金额转换
-    toMoney(num){
-        return Constant.toMoney(num);
-    }
+   
     // 确认选中自提地址
     confirmAdopt=()=>{
         const {selectAdoptIndex,adoptDeptList}=this.state
@@ -478,7 +425,7 @@ class OrderSure extends Component{
                                     <Block fs={12} fc='#666'>{item.attrNames}</Block>
                                     <Block wf>
                                         <Block f={1}>×{item.goodsTotal}</Block>
-                                        <Block className={Styles.orangeColor}>￥{Constant.toMoney(item.salePrice)}</Block>
+                                        <Block className={Styles.orangeColor}>￥{item.salePrice}</Block>
                                     </Block>
                                 </Block>
                             </Block>
@@ -538,10 +485,10 @@ class OrderSure extends Component{
                 </List> */}
 
                 <List renderHeader={<Block fs={18} style={{color:'#000',fontWeight: 'bold'}}>总金额</Block>}>
-                    <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>商品金额</Item>
+                    <Item extra={<Block className={Styles.orangeColor}>￥{totalPrise}</Block>}>商品金额</Item>
                     {/* <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>红包抵扣</Item>
                     <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>积分抵扣</Item> */}
-                    <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>总金额</Item>
+                    <Item extra={<Block className={Styles.orangeColor}>￥{totalPrise}</Block>}>总金额</Item>
                 </List>
                 </Block>
         )

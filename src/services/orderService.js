@@ -3,7 +3,7 @@ import { Toast } from 'antd-mobile'
 
 class OrderService extends HttpBase{
     constructor({accountId}){
-        super('/api')
+        super('https://newretail.bonc.com.cn/top_mall/api')
         this.MEMID=accountId
         //添加拦截器设置请求头
         this.$http.interceptors.request.use(config => {
