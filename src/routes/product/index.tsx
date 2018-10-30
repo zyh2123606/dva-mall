@@ -67,26 +67,43 @@ class DefaultPage extends Component{
         if(!searchKeyword){
             searchKeyword='all'
         }
-        console.log(item)
-        this.props.history.push(`/search?parentType=${item.parentTypeId}&keyword=${searchKeyword}&deptId=${deptId}&accountId=${accountId}`)
-        // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/search/${item.parentType}/${sessionId}/${memId}&name=${item.typeName}`})
-        //this.props.history.push(`/search/${item.parentType}/${sessionId}/${memId}?name=${item.typeName}`)
+        // this.props.history.push(`/search?parentType=${item.parentTypeId}&keyword=${searchKeyword}&deptId=${deptId}&accountId=${accountId}`)
+    
+        const u=`https://iretail.bonc.com.cn/cnc/#/search?parentType=${item.parentTypeId}&keyword=${searchKeyword}&deptId=${deptId}&accountId=${accountId}`
+        const _url =`/pages/newPage/newPage?url=${encodeURIComponent(u)}`
+        wx.miniProgram.navigateTo({url: _url})
     }
 
     searchInputChange=(val)=>{
         this.setState({searchKeyword:val})
     }
     cancelInput=(val)=>{
+        const {match:{params:{sessionId,memId}},location}  =this.props
+        const { deptId,accountId } = qs.parse(location.search.split('?')[1])
+        let searchKeyword=this.state.searchKeyword
+        if(!searchKeyword){
+            searchKeyword='all'
+        }
         if(!val){
             val='all'
+            const secondTypeList=this.state.secondTypeList
+            console.log(secondTypeList)
+            if(secondTypeList && secondTypeList.length>0 && secondTypeList[0].brandList &&secondTypeList[0].brandList.length>0){
+                // console.log(secondTypeList)
+                // this.props.history.push(`/search?parentType=${secondTypeList[0].brandList[0].parentTypeId}&keyword=${searchKeyword}&deptId=${deptId}&accountId=${accountId}`)
+                const u=`https://iretail.bonc.com.cn/cnc/#/search?parentType=${secondTypeList[0].brandList[0].parentTypeId}&keyword=${searchKeyword}&deptId=${deptId}&accountId=${accountId}`
+                const _url =`/pages/newPage/newPage?url=${encodeURIComponent(u)}`
+                wx.miniProgram.navigateTo({url: _url})
+            }
         }
-        this.selectChildItem({parentType:this.state.parentTypeId,typeName:val})
+        Toast.info('请输入关键词搜索！',1)
+        // this.selectChildItem({parentType:this.state.parentTypeId,typeName:val})
     }
     onSubmit=(val)=>{
         if(!val){
             val='all'
         }
-        this.selectChildItem({parentType:this.state.parentTypeId,typeName:val})
+        this.selectChildItem({parentTypeId:this.state.parentTypeId,typeName:val})
     }
 
     renderSecondType=()=>{

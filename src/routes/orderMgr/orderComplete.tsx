@@ -17,7 +17,6 @@ class OrderComplete extends Component{
             conUser:null,
             conTel:null,
             addrDetail:null,
-            
         },
         saleStoreGoods:[
             {

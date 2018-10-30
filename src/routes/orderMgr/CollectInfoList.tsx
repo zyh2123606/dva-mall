@@ -65,8 +65,11 @@ class  CollectInfoList extends React.Component{
     // 添加收货地址
     addCollection=()=>{
         const {memId,sessionId,history,accountId,deptId}=this.props
-        this.props.history.push(`/add-address/${sessionId}/${memId}?accountId=${accountId}&deptId=${deptId}`)
-        console.log('添加收货地址')
+        // this.props.history.push(`/add-address/${sessionId}/${memId}?accountId=${accountId}&deptId=${deptId}`)
+
+        const u=`https://iretail.bonc.com.cn/#/add-address/${sessionId}/${memId}?accountId=${accountId}&deptId=${deptId}`
+        const _url =`/pages/newPage/newPage?url=${encodeURIComponent(u)}`
+        wx.miniProgram.navigateTo({url: _url})
     }
     // // 去编辑收货信息
     // toEditCollectInfo(item){

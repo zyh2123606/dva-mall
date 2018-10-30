@@ -238,7 +238,6 @@ class OrderSure extends Component{
                     identNum:taxpayerCode||invTitle,
                     invEmail:email,
                     titleType:invTitle
-
                 }
             }
         }
@@ -249,7 +248,11 @@ class OrderSure extends Component{
             setTimeout(() => {
                 // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/order-complete/orderNum=${DATA.orderNum}/orderId=${DATA.orderId}/deptId=${258}/accountId=${9}`})
         const { deptId,accountId } = qs.parse(location.search.split('?')[1])
-                this.props.history.push(`/order-complete?orderNum=${DATA.orderNum}&orderId=${DATA.orderId}&deptId=${deptId}&accountId=${accountId}`)
+                // this.props.history.push(`/order-complete?orderNum=${DATA.orderNum}&orderId=${DATA.orderId}&deptId=${deptId}&accountId=${accountId}`)
+                
+                const u=`https://iretail.bonc.com.cn/#/order-complete?orderNum=${DATA.orderNum}&orderId=${DATA.orderId}&deptId=${deptId}&accountId=${accountId}`
+                const _url =`/pages/newPage/newPage?url=${encodeURIComponent(u)}`
+                wx.miniProgram.navigateTo({url: _url})
             }, 1000);
         }else{
             Toast.fail('提交订单失败', 1);

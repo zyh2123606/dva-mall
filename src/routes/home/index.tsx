@@ -78,14 +78,22 @@ class Home extends Component<IProps>{
         const { accountId, deptId, sessionId=1001 } = this._PAGE_DATA_
         // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/order-detail/${typeId}/${sessionId}/${accountId}`})
         console.log(`gotoProdDetail:${typeId}`)
-        this.props.history.push(`/order-detail?deptId=${deptId}&accountId=${accountId}&typeId=${typeId}&skuId=${skuId}`)
+        // this.props.history.push(`/order-detail?deptId=${deptId}&accountId=${accountId}&typeId=${typeId}&skuId=${skuId}`)
+
+        const u=`https://iretail.bonc.com.cn/cnc/#/order-detail?deptId=${deptId}&accountId=${accountId}&typeId=${typeId}&skuId=${skuId}`
+        const _url =`/pages/newPage/newPage?url=${encodeURIComponent(u)}`
+        wx.miniProgram.navigateTo({url: _url})
     }
     gotoGoodsPage(grandFatherTypeId){
         const { accountId, deptId, sessionId=1001 } = this._PAGE_DATA_
         if(grandFatherTypeId){
             // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#${url}/${sessionId}/${accountId}`})
             
-            this.props.history.push(`/product?deptId=${deptId}&accountId=${accountId}&firstType=${grandFatherTypeId}`)
+            // this.props.history.push(`/product?deptId=${deptId}&accountId=${accountId}&firstType=${grandFatherTypeId}`)
+
+            const u=`https://iretail.bonc.com.cn/cnc/#/product?deptId=${deptId}&accountId=${accountId}&firstType=${grandFatherTypeId}`
+            const _url =`/pages/newPage/newPage?url=${encodeURIComponent(u)}`
+            wx.miniProgram.navigateTo({url: _url})
         }
     }
     //商品
@@ -129,7 +137,11 @@ class Home extends Component<IProps>{
         let params = search.split('?')[1] || ''
         params = Qs.parse(params)
         const {accountId,longitude,latitude}=params
-        this.props.history.push(`/dept-select/${params.accountId}?accountId=${accountId}&longitude=${longitude}&latitude=${latitude}`)
+        // this.props.history.push(`/dept-select/${params.accountId}?accountId=${accountId}&longitude=${longitude}&latitude=${latitude}`)
+        
+        const u=`https://iretail.bonc.com.cn/cnc/#/dept-select/${params.accountId}?accountId=${accountId}&longitude=${longitude}&latitude=${latitude}`
+        const _url =`/pages/newPage/newPage?url=${encodeURIComponent(u)}`
+        wx.miniProgram.navigateTo({url: _url})
     }
     render(){
         const { isRequest, focusImgs, typeList, deptInfo } = this.state

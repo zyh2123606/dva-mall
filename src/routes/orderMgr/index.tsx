@@ -113,7 +113,11 @@ class OrderDetail extends Component{
         const {skuId}=this.state.pageData
         const { typeId,deptId,accountId } = qs.parse(location.search.split('?')[1])
         // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/order-sure/skuId=${skuId}/num=${num}/typeId=${7048}`})
-        this.props.history.push(`/order-sure?skuId=${skuId}&num=${num}&typeId=${typeId}&deptId=${deptId}&accountId=${accountId}`)
+        // this.props.history.push(`/order-sure?skuId=${skuId}&num=${num}&typeId=${typeId}&deptId=${deptId}&accountId=${accountId}`)
+
+        const u=`https://iretail.bonc.com.cn/cnc/#/order-sure?skuId=${skuId}&num=${num}&typeId=${typeId}&deptId=${deptId}&accountId=${accountId}`
+        const _url =`/pages/newPage/newPage?url=${encodeURIComponent(u)}`
+        wx.miniProgram.navigateTo({url: _url})
         
     }
     // 添加到购物车
@@ -166,7 +170,11 @@ class OrderDetail extends Component{
         // TODO 处理跳转到购物车需要携带的sessionID和memId
 
         // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/cart/${sessionId}/${memId}`})
-        this.props.history.push(`/mall/cart?deptId=${deptId}&accountId=${accountId}`)
+        const u=`https://iretail.bonc.com.cn/cnc/#/mall/cart?deptId=${deptId}&accountId=${accountId}`
+        const _url =`/pages/newPage/newPage?url=${encodeURIComponent(u)}`
+        wx.miniProgram.navigateTo({url: _url})
+        
+        // this.props.history.push(`/mall/cart?deptId=${deptId}&accountId=${accountId}`)
     }
     //联系客服
     connectService=()=>{

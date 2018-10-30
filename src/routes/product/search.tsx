@@ -152,7 +152,11 @@ class SearchProduct extends Component{
         const {location} = this.props
         const { parentType,deptId,accountId } = qs.parse(location.search.split('?')[1])
         // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/order-detail/${item.typeId}/${sessionId}/${memId}`})
-        this.props.history.push(`/order-detail?deptId=${deptId}&accountId=${accountId}&typeId=${item.typeId}&skuId=${item.skuId}`)
+        // this.props.history.push(`/order-detail?deptId=${deptId}&accountId=${accountId}&typeId=${item.typeId}&skuId=${item.skuId}`)
+
+        const u=`https://iretail.bonc.com.cn/cnc/#/order-detail?deptId=${deptId}&accountId=${accountId}&typeId=${item.typeId}&skuId=${item.skuId}`
+        const _url =`/pages/newPage/newPage?url=${encodeURIComponent(u)}`
+        wx.miniProgram.navigateTo({url: _url})
     }
     // 渲染搜索栏一级大类
     renderSkuSelectBar(){
