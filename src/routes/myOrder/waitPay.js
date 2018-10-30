@@ -14,8 +14,8 @@ import qs from 'qs'
  */
 class WaitPay extends Component{
     state = { refreshing: true, data: null }
-    pageIndex = 1
-    pageSize = 10
+    pageIndex = 0
+    pageSize = 50
     pageCount = 1
     async componentDidMount(){
         const { search } = this.props.location

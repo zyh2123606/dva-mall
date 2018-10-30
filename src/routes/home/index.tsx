@@ -64,7 +64,6 @@ class Home extends Component<IProps>{
                 }
             })
         }
-        
         this.setState({
             pageLoad: _data,
             focusImgs: _focus,
@@ -144,7 +143,7 @@ class Home extends Component<IProps>{
         wx.miniProgram.navigateTo({url: _url})
     }
     render(){
-        const { isRequest, focusImgs, typeList, deptInfo } = this.state
+        const { isRequest, focusImgs, typeList, deptInfo, pageLoad } = this.state
         const { deptAddress, district, province, deptManager='刘可可', deptName, deptManagerAvatar, deptTel='18313856734' } = deptInfo || {}
         return (
             isRequest?<Block className={Styles.container} bc='#fff'>
@@ -178,6 +177,8 @@ class Home extends Component<IProps>{
                         </Block>
                     {/* top end */}
                     </Block>
+                    {!pageLoad.length?<Block fc='#999' fs={16} j='c' mt={30}>暂无门店数据</Block>:
+                    <>
                     <section>
                         <Swiper autoplay={{delay: 3000, disableOnInteraction: false}}>
                             {focusImgs.map((item, idx) => (
@@ -203,6 +204,7 @@ class Home extends Component<IProps>{
                             ))}
                         </Swiper>
                     </section>
+                    </>}
                 </Block>
                 {this.renderColumnView()}
                 <Block h={50} />

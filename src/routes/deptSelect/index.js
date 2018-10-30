@@ -44,7 +44,13 @@ class DeptSelect  extends Component {
     }
 
     select(currentSelect){
-        this.setState({currentSelect})
+        const {accountId}=this.props.match.params
+        const { history } = this.props
+        const { search } = this.props.location
+        let params = search.split('?')[1] || ''
+        params = Qs.parse(params)
+        const {longitude,latitude}=params
+        history.push(`/mall/home?accountId=${accountId}&deptId=${currentSelect.depeId}&longitude=${longitude}&latitude=${latitude}`)
     }
 
     comfirmSelect=()=>{
@@ -101,9 +107,9 @@ class DeptSelect  extends Component {
                     
                 </Block>
             </Block>
-            <Block h={50} m={10}>
+            {/* <Block h={50} m={10}>
                 <Button disabled={currentSelect===null} style={{borderRadius:'30px'}} type="primary" onClick={this.comfirmSelect}>确定</Button>
-            </Block>
+            </Block> */}
       </Block>
     )
   }
