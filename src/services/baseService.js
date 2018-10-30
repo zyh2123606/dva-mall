@@ -23,16 +23,16 @@ class BaseService extends HttpBase{
         return this.post('/goodsInfoMallController/typeList', data)
     }
     //获取门店信息
-    getDeptInfo = () => {
-        return this.get('/dept/getDeptInfo?id=1')
+    getDeptInfo = (data=undefined) => {
+        return this.postJson('/salesWebToWoStore/initDept', data)
     }
     //获取初始化门店信息
     getInitDeptInfo(data){
         return this.post('/salesWebToWoStore/initDept', data)
     }
 	//获取用户信息
-    getUserInfo = (accountId = '') => {
-        return this.postJson(`salesWebToWoStore/queryMemAccountInfo`,{accountId:accountId})
+    getUserInfo = (data=undefined) => {
+        return this.postJson(`salesWebToWoStore/queryMemAccountInfo`,data)
     }
 }
 

@@ -2,12 +2,11 @@ import HttpBase from '../utils/httpBase'
 import { Toast } from 'antd-mobile'
 
 class OrderService extends HttpBase{
-    constructor({sessionId,memId}){
+    constructor({accountId}){
         super('/api')
-        this.MEMID=memId
+        this.MEMID=accountId
         //添加拦截器设置请求头
         this.$http.interceptors.request.use(config => {
-            config.headers.common['CSESSIONID']=sessionId
             Toast.loading('正在请求', 15)
             return config
         })
