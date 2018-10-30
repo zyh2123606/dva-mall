@@ -28,10 +28,13 @@ class  CollectInfoList extends React.Component{
     }
 
     queryCollectInfo=async()=>{
-        const {sessionId,memId} = this.props
+        const {sessionId,memId,accountId} = this.props
+        console.log(`accountId:${accountId}`)
         const {RESP_CODE,DATA}=await new UserService({sessionId,memId}).getAddressList({
-            DATA:{},
-            accountId:9
+            DATA:{
+
+            },
+            accountId:accountId
 
         });
         if (RESP_CODE===Constant.responseOK){
@@ -61,12 +64,14 @@ class  CollectInfoList extends React.Component{
 
     // 添加收货地址
     addCollection=()=>{
+        const {memId,sessionId,history,accountId,deptId}=this.props
+        this.props.history.push(`/add-address/${sessionId}/${memId}?accountId=${accountId}&deptId=${deptId}`)
         console.log('添加收货地址')
     }
-    // 去编辑收货信息
-    toEditCollectInfo(item){
-        console.log('去编辑收货地址')
-    }
+    // // 去编辑收货信息
+    // toEditCollectInfo(item){
+    //    /update-address/
+    // }
     //选中收货地址
     selectCollectinfoItem(item){
         this.setState({selectedItem:item})
@@ -86,7 +91,7 @@ class  CollectInfoList extends React.Component{
                         <Block a='c' j='c'><img style={{height:'20px',width:'20px'}} src={isChecked?checked:uncheck}/></Block>
                         <Block a='c' j='c' ml={5}>选择地址</Block>
                     </Block>
-                    <Block w={100} a='c' j='c' onClick={this.toEditCollectInfo.bind(this,item)}><img src={bianji}/></Block>
+                    {/* <Block w={100} a='c' j='c' onClick={this.toEditCollectInfo.bind(this,item)}><img src={bianji}/></Block> */}
                 </Block>
             </Block>
         )

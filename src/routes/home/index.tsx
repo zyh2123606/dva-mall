@@ -28,7 +28,7 @@ class Home extends Component<IProps>{
         typeList: [],
         deptInfo: {}
     }
-    _PAGE_DATA_ = { accountId: '', deptId: '' }
+    _PAGE_DATA_ = { accountId: '', deptId: 258 }
     constructor(props:IProps){
         super(props)
     }
@@ -36,6 +36,10 @@ class Home extends Component<IProps>{
         const { search } = this.props.location
         let params = search.split('?')[1] || ''
         params = Qs.parse(params)
+        const {accountId,deptId,longitude,latitude}=params
+        // if(!deptId){
+        //     this.props.history.push(`/dept-select/${params.accountId}?accountId=${accountId}&longitude=${longitude}&latitude=${latitude}`)
+        // }
         this._PAGE_DATA_ = {...this._PAGE_DATA_, ...params}
         this.getData()
     }
@@ -51,13 +55,16 @@ class Home extends Component<IProps>{
         if(type_res.RESP_CODE !== '0000') return Toast.info(type_res.RESP_DESC)
         if(dept_res.RESP_CODE !== '0000') return Toast.info(dept_res.RESP_DESC)
         let _focus = [], _data = [];
-        prod_res.DATA.filter((item, idx) => {
-            if(item.displayType === '1'){
-                _focus = item.mallRelation || []
-            }else{
-                _data.push(item)
-            }
-        })
+        if(prod_res.DATA){
+            prod_res.DATA.filter((item, idx) => {
+                if(item.displayType === '1'){
+                    _focus = item.mallRelation || []
+                }else{
+                    _data.push(item)
+                }
+            })
+        }
+        
         this.setState({
             pageLoad: _data,
             focusImgs: _focus,
@@ -118,8 +125,11 @@ class Home extends Component<IProps>{
     }
     //选择门店
     selectDept = (e:any) => {
-        const { history } = this.props
-        history.push(`/dept-select/${this._PAGE_DATA_.accountId}`)
+        const { search } = this.props.location
+        let params = search.split('?')[1] || ''
+        params = Qs.parse(params)
+        const {accountId,longitude,latitude}=params
+        this.props.history.push(`/dept-select/${params.accountId}?accountId=${accountId}&longitude=${longitude}&latitude=${latitude}`)
     }
     render(){
         const { isRequest, focusImgs, typeList, deptInfo } = this.state

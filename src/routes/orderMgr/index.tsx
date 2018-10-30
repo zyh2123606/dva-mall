@@ -133,13 +133,11 @@ class OrderDetail extends Component{
         const shoppingCartService = new ShoppingCartService({sessionId,memId})
         const {RESP_CODE} = await shoppingCartService.add(params);
         if (RESP_CODE===Constant.responseOK){
-            this.setState((preState) => ({
-                shoppingCartCount: preState.shoppingCartCount + num
-              }))
             Toast.success('添加购物车成功！',1)
+            this.shoppingCart()
         }
     }
-    // 查看购物车
+    // 查看购物车数量
     async shoppingCart(){
         const {match:{params:{sessionId,memId}},location}  =this.props
         const { deptId,accountId } = qs.parse(location.search.split('?')[1])

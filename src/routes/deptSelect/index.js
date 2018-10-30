@@ -7,6 +7,7 @@ import unChecked from '../../assets/img/uncheck.png';
 import weizhi from '../../assets/img/weizhi.png';
 import DeptSelectService from '../../services/deptService';
 import Canstant from '../../utils/constant';
+import Qs from 'qs'
 
 class DeptSelect  extends Component {
     state={
@@ -25,10 +26,13 @@ class DeptSelect  extends Component {
 
     search=async()=>{
         const {searchKeyword}=this.state
-        const {accountId}=this.props.match.params
+        const { search } = this.props.location
+        let params = search.split('?')[1] || ''
+        params = Qs.parse(params)
+        const {accountId,longitude,latitude}=params
         let data={
-            deptIng:'102.725556',// 获取经度
-            deptLat:'102.725556',// 获取维度
+            deptIng:longitude,// 获取经度
+            deptLat:latitude,// 获取维度
             currentPage:1,
             countPerPage:25,
             fullname:searchKeyword||null,//门店名称
@@ -46,8 +50,13 @@ class DeptSelect  extends Component {
     comfirmSelect=()=>{
         const { currentSelect } = this.state
         const {accountId}=this.props.match.params
+
+        const { search } = this.props.location
+        let params = search.split('?')[1] || ''
+        params = Qs.parse(params)
+        const {longitude,latitude}=params
         const { history } = this.props
-        history.push(`/mall/home?accountId=${accountId}&deptId=${currentSelect.depeId}`)
+        history.push(`/mall/home?accountId=${accountId}&deptId=${currentSelect.depeId}&longitude=${longitude}&latitude=${latitude}`)
     }
   render() {
     const {searchKeyword,deptList,currentSelect}=this.state
