@@ -96,7 +96,7 @@ class OrderSure extends Component{
                 goodsList.push({
                     goodsImg:DATA.goodsImg,
                     salePrice:DATA.salePrice,
-                    goodsTotal:num,
+                    goodsTotal:parseInt(num),
                     cartId:null,
                     typeName:DATA.goodsName,
                     attrNames:DATA.attrNames,
@@ -107,7 +107,7 @@ class OrderSure extends Component{
             const shoppingCartService = new ShoppingCartService(1,15)
             const {RESP_CODE,DATA} = await shoppingCartService.query({
                 DATA:{
-                    currentPage:1,
+                    currentPage:0,
                     countPerPage:100,
                 },
                 accountId:accountId,
@@ -169,8 +169,8 @@ class OrderSure extends Component{
         const { deptId,accountId } = qs.parse(location.search.split('?')[1])
         const {collectMode,goodsList,collectAddress,shoppingcard,totalPrise,fapiaoContentSelect,selectInvoiceType,invTitle,fapiaoSelect,adoptTimeSelect}=this.state
         let params={
-            deptId:258,
-            accountId:9,
+            deptId:deptId,
+            accountId:accountId,
             DATA:{
                 memDiscount:'',
                 ticketNum:'',
@@ -251,6 +251,8 @@ class OrderSure extends Component{
         const { deptId,accountId } = qs.parse(location.search.split('?')[1])
                 this.props.history.push(`/order-complete?orderNum=${DATA.orderNum}&orderId=${DATA.orderId}&deptId=${deptId}&accountId=${accountId}`)
             }, 1000);
+        }else{
+            Toast.fail('提交订单失败', 1);
         }
     }
    
@@ -418,7 +420,7 @@ class OrderSure extends Component{
                     this.state.goodsList.map((item,index)=>{
                         return <Block key={'goods-item-'+index} wf bc='#fff' p={15} mt={10}>
                                 <Block className={Styles.prod_pic}>
-                                    <img alt={item.typeName} src={Constant.imgBaseUrl+item.goodsImg} />
+                                    <img style={{width: '78px',height: '78px'}} alt={item.typeName} src={Constant.imgBaseUrl+item.goodsImg} />
                                 </Block>
                                 <Block vf f={1} ml={15}>
                                     <Block style={{fontWeight: 'bold'}}>{item.typeName}</Block>
@@ -438,6 +440,8 @@ class OrderSure extends Component{
     //收货地址列表
     renderCollectInfo(){
         const {adoptTimeSelect,reciveWay,collectMode,totalPrise,isCheckedJifen,fapiaoContentSelect,selectInvoiceType}=this.state
+        const {location}  =this.props
+        const {deptId,accountId } = qs.parse(location.search.split('?')[1])
         const {match:{params:{sessionId,memId}},history,form:{getFieldProps}} = this.props
         return (
             <Block>
@@ -459,9 +463,12 @@ class OrderSure extends Component{
                     <Item arrow='horizontal' multipleLine wrap>
                         {/* 选择收货地址 */}
                         <CollectInfoList 
-                        memId={memId}
+                        memId={accountId}
                         history={history}
-                        sessionId={sessionId}
+                        sessionId={'sessionId'}
+                        accountId={accountId}
+                        deptId={deptId}
+                        dispatch={this.props.dispatch}
                         selectedOk={this.selectedCollectInfo}/>
                     </Item>
                 }

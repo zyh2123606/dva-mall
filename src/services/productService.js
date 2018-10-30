@@ -44,7 +44,7 @@ class ProductService extends HttpBase{
         return this.get(`/goods/getFacet?parentTypeId=${parentType}`)
     }
     searchGoods=(params)=>{
-        return this.postJson('goods/search',params)
+        return this.postJson('/goodsInfoMallController/queryGoodsList',params)
     }
 
     //联系客服

@@ -73,8 +73,9 @@ class OrderComplete extends Component{
 
     gotoPay=()=>{
         const saleOrderInfo=this.state.saleOrderInfo
-        const {deptId } = qs.parse(this.props.location.search.split('?')[1])
+        const {deptId,accountId } = qs.parse(this.props.location.search.split('?')[1])
         const params=JSON.stringify({
+            accountId:accountId,
             orderNum:saleOrderInfo.orderNum,
             orderId:saleOrderInfo.orderId,
             deptId:deptId,

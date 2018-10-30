@@ -28,7 +28,7 @@ class Home extends Component<IProps>{
         typeList: [],
         deptInfo: {}
     }
-    _PAGE_DATA_ = { accountId: '', deptId: '' }
+    _PAGE_DATA_ = { accountId: '', deptId: 258 }
     constructor(props:IProps){
         super(props)
     }
@@ -36,6 +36,10 @@ class Home extends Component<IProps>{
         const { search } = this.props.location
         let params = search.split('?')[1] || ''
         params = Qs.parse(params)
+        const {accountId,deptId,longitude,latitude}=params
+        // if(!deptId){
+        //     this.props.history.push(`/dept-select/${params.accountId}?accountId=${accountId}&longitude=${longitude}&latitude=${latitude}`)
+        // }
         this._PAGE_DATA_ = {...this._PAGE_DATA_, ...params}
         this.getData()
     }
@@ -51,13 +55,16 @@ class Home extends Component<IProps>{
         if(type_res.RESP_CODE !== '0000') return Toast.info(type_res.RESP_DESC)
         if(dept_res.RESP_CODE !== '0000') return Toast.info(dept_res.RESP_DESC)
         let _focus = [], _data = [];
-        prod_res.DATA.filter((item, idx) => {
-            if(item.displayType === '1'){
-                _focus = item.mallRelation || []
-            }else{
-                _data.push(item)
-            }
-        })
+        if(prod_res.DATA){
+            prod_res.DATA.filter((item, idx) => {
+                if(item.displayType === '1'){
+                    _focus = item.mallRelation || []
+                }else{
+                    _data.push(item)
+                }
+            })
+        }
+        
         this.setState({
             pageLoad: _data,
             focusImgs: _focus,
@@ -67,16 +74,18 @@ class Home extends Component<IProps>{
         })
     }
     
-    gotoProdDetail(typeId){
+    gotoProdDetail(typeId,skuId){
         const { accountId, deptId, sessionId=1001 } = this._PAGE_DATA_
-        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/order-detail/${typeId}/${sessionId}/${accountId}`})
-        // this.props.history.push(`/order-detail/${typeId}/${sessionId}/${memId}`)
+        // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/order-detail/${typeId}/${sessionId}/${accountId}`})
+        console.log(`gotoProdDetail:${typeId}`)
+        this.props.history.push(`/order-detail?deptId=${deptId}&accountId=${accountId}&typeId=${typeId}&skuId=${skuId}`)
     }
-    gotoGoodsPage(url){
+    gotoGoodsPage(grandFatherTypeId){
         const { accountId, deptId, sessionId=1001 } = this._PAGE_DATA_
-        if(url){
-            wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#${url}/${sessionId}/${accountId}`})
-            // this.props.history.push(`${url}/${sessionId}/${memId}`)
+        if(grandFatherTypeId){
+            // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#${url}/${sessionId}/${accountId}`})
+            
+            this.props.history.push(`/product?deptId=${deptId}&accountId=${accountId}&firstType=${grandFatherTypeId}`)
         }
     }
     //商品
@@ -97,7 +106,7 @@ class Home extends Component<IProps>{
                     </Block>
                     <Block mr={5} ml={10} style={{lineHeight: 'normal'}}>
                         {mallRelation.map(({ displayName, displayPic, displayPrice, displaySort, perateType, relSkuId, relTypeid }, idx) => (
-                            <Block key={idx} onClick={this.gotoProdDetail.bind(this, relTypeid)} vf className={Styles.prod_item} mt={15}>
+                            <Block key={idx} onClick={this.gotoProdDetail.bind(this, relTypeid,relSkuId)} vf className={Styles.prod_item} mt={15}>
                                 <Block j='c' className={Styles.prod_img_c}>
                                     <img className={Styles.prod_img} src={displayPic?Constant.imgBaseUrl+displayPic:ImgErr} />
                                 </Block>
@@ -116,8 +125,11 @@ class Home extends Component<IProps>{
     }
     //选择门店
     selectDept = (e:any) => {
-        const { history } = this.props
-        history.push(`/dept-select/${this._PAGE_DATA_.accountId}`)
+        const { search } = this.props.location
+        let params = search.split('?')[1] || ''
+        params = Qs.parse(params)
+        const {accountId,longitude,latitude}=params
+        this.props.history.push(`/dept-select/${params.accountId}?accountId=${accountId}&longitude=${longitude}&latitude=${latitude}`)
     }
     render(){
         const { isRequest, focusImgs, typeList, deptInfo } = this.state
@@ -168,7 +180,7 @@ class Home extends Component<IProps>{
                     <section>
                         <Swiper slidesPerView={4}>
                             {typeList.map(({grandFatherTypeId, grandFatherTypeName, grandFatherUrl}, idx) => (
-                                <Block key={idx} onClick={this.gotoGoodsPage.bind(this)}>
+                                <Block key={idx} onClick={this.gotoGoodsPage.bind(this,grandFatherTypeId)}>
                                     <Block vf className={Styles.type_item}>
                                         <Block className={Styles.type_pic_c} f={1}>
                                             <img className={Styles.type_img} src={Constant.imgBaseUrl+grandFatherUrl} />
