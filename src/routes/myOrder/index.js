@@ -49,8 +49,8 @@ class MyOrder extends Component{
         const { sub } = tab
         if(this.state.currentTab === sub) return
         const { history, match:{url}, location:{search} } = this.props
-        const { sessionId, memId } = qs.parse(search.split('?')[1])
-        history.push(`${url}${sub}?sessionId=${sessionId}&memId=${memId}`)
+        const { accountId } = qs.parse(search.split('?')[1])
+        history.push(`${url}${sub}?accountId=${accountId}`)
     }
     render(){
         const { currentTab, tabIndex } = this.state
