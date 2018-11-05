@@ -2,7 +2,7 @@
  * 路由配置
  */
 import {orderDetailPage, myOrderPage, orderSurePage, addressMgrPage, 
-    addAddressPage,updateAddressPage, orderInfoPage, orderCompletePage, productPage, searchPage, successPage, failPage, deptSelect, defaultPage} from './lazyRoutes'
+    addAddressPage,updateAddressPage, orderInfoPage, orderCompletePage, productPage, searchPage, successPage, failPage, deptSelect, defaultPage,createMember} from './lazyRoutes'
     
 const RouteConfig = [
     {path: '/mall', component: defaultPage},
@@ -18,7 +18,8 @@ const RouteConfig = [
     {path: '/order-complete', component: orderCompletePage, exact: true},
     {path: '/success/:orderId/:sessionId/:memId', component: successPage, exact: true},
     {path: '/fail', component: failPage, exact: true},
-    {path: '/dept-select/:accountId', component: deptSelect, exact: true}
+    {path: '/dept-select/:accountId', component: deptSelect, exact: true},
+    {path: '/create-member', component: createMember, exact: true}
 ]
 
 export default RouteConfig

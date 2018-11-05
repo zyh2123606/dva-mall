@@ -7,6 +7,7 @@ import {connect} from 'dva'
 import UserService from '../../services/userSeervice'
 import DeptService from '../../services/deptService'
 import OrderService from '../../services/orderService'
+import MemBerService from '../../services/memberService'
 import Service from '../../services/productService'
 import ShoppingCartService from '../../services/shoppingCartService'
 import CollectInfoList from  './CollectInfoList'
@@ -14,6 +15,7 @@ import Constant from '../../utils/constant'
 import HonbaoImage from '../../assets/img/hongbao@2x.png'
 import uncheck from '../../assets/img/uncheck.png'
 import checked from '../../assets/img/checked.png'
+
 import qs from 'qs'
 const alert = Modal.alert;
 /**
@@ -27,6 +29,7 @@ class OrderSure extends Component{
     state = {
         typeId:1,
         totalPrise:0,//总价格,
+        saleTotal:0,//打折后价格
         shoppingcard:[],//购物车ID集合
         goodsList:[],// 购物车商品集合
         collectMode:null,//收货方式:1、无配送，2、快递，3、上门自提
@@ -76,6 +79,10 @@ class OrderSure extends Component{
         fapiaoSelect:null,//选中开发票模式
         fapiaoContentSelect:'商品明细',// 发票内容选择
         inputAble:true,// 选中不开发票时，隐藏所有操作
+
+        memberInfo:null,//会员信息
+        saleChecked:false,//是否打折
+
     }
     async componentDidMount(){
         document.title='订单确认'
@@ -141,6 +148,53 @@ class OrderSure extends Component{
             goodsList:goodsList,
             totalPrise:totalPrise.toFixed(2)
         })
+        this.queryMemberInfo()// 查询会员信息
+    }
+
+    //查询会员信息
+    queryMemberInfo=async()=>{
+        const {form,match:{params:{sessionId,memId}},location}  =this.props
+        const { num,skuId,typeId,cartIds,deptId,accountId } = qs.parse(location.search.split('?')[1])
+
+        const {RESP_CODE,DATA}=await new UserService({sessionId,memId}).queryMemAccountInfo({
+            accountId:accountId,
+        })
+        if(RESP_CODE===Constant.responseOK){
+            const res=await new MemBerService({sessionId,memId}).query({
+                accountId:accountId,
+                deptId:deptId,
+                DATA:{
+                    telNum:DATA.telNum
+                }
+            })
+            if(res.RESP_CODE===Constant.responseOK){
+                if(res.DATA){
+                    this.setState({memberInfo:res.DATA})
+                }
+            }
+        }
+    }
+
+    // checkedSale
+    checkedSale=()=>{
+        const {saleChecked,memberInfo,totalPrise}=this.state
+        let total=0
+        console.log(`saleChecked:${saleChecked} totalPrise:${totalPrise}`)
+        if(saleChecked){
+            this.setState({
+                saleTotal:0,
+                saleChecked:false,
+            })
+        }else{
+            if(memberInfo){
+                total=memberInfo.memDiscount*totalPrise/10
+            }
+            console.log(`will checked,total:${total} `)
+            this.setState({
+                saleTotal:total,
+                saleChecked:true,
+            })
+        }
     }
 
     //日期选择
@@ -167,7 +221,7 @@ class OrderSure extends Component{
     async orderSubmit () {
         const {match:{params:{sessionId,memId}},form,location} = this.props
         const { deptId,accountId } = qs.parse(location.search.split('?')[1])
-        const {collectMode,goodsList,collectAddress,shoppingcard,totalPrise,fapiaoContentSelect,selectInvoiceType,invTitle,fapiaoSelect,adoptTimeSelect}=this.state
+        const {saleChecked,saleTotal,collectMode,goodsList,collectAddress,shoppingcard,totalPrise,fapiaoContentSelect,selectInvoiceType,invTitle,fapiaoSelect,adoptTimeSelect}=this.state
         let params={
             deptId:deptId,
             accountId:accountId,
@@ -178,8 +232,8 @@ class OrderSure extends Component{
                 pointMoney:'',
                 saleOrderInfo:{//销售单信息
                     totalPrice:totalPrise,
-                    balaMoney:totalPrise,
-                    actualMoney:totalPrise,
+                    balaMoney:saleChecked&&saleTotal!==0?saleTotal:totalPrise,
+                    actualMoney:saleChecked&&saleTotal!==0?saleTotal:totalPrise,
                     goodsDesc:null,
                     goodsMemo:null,
                     feeMoney:null,
@@ -244,7 +298,7 @@ class OrderSure extends Component{
         
         const {RESP_CODE,DATA}= await new OrderService({sessionId,memId}).addOrder(params)
         if (RESP_CODE===Constant.responseOK){
-            Toast.success('提交的名单成功！',2)
+            Toast.success('提交订单成功！',2)
             setTimeout(() => {
                 // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/order-complete/orderNum=${DATA.orderNum}/orderId=${DATA.orderId}/deptId=${258}/accountId=${9}`})
         const { deptId,accountId } = qs.parse(location.search.split('?')[1])
@@ -442,10 +496,11 @@ class OrderSure extends Component{
 
     //收货地址列表
     renderCollectInfo(){
-        const {adoptTimeSelect,reciveWay,collectMode,totalPrise,isCheckedJifen,fapiaoContentSelect,selectInvoiceType}=this.state
+        const {saleTotal,saleChecked,adoptTimeSelect,reciveWay,collectMode,totalPrise,isCheckedJifen,fapiaoContentSelect,selectInvoiceType,memberInfo}=this.state
         const {location}  =this.props
         const {deptId,accountId } = qs.parse(location.search.split('?')[1])
         const {match:{params:{sessionId,memId}},history,form:{getFieldProps}} = this.props
+
         return (
             <Block>
 
@@ -484,21 +539,26 @@ class OrderSure extends Component{
                     arrow='horizontal' extra={fapiaoContentSelect==='商品明细'&&selectInvoiceType?(selectInvoiceType===1?'普通纸质发票':'普通电子发票'):'不开发票' }
                     >选择发票</Item>
                  </List>
-                {/* <List renderHeader={<Block fs={18} style={{color:'#000',fontWeight: 'bold'}}>会员信息</Block>}>
-                    <Item onClick={()=>this.setState({honbaoPopVisible:true})} wrap arrow='horizontal' extra={'请选择'}>红包</Item>
+                <List renderHeader={<Block fs={18} style={{color:'#000',fontWeight: 'bold'}}>会员信息</Block>}>
+                    {/* <Item onClick={()=>this.setState({honbaoPopVisible:true})} wrap arrow='horizontal' extra={'请选择'}>红包</Item> */}
                     <Item wrap extra={
-                        <Block hf onClick={()=>this.setState({isCheckedJifen:!isCheckedJifen})}>
-                            <Block f={1}>共12345积分，可抵扣12元</Block>
-                            <Block><img style={{height:'20px',width:'20px'}} src={isCheckedJifen?checked:uncheck}/></Block>
+                        <Block hf>
+                            <Block f={1}>共{memberInfo?memberInfo.memPoint:0}积分</Block>
                         </Block>
                         }>积分</Item>
-                </List> */}
+                    <Item wrap extra={
+                        <Block hf onClick={this.checkedSale}>
+                            <Block f={1}>{memberInfo?memberInfo.memDiscount+'折':'无折扣'}</Block>
+                            <Block><img style={{height:'20px',width:'20px'}} src={saleChecked?checked:uncheck}/></Block>
+                        </Block>
+                        }>店铺折扣</Item>
+                </List>
 
                 <List renderHeader={<Block fs={18} style={{color:'#000',fontWeight: 'bold'}}>总金额</Block>}>
                     <Item extra={<Block className={Styles.orangeColor}>￥{totalPrise}</Block>}>商品金额</Item>
                     {/* <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>红包抵扣</Item>
                     <Item extra={<Block className={Styles.orangeColor}>￥{Constant.toMoney(totalPrise)}</Block>}>积分抵扣</Item> */}
-                    <Item extra={<Block className={Styles.orangeColor}>￥{totalPrise}</Block>}>总金额</Item>
+                    <Item extra={<Block className={Styles.orangeColor}>￥{saleChecked && saleTotal!==0?saleTotal:totalPrise}</Block>}>总金额</Item>
                 </List>
                 </Block>
         )

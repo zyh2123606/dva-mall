@@ -33,6 +33,11 @@ class UserService extends HttpBase{
     queryMember=(data)=>{
         return this.postJson('/MemberMallController/queryMemberBasicInfoByDeptIdAndTelnum',data)
     }
+
+    //查询用户信息
+    queryMemAccountInfo=(data)=>{
+        return this.postJson('/salesWebToWoStore/queryMemAccountInfo',data)
+    }
 }
 
 export default UserService;

@@ -4,6 +4,8 @@ import Styles from './index.less'
 import { Stepper,Carousel, Badge, Toast,Modal } from 'antd-mobile'
 import Service from '../../services/productService'
 import ShoppingCartService from '../../services/shoppingCartService';// 购物车service
+import UserService from '../../services/userSeervice';
+import MemBerService from '../../services/memberService'
 import { createForm } from 'rc-form'
 import {connect} from 'dva';
 import Constant from '../../utils/constant';
@@ -115,9 +117,35 @@ class OrderDetail extends Component{
         // wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/order-sure/skuId=${skuId}/num=${num}/typeId=${7048}`})
         // this.props.history.push(`/order-sure?skuId=${skuId}&num=${num}&typeId=${typeId}&deptId=${deptId}&accountId=${accountId}`)
 
-        const u=`https://iretail.bonc.com.cn/cnc/#/order-sure?skuId=${skuId}&num=${num}&typeId=${typeId}&deptId=${deptId}&accountId=${accountId}`
-        const _url =`/pages/newPage/newPage?url=${encodeURIComponent(u)}`
-        wx.miniProgram.navigateTo({url: _url})
+        const {RESP_CODE,DATA}=await new UserService({sessionId,memId}).queryMemAccountInfo({
+            accountId:accountId,
+        })
+        if(RESP_CODE===Constant.responseOK){
+            const res=await new MemBerService({sessionId,memId}).query({
+                accountId:accountId,
+                deptId:deptId,
+                DATA:{
+                    telNum:DATA.telNum
+                }
+            })
+            if(res.RESP_CODE=Constant.responseOK){
+                if(!res.DATA){
+                    // this.props.history.push(`/create-member?skuId=${skuId}&&typeId=${typeId}&deptId=${deptId}&accountId=${accountId}`)
+                    const u=`https://iretail.bonc.com.cn/cnc/#/create-member?skuId=${skuId}&&typeId=${typeId}&deptId=${deptId}&accountId=${accountId}`
+                    const _url =`/pages/newPage/newPage?url=${encodeURIComponent(u)}`
+                    wx.miniProgram.navigateTo({url: _url})
+                }else{
+                    // this.props.history.push(`/order-sure?skuId=${skuId}&num=${num}&typeId=${typeId}&deptId=${deptId}&accountId=${accountId}`)
+                    const u=`https://iretail.bonc.com.cn/cnc/#/order-sure?skuId=${skuId}&num=${num}&typeId=${typeId}&deptId=${deptId}&accountId=${accountId}`
+                    const _url =`/pages/newPage/newPage?url=${encodeURIComponent(u)}`
+                    wx.miniProgram.navigateTo({url: _url})
+                }
+            }else{
+                Toast.fail('查询会员信息异常',2)
+            }
+        }else{
+            Toast.fail('查询用户信息异常',2)
+        }
         
     }
     // 添加到购物车

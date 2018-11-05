@@ -20,4 +20,5 @@ export const successPage = Loadable({loader: () => import('./routes/message/succ
 export const failPage = Loadable({loader: () => import('./routes/message/fail'), loading: () => (<div></div>)})
 export const deptSelect = Loadable({loader: () => import('./routes/deptSelect'), loading: () => (<div></div>)})
 export const defaultPage = Loadable({loader: () => import('./routes/default'), loading: () => (<></>)})
+export const createMember = Loadable({loader: () => import('./routes/createmember'), loading: () => (<></>)})
 
