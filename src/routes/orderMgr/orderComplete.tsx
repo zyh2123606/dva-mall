@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import Block from 'fs-flex'
 import Styles from './index.less'
-import { Icon,Button } from 'antd-mobile'
+import { Icon,Button,Toast } from 'antd-mobile'
 import OrderService from '../../services/orderService'
 import Constant from '../../utils/constant';
 import qs from 'qs'
@@ -59,7 +59,6 @@ class OrderComplete extends Component{
             },
             deptId:deptId,
             accountId:accountId
-
         })
         if(RESP_CODE===Constant.responseOK){
             this.setState({
@@ -67,6 +66,8 @@ class OrderComplete extends Component{
                 saleStoreGoods:DATA.saleStoreGoods,
                 saleOrderInfo:DATA.saleOrderInfo,
             })
+        }else{
+            Toast.fail(`查询订单信息异常`, 1);
         }
     }
 

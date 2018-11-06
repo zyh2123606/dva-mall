@@ -18,7 +18,7 @@ class CreateMember extends React.Component{
         phoneNum:null
     }
     componentDidMount(){
-        document.title='商品详情'
+        document.title='注册会员'
     }
     onOk=async()=>{
         const {location}  =this.props

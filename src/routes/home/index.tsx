@@ -36,7 +36,9 @@ class Home extends Component<IProps>{
         const { search } = this.props.location
         let params = search.split('?')[1] || ''
         params = Qs.parse(params)
-        const {accountId,deptId,longitude,latitude}=params
+        if(params && (!params.deptId||params.deptId===undefined||params.deptId==='undefined')){
+            params.deptId=258
+        }
         // if(!deptId){
         //     this.props.history.push(`/dept-select/${params.accountId}?accountId=${accountId}&longitude=${longitude}&latitude=${latitude}`)
         // }
