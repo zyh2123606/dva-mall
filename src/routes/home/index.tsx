@@ -120,7 +120,7 @@ class Home extends Component<IProps>{
                                     <img className={Styles.prod_img} src={displayPic?Constant.imgBaseUrl+displayPic:ImgErr} />
                                 </Block>
                                 <Block mt={5} className={Styles.type_name_txt}>{displayName}</Block>
-                                <Block j='c' fs={12} pb={7} className={Styles.orangeRedColor}>￥{Constant.toMoney(displayPrice)}</Block>
+                                <Block j='c' fs={12} pb={7} className={Styles.orangeRedColor}>￥{displayPrice}</Block>
                                 <Block j='c'>
                                     {perateType === '1'?<Button type='primary' className={Styles.buy_btn}>立即购买</Button>
                                     :<Button type='primary' className={Styles.order_btn}>立即预约</Button>}
