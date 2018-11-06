@@ -31,7 +31,7 @@ class Account extends Component{
         this.setState({userInfo: usRes.DATA || {}, deptInfo: depRes?depRes.DATA:null, auth: params})
     }
     goToTarget(target){
-        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/#/${target}`})
+        wx.miniProgram.navigateTo({url: `/pages/newPage/newPage?url=https://iretail.bonc.com.cn/cnc/#/${target}`})
     }
     render(){
         const { userInfo, auth } = this.state
